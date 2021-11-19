@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "banter-bus-management-api"
+version = "0.1.0"
+description = ""
+authors = ["Haseeb Majid <hello@haseebmajid.dev>"]
+
+[tool.poetry.dependencies]
+python = "3.9"
+fastapi = "^0.70.0"
+uvicorn = "^0.15.0"
+python-dotenv = "^0.19.2"
+umongo = "^3.0.1"
+motor = "^2.5.1"
+structlog = "^21.2.0"
+
+[tool.poetry.dev-dependencies]
+tox = "^3.24.4"
+black = "^21.11b1"
+isort = "^5.10.1"
+flake8 = "^4.0.1"
+ipython = "^7.29.0"
+pre-commit = "^2.15.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
