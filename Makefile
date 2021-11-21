@@ -5,10 +5,18 @@
 help: ## Generates a help README
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: start
+start:
+	@docker-compose up --build -d
+
+
+.PHONY: start-deps
+start-deps:
+	@docker-compose up --build -d database database-gui
 
 .PHONY: unit_tests
 unit_tests:
-	@tox -e
+	@tox -e py39
 
 
 .PHONY: integration_tests
@@ -28,7 +36,7 @@ install-venv:
 
 .PHONY: install-hooks
 install-hooks:
-	@tox -e pre-commit -- install -f --install-hooks
+	@tox -e pre-commit -- install
 
 
 .PHONY: lint

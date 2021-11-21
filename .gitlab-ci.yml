@@ -3,6 +3,18 @@ image: python:3.9.8
 variables:
   DOCKER_DRIVER: overlay2
 
+.mongo:
+  services:
+    - mongo:4.4.4
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: banterbus
+    MONGO_INITDB_ROOT_PASSWORD: banterbus
+    MONGO_INITDB_DATABASE: test
+    BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
+    BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
+    BANTER_BUS_MANAGEMENT_API_DB_HOST: mongo
+    BANTER_BUS_MANAGEMENT_API_DB_NAME: test
+
 services:
   - docker:dind
 
@@ -38,20 +50,32 @@ test:unit-tests:
   only:
     - merge_request
   script:
-    - make unit_tests || true
+    - make unit_tests
 
 test:coverage:
   stage: test
   only:
     - main
     - merge_request
+  extends:
+    - .mongo
   script:
-    - make coverage || true
+    - echo $BANTER_BUS_MANAGEMENT_API_DB_PASSWORD
+    - cp .env.test .env
+    - make coverage
   coverage: '/^TOTAL.+?(\S+\%)$/'
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+      cobertura: coverage.xml
 
 test:integration-tests:
   stage: test
   only:
     - merge_request
+  extends:
+    - .mongo
   script:
-    - make integration_tests || true
+    - cp .env.test .env
+    - make integration_tests

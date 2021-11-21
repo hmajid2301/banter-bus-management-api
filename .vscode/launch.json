@@ -9,11 +9,19 @@
       "args": ["app.main:app", "--reload"]
     },
     {
-      "name": "Tests: All",
+      "name": "Tests: Unit",
       "type": "python",
       "request": "launch",
       "module": "pytest",
-      "args": ["-rf"],
+      "args": ["-rf", "tests/unit"],
+      "justMyCode": true
+    },
+    {
+      "name": "Tests: Integration",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-rf", "tests/integration"],
       "justMyCode": true
     },
     {

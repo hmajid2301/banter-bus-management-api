@@ -35,4 +35,4 @@ services:
     volumes:
       - /data/db mongoclient/mongoclient
     ports:
-      - 3000:3000
+      - 4000:3000

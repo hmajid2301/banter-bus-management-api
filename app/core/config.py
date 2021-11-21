@@ -6,7 +6,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "production"
-    LOG_LEVEL: str = "info"
+    LOG_LEVEL: str = "INFO"
 
     DB_USERNAME: str
     DB_PASSWORD: str
@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     class Config:
         env_prefix = "BANTER_BUS_MANAGEMENT_API_"
         env_file = ".env"
+
+    def get_mongodb_uri(self) -> str:
+        uri = f"mongodb://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}"
+        if self.AUTH_DB_NAME:
+            uri += f"?authSource={self.AUTH_DB_NAME}"
+
+        return uri
 
 
 @lru_cache()
