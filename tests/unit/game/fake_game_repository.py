@@ -14,6 +14,8 @@ class FakeGameRepository(AbstractGameRepository):
     async def add(self, new_game: Game):
         for game in self.games:
             if game.name == new_game.name:
+                # TODO: fix
+                # raise GameExistsException("game already exists")
                 raise DuplicateKeyError("game already exists")
         else:
             self.games.append(new_game)

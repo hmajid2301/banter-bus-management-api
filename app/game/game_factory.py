@@ -9,7 +9,7 @@ def get_game_repository() -> AbstractGameRepository:
 
 
 def get_game_service(
-    game_repository: GameRepository = Depends(get_game_repository),
+    game_repository: AbstractGameRepository = Depends(get_game_repository),
 ) -> AbstractGameService:
     game_service = GameService(game_repository=game_repository)
     return game_service

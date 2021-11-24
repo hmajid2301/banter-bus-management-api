@@ -11,8 +11,8 @@ from app.game.game_exceptions import (
 from app.game.game_models import Game
 from app.game.game_service import GameService
 from tests.unit.factories import GameFactory
-from tests.unit.games.fake_game_repository import FakeGameRepository
-from tests.unit.games.game_service_data import (
+from tests.unit.game.fake_game_repository import FakeGameRepository
+from tests.unit.game.game_service_data import (
     disable_game_data,
     enable_game_data,
     get_game_name_data,

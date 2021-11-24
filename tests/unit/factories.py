@@ -3,7 +3,7 @@ import factory.fuzzy
 
 from app.game.game_models import Game
 
-game_names = {"quibly": "Quibly", "fibbing_it": "Fibbing IT!", "drawlossuem": "Drawlossuem"}
+game_names = {"quibly": "Quibly", "fibbing_it": "Fibbing IT!", "drawlosseum": "drawlosseum"}
 
 
 class GameFactory(factory.Factory):

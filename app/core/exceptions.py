@@ -8,3 +8,7 @@ class ExistsException(Exception):
 
 class InvalidFilter(Exception):
     pass
+
+
+class IncorrectFormatException(Exception):
+    pass
