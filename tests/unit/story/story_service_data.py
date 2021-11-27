@@ -1,3 +1,7 @@
+from typing import List
+
+from app.game.game_exceptions import GameNotEnabledError
+
 add_story_data = [
     (
         {
@@ -78,7 +82,48 @@ add_story_fail_data = [
                     "votes": 0,
                 },
             ],
-        }
+        },
+        ValueError,
+    ),
+    (
+        {
+            "game_name": "invalid",
+            "question": "how many fish are there?",
+            "round": "pair",
+            "answers": [
+                {
+                    "nickname": "funnyMan420",
+                    "answer": "one",
+                    "votes": 12341,
+                },
+                {
+                    "nickname": "lima_Bean",
+                    "answer": "many",
+                    "votes": 0,
+                },
+            ],
+        },
+        ValueError,
+    ),
+    (
+        {
+            "question": "how many fish are there?",
+            "game_name": "quibly",
+            "round": "invalid",
+            "answers": [
+                {
+                    "nickname": "funnyMan420",
+                    "answer": "one",
+                    "votes": 12341,
+                },
+                {
+                    "nickname": "lima_Bean",
+                    "answer": "many",
+                    "votes": 0,
+                },
+            ],
+        },
+        ValueError,
     ),
     (
         {
@@ -96,11 +141,11 @@ add_story_fail_data = [
                     "votes": 0,
                 },
             ],
-        }
+        },
+        ValueError,
     ),
     (
         {
-            "game_name": "quibly",
             "round": "pair",
             "answers": [
                 {
@@ -114,14 +159,15 @@ add_story_fail_data = [
                     "votes": 0,
                 },
             ],
-        }
+        },
+        ValueError,
     ),
     (
         {
-            "game_name": "quibly",
             "round": "pair",
             "question": "how many fish are there?",
-        }
+        },
+        ValueError,
     ),
     (
         {
@@ -141,7 +187,8 @@ add_story_fail_data = [
                     "votes": 0,
                 },
             ],
-        }
+        },
+        ValueError,
     ),
     (
         {
@@ -160,11 +207,11 @@ add_story_fail_data = [
                     "color": "#000000",
                 },
             ],
-        }
+        },
+        ValueError,
     ),
     (
         {
-            "game_name": "fibbing_it",
             "nickname": "i_cannotDraw",
             "round": "opinion",
             "answers": [
@@ -181,7 +228,30 @@ add_story_fail_data = [
                     "nickname": "normal_guy1",
                 },
             ],
-        }
+        },
+        ValueError,
+    ),
+    (
+        {
+            "game_name": "fibbing_it",
+            "nickname": "i_cannotDraw",
+            "round": "invalid",
+            "answers": [
+                {
+                    "answer": "tasty",
+                    "nickname": "!sus",
+                },
+                {
+                    "answer": "lame",
+                    "nickname": "!normal_guy",
+                },
+                {
+                    "answer": "lame",
+                    "nickname": "normal_guy1",
+                },
+            ],
+        },
+        ValueError,
     ),
     (
         {
@@ -203,7 +273,8 @@ add_story_fail_data = [
                     "nickname": "normal_guy1",
                 },
             ],
-        }
+        },
+        ValueError,
     ),
     (
         {
@@ -223,6 +294,52 @@ add_story_fail_data = [
                     "nickname": "normal_guy1",
                 },
             ],
-        }
+        },
+        ValueError,
     ),
+    (
+        {
+            "game_name": "drawlosseum",
+            "question": "fish",
+            "nickname": "go_lima_bean",
+            "answers": [
+                {
+                    "start": {
+                        "x": 100,
+                        "y": -100,
+                    },
+                    "end": {
+                        "x": 90,
+                        "y": -100,
+                    },
+                    "color": "#000000",
+                },
+            ],
+        },
+        GameNotEnabledError,
+    ),
+]
+
+all_games_enabled: List[dict] = [
+    {
+        "name": "quibly",
+        "rules_url": "https://gitlab.com/banter-bus/banter-bus-server/-/wikis/docs/rules/quibly",
+        "enabled": True,
+        "description": "A game about quibbing.",
+        "display_name": "Quibly",
+    },
+    {
+        "name": "fibbing_it",
+        "rules_url": "https://gitlab.com/banter-bus/banter-bus-server/-/wikis/docs/rules/fibbing_it",
+        "enabled": True,
+        "description": "A game about lying.",
+        "display_name": "Fibbing IT!",
+    },
+    {
+        "name": "drawlosseum",
+        "rules_url": "https://google.com/drawlosseum",
+        "enabled": True,
+        "description": "A game about drawing.",
+        "display_name": "Drawlosseum",
+    },
 ]

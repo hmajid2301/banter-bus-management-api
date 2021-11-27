@@ -5,11 +5,11 @@ from app.core.exceptions import (
 )
 
 
-class StoryNotFoundException(NotFoundException):
+class StoryNotFound(NotFoundException):
     pass
 
 
-class StoryExistsException(ExistsException):
+class StoryExists(ExistsException):
     pass
 
 

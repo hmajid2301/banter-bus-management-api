@@ -1,6 +1,6 @@
 from typing import List
 
-from app.story.story_exceptions import StoryExistsException, StoryNotFoundException
+from app.story.story_exceptions import StoryExists, StoryNotFound
 from app.story.story_models import Story
 from app.story.story_repository import AbstractStoryRepository
 
@@ -12,7 +12,7 @@ class FakeStoryRepository(AbstractStoryRepository):
     async def add(self, new_story: Story):
         for story in self.stories:
             if story.id == new_story.id:
-                raise StoryExistsException("story already exists")
+                raise StoryExists("story already exists")
         else:
             self.stories.append(new_story)
 
@@ -21,10 +21,10 @@ class FakeStoryRepository(AbstractStoryRepository):
             if story.id == story_id:
                 return story
 
-        raise StoryNotFoundException("story not found")
+        raise StoryNotFound("story not found")
 
     async def remove(self, story_id: str):
         story = await self.get(story_id=story_id)
         if not story:
-            raise StoryNotFoundException("story not found")
+            raise StoryNotFound("story not found")
         self.stories.remove(story)

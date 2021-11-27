@@ -6,11 +6,7 @@ from structlog.stdlib import BoundLogger
 
 from app.factory import get_logger
 from app.game.game_api_models import GameIn, GameOut
-from app.game.game_exceptions import (
-    GameExistsException,
-    GameNotFoundException,
-    InvalidGameFilter,
-)
+from app.game.game_exceptions import GameExists, GameNotFound, InvalidGameFilter
 from app.game.game_factory import get_game_service
 from app.game.game_models import Game
 from app.game.game_service import AbstractGameService
@@ -32,7 +28,7 @@ async def add_game(
             name=game.name, rules_url=game.rules_url, description=game.description, display_name=game.display_name
         )
         return new_game
-    except GameExistsException:
+    except GameExists:
         log.warning("failed to add new game, it already exists")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -59,7 +55,7 @@ async def remove_game(
         log = log.bind(game_name=game_name)
         log.debug("trying to remove existing game")
         await game_service.remove(name=game_name)
-    except GameNotFoundException:
+    except GameNotFound:
         log.warning("failed to remove game, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -119,7 +115,7 @@ async def get_game(
         log.debug("trying to get game")
         game = await game_service.get(name=game_name)
         return game
-    except GameNotFoundException:
+    except GameNotFound:
         log.warning("failed to get game, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -169,7 +165,7 @@ async def update_enable_status(
         log.debug(f"trying to update enable status  to {enabled=}")
         game = await game_service.update_enabled_status(game_name=game_name, enabled=enabled)
         return game
-    except GameNotFoundException:
+    except GameNotFound:
         log.warning("failed to update game enabled status, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

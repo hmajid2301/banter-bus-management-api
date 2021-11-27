@@ -3,8 +3,9 @@ from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
 from app.factory import get_logger
+from app.game.game_exceptions import GameNotEnabledError
 from app.story.story_api_models import StoryIn, StoryOut
-from app.story.story_exceptions import StoryNotFoundException
+from app.story.story_exceptions import StoryNotFound
 from app.story.story_factory import get_story_service
 from app.story.story_service import AbstractStoryService
 
@@ -24,6 +25,11 @@ async def add_story(
         log.debug("trying to add new story")
         new_story = await story_service.add(story=story.dict())
         return new_story.dict()
+    except GameNotEnabledError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"error_message": str(e)},
+        )
     except ValidationError as e:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -48,7 +54,7 @@ async def get_story(
         log.debug("trying to get story")
         story = await story_service.get(story_id=story_id)
         return story.dict()
-    except StoryNotFoundException:
+    except StoryNotFound:
         log.warning("failed to get story, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -75,7 +81,7 @@ async def delete_story(
         log = log.bind(story_id=story_id)
         log.debug("trying to delete story")
         await story_service.remove(story_id=story_id)
-    except StoryNotFoundException:
+    except StoryNotFound:
         log.warning("failed to delete story, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

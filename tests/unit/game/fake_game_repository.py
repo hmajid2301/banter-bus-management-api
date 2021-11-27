@@ -2,7 +2,7 @@ from typing import List
 
 from pymongo.errors import DuplicateKeyError
 
-from app.game.game_exceptions import GameNotFoundException
+from app.game.game_exceptions import GameNotFound
 from app.game.game_models import Game
 from app.game.game_repository import AbstractGameRepository
 
@@ -25,12 +25,12 @@ class FakeGameRepository(AbstractGameRepository):
             if game.name == game_name:
                 return game
 
-        raise GameNotFoundException("game not found")
+        raise GameNotFound("game not found")
 
     async def remove(self, game_name: str):
         game = await self.get(game_name=game_name)
         if not game:
-            raise GameNotFoundException("game not found")
+            raise GameNotFound("game not found")
         self.games.remove(game)
 
     async def update_enable_status(self, game_name: str, enabled: bool) -> Game:
@@ -39,7 +39,7 @@ class FakeGameRepository(AbstractGameRepository):
                 game.enabled = enabled
                 return game
         else:
-            raise GameNotFoundException("game not found")
+            raise GameNotFound("game not found")
 
     async def get_all_game_names(self) -> List[str]:
         names: List[str] = []

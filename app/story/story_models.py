@@ -1,7 +1,10 @@
-from typing import List, Optional, Union
+import abc
+from typing import Any, Dict, List, Optional, Union
 
 from beanie import Document
-from pydantic import BaseModel, root_validator, validator
+from pydantic import BaseModel, root_validator
+
+from app.core.models import CaertsianCoordinateColor
 
 
 class FibbingItAnswer(BaseModel):
@@ -15,17 +18,6 @@ class QuiblyAnswer(BaseModel):
     votes: int
 
 
-class DrawingPoint(BaseModel):
-    x: float
-    y: float
-
-
-class CaertsianCoordinateColor(BaseModel):
-    start: DrawingPoint
-    end: DrawingPoint
-    color: str
-
-
 class Story(Document):
     id: str
     game_name: str
@@ -36,48 +28,71 @@ class Story(Document):
 
     @root_validator()
     def check_expected_fields_set(cls, values):
-        game_name_expected_fields_map = {
-            "quibly": {"allowed_fields": ["round"], "not_allowed_fields": ["nickname"]},
-            "fibbing_it": {"allowed_fields": ["round"], "not_allowed_fields": ["nickname"]},
-            "drawlosseum": {"allowed_fields": ["nickname"], "not_allowed_fields": ["round"]},
+        validate_game_story_map: Dict[str, AbstractStoryValidator] = {
+            "quibly": QuiblyValidator(),
+            "fibbing_it": FibbingItValidator(),
+            "drawlosseum": DrawlosseumValidator(),
         }
 
-        game_name = values.get("game_name", "game name not set")
         try:
-            optional_fields = game_name_expected_fields_map[game_name]
-            allowed_optional_fields = optional_fields["allowed_fields"]
-            for field in allowed_optional_fields:
-                if values[field] is None:
-                    raise ValueError(
-                        f"{game_name=} expects following fields to also be set {', '.join(allowed_optional_fields)}"
-                    )
+            game_name = values["game_name"]
+        except KeyError:
+            raise ValueError("expected `game_name` to be a field in Story")
 
-            not_allowed_fields = optional_fields["not_allowed_fields"]
-            for field in not_allowed_fields:
-                if values[field] is not None:
-                    raise ValueError(
-                        f"{game_name=} expects following fields to not be set {', '.join(not_allowed_fields)}"
-                    )
+        try:
+            game = validate_game_story_map[game_name]
+            nickname, round, answers = values["nickname"], values["round"], values["answers"]
+            game.validate_story(nickname=nickname, round=round, answers=answers)
         except KeyError:
             raise ValueError(f"invalid {game_name=}")
 
         return values
 
-    @validator("answers")
-    def answer_type(cls, v, values):
-        game_name = values.get("game_name", "game name not set")
-        game_name_expected_type_map = {
-            "quibly": QuiblyAnswer,
-            "fibbing_it": FibbingItAnswer,
-            "drawlosseum": CaertsianCoordinateColor,
-        }
 
-        try:
-            first_answer = v[0]
-            expected_answer_type = game_name_expected_type_map[game_name]
-            if not isinstance(first_answer, expected_answer_type):
-                raise ValueError(f"{game_name=} doesn't match expected `answer` field format")
-        except KeyError:
-            raise ValueError(f"invalid {game_name=}")
+class AbstractStoryValidator(abc.ABC):
+    @abc.abstractmethod
+    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+        raise NotImplementedError
 
-        return v
+
+class FibbingItValidator(AbstractStoryValidator):
+    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+        valid_rounds = {"opinion", "likely", "free_form"}
+
+        if nickname:
+            raise ValueError("unexpected field `nickname` for fibbing_it")
+
+        if round not in valid_rounds:
+            raise ValueError(f"expected round to be one of {', '.join(valid_rounds)} but received {round}")
+
+        for answer in answers:
+            if not isinstance(answer, FibbingItAnswer):
+                raise ValueError("answers field doesn't match expected format")
+
+
+class QuiblyValidator(AbstractStoryValidator):
+    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+        valid_rounds = {"pair", "group", "answers"}
+
+        if nickname:
+            raise ValueError("unexpected field `nickname` for quibly")
+
+        if round not in valid_rounds:
+            raise ValueError(f"expected round to be one of {', '.join(valid_rounds)} but received {round}")
+
+        for answer in answers:
+            if not isinstance(answer, QuiblyAnswer):
+                raise ValueError("answers field doesn't match expected format")
+
+
+class DrawlosseumValidator(AbstractStoryValidator):
+    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+        if not nickname:
+            raise ValueError("nickname is a required field for drawlosseum")
+
+        if round:
+            raise ValueError("unexpected field `round` for drawlosseum")
+
+        for answer in answers:
+            if not isinstance(answer, CaertsianCoordinateColor):
+                raise ValueError("answers field doesn't match expected format")

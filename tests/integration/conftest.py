@@ -18,8 +18,8 @@ async def client() -> AsyncIterator[AsyncClient]:
 async def setup_and_teardown(client):
     from app.game.game_models import Game
     from app.story.story_models import Story
-    from tests.integration.data.game_collection import games
-    from tests.integration.data.story_collection import stories
+    from tests.data.game_collection import games
+    from tests.data.story_collection import stories
 
     try:
         await Game.insert_many(documents=games)

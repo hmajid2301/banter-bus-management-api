@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from app.core.repository import AbstractRepository
-from app.game.game_exceptions import GameNotFoundException
+from app.game.game_exceptions import GameNotFound
 from app.game.game_models import Game
 
 
@@ -27,7 +27,7 @@ class GameRepository(AbstractGameRepository):
     async def get(self, game_name: str) -> Game:
         game = await Game.find_one(Game.name == game_name)
         if not game:
-            raise GameNotFoundException(f"unable to find {game_name=}")
+            raise GameNotFound(f"unable to find {game_name=}")
         return game
 
     async def remove(self, game_name: str):

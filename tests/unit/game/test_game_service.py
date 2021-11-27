@@ -3,11 +3,7 @@ from typing import List
 import pytest
 from pytest_mock import MockFixture
 
-from app.game.game_exceptions import (
-    GameExistsException,
-    GameNotFoundException,
-    InvalidGameFilter,
-)
+from app.game.game_exceptions import GameExists, GameNotFound, InvalidGameFilter
 from app.game.game_models import Game
 from app.game.game_service import GameService
 from tests.unit.factories import GameFactory
@@ -57,7 +53,7 @@ async def test_add_game_that_exists():
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
 
-    with pytest.raises(GameExistsException):
+    with pytest.raises(GameExists):
         await game_service.add(name=game_name, rules_url=rules_url, description=description, display_name=display_name)
 
 
@@ -102,7 +98,7 @@ async def test_remove_game():
     game_service = GameService(game_repository=game_repository)
 
     await game_service.remove(name=game_name)
-    with pytest.raises(GameNotFoundException):
+    with pytest.raises(GameNotFound):
         await game_repository.get(game_name=game_name)
 
 
@@ -120,7 +116,7 @@ async def test_remove_game_does_not_exist():
     game_service = GameService(game_repository=game_repository)
 
     game_name = "quiblyv2"
-    with pytest.raises(GameNotFoundException):
+    with pytest.raises(GameNotFound):
         await game_service.remove(name=game_name)
 
 
@@ -130,7 +126,7 @@ async def test_remove_game_no_game_exists():
     game_service = GameService(game_repository=game_repository)
 
     game_name = "quibly"
-    with pytest.raises(GameNotFoundException):
+    with pytest.raises(GameNotFound):
         await game_service.remove(name=game_name)
 
 
@@ -156,7 +152,7 @@ async def test_get_game_does_not_exist():
     game_repository = FakeGameRepository(games=[])
     game_service = GameService(game_repository=game_repository)
 
-    with pytest.raises(GameNotFoundException):
+    with pytest.raises(GameNotFound):
         await game_service.get(name="quibly")
 
 
@@ -247,5 +243,5 @@ async def test_enable_status_game_does_not_exist(enabled_status):
     game_repository = FakeGameRepository(games=existing_games)
     game_service = GameService(game_repository=game_repository)
 
-    with pytest.raises(GameNotFoundException):
+    with pytest.raises(GameNotFound):
         await game_service.update_enabled_status(game_name="quibly_v3", enabled=enabled_status)

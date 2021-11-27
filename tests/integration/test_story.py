@@ -16,17 +16,21 @@ from tests.integration.data.story_test_data import (
     add_story_data,
     ids=[
         "add a quibly story",
-        "add a drawlosseum story",
+        "add a drawlosseum story (game disabled)",
         "add a fibbing_it story",
         "try to add a story (missing game_name)",
+        "try to add a quibly story (invalid round)",
         "try to add a quibly story (missing round)",
         "try to add a quibly story (missing question)",
         "try to add a quibly story (missing answer)",
         "try to add a quibly story (unexpected nickname)",
+        "try to add a drawlosseum story (disabled game)",
         "try to add a drawlosseum story (missing nickname)",
+        "try to add a fibbing_it story (invalid round)",
         "try to add a fibbing_it story (missing question)",
         "try to add a fibbing_it story (missing round)",
         "try to add a fibbing_it story (unexpected nickname)",
+        "try to add a invalid story (game does not exist)",
     ],
 )
 async def test_add_story(client: AsyncClient, request_data: dict, expected_status_code: int, expected_result: dict):

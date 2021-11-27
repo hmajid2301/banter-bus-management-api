@@ -1,6 +1,19 @@
-from typing import Any, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
+
+from app.core.models import CaertsianCoordinateColor
+
+
+class FibbingItAnswer(BaseModel):
+    nickname: str
+    answer: str
+
+
+class QuiblyAnswer(BaseModel):
+    nickname: str
+    answer: str
+    votes: int
 
 
 class StoryIn(BaseModel):
@@ -8,7 +21,7 @@ class StoryIn(BaseModel):
     question: str
     round: Optional[str]
     nickname: Optional[str]
-    answers: Any
+    answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
 
 
 class StoryOut(BaseModel):
@@ -17,4 +30,4 @@ class StoryOut(BaseModel):
     question: str
     round: Optional[str] = None
     nickname: Optional[str] = None
-    answers: Any
+    answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]

@@ -1,13 +1,17 @@
 from app.core.exceptions import ExistsException, InvalidFilter, NotFoundException
 
 
-class GameNotFoundException(NotFoundException):
+class GameNotFound(NotFoundException):
     pass
 
 
-class GameExistsException(ExistsException):
+class GameExists(ExistsException):
     pass
 
 
 class InvalidGameFilter(InvalidFilter):
+    pass
+
+
+class GameNotEnabledError(Exception):
     pass
