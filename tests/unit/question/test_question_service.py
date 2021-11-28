@@ -5,11 +5,9 @@ import pytest
 from pytest_mock import MockFixture
 
 from app.game.game_exceptions import GameNotFound
-from app.game.game_service import AbstractGameService, GameService
 from app.question.question_exceptions import QuestionNotFound
 from app.question.question_models import Question
 from app.question.question_service import QuestionService
-from tests.unit.game.fake_game_repository import FakeGameRepository
 from tests.unit.question.fake_question_repository import FakeQuestionRepository
 from tests.unit.question.question_service_data import (
     add_question_data,
@@ -30,15 +28,6 @@ def questions() -> List[Question]:
     return questions
 
 
-@pytest.fixture()
-def game_service() -> AbstractGameService:
-    from tests.data.game_collection import games
-
-    game_repository = FakeGameRepository(games=games)
-    game_service = GameService(game_repository=game_repository)
-    return game_service
-
-
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "question_dict, expected_result",
@@ -54,11 +43,9 @@ def game_service() -> AbstractGameService:
         "add a fibbing_it question, round likely",
     ],
 )
-async def test_add_question(
-    question_dict: dict, expected_result: dict, mocker: MockFixture, game_service: AbstractGameService
-):
+async def test_add_question(question_dict: dict, expected_result: dict, mocker: MockFixture):
     question_repository = FakeQuestionRepository(questions=[])
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     mock_uuid = mocker.patch.object(uuid, "uuid4", autospec=True)
     mock_uuid.return_value = uuid.UUID(hex="5ecd5827b6ef4067b5ac3ceac07dde9f")
@@ -88,11 +75,9 @@ async def test_add_question(
         "try to add a drawlosseum question already exists",
     ],
 )
-async def test_add_question_fail(
-    question_dict: dict, expected_exception, questions: List[Question], game_service: AbstractGameService
-):
+async def test_add_question_fail(question_dict: dict, expected_exception, questions: List[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     with pytest.raises(expected_exception):
         await question_service.add(question_dict=question_dict)
@@ -113,37 +98,36 @@ async def test_get_question(
     game_name: str,
     expected_question: dict,
     questions: List[Question],
-    game_service: AbstractGameService,
 ):
     question_repository = FakeQuestionRepository(questions=questions)
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     question = await question_service.get(question_id=question_id, game_name=game_name)
     assert question.dict(by_alias=True, exclude_none=True) == expected_question
 
 
 @pytest.mark.asyncio
-async def test_get_question_does_not_exist(game_service: AbstractGameService):
+async def test_get_question_does_not_exist():
     question_repository = FakeQuestionRepository(questions=[])
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     with pytest.raises(QuestionNotFound):
         await question_service.get(question_id="a-random-id", game_name="quibly")
 
 
 @pytest.mark.asyncio
-async def test_get_question_game_does_not_exist(questions: List[Question], game_service: AbstractGameService):
+async def test_get_question_game_does_not_exist(questions: List[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     with pytest.raises(GameNotFound):
         await question_service.get(question_id="101464a5-337f-4ce7-a4df-2b00764e5d8d", game_name="quibly_v3")
 
 
 @pytest.mark.asyncio
-async def test_remove_question(questions: List[Question], game_service: AbstractGameService):
+async def test_remove_question(questions: List[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     question_id = "101464a5-337f-4ce7-a4df-2b00764e5d8d"
     await question_service.remove(question_id=question_id, game_name="quibly")
@@ -152,9 +136,9 @@ async def test_remove_question(questions: List[Question], game_service: Abstract
 
 
 @pytest.mark.asyncio
-async def test_remove_question_does_not_exist(questions: List[Question], game_service: AbstractGameService):
+async def test_remove_question_does_not_exist(questions: List[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     question_id = "a-random_id"
     with pytest.raises(QuestionNotFound):
@@ -162,9 +146,9 @@ async def test_remove_question_does_not_exist(questions: List[Question], game_se
 
 
 @pytest.mark.asyncio
-async def test_remove_question_game_does_not_exist(questions: List[Question], game_service: AbstractGameService):
+async def test_remove_question_game_does_not_exist(questions: List[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
-    question_service = QuestionService(question_repository=question_repository, game_service=game_service)
+    question_service = QuestionService(question_repository=question_repository)
 
     question_id = "101464a5-337f-4ce7-a4df-2b00764e5d8d"
     with pytest.raises(GameNotFound):

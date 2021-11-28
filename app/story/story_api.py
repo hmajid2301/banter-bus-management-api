@@ -35,7 +35,7 @@ async def add_story(
             status_code=status.HTTP_409_CONFLICT,
             detail={"error_message": str(e), "error_code": "game_not_enabled"},
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"error_message": str(e), "error_code": "story_format_error"},

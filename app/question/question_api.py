@@ -37,7 +37,7 @@ async def add_question(
             status_code=status.HTTP_409_CONFLICT,
             detail={"error_message": str(e), "error_code": "question_already_exists"},
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"error_message": str(e), "error_code": "question_format_error"},

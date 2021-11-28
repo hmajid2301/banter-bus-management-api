@@ -5,6 +5,7 @@ from pymongo.errors import DuplicateKeyError
 
 from app.game.game_exceptions import GameNotEnabledError
 from app.game.game_service import AbstractGameService
+from app.game.games.game import get_game
 from app.story.story_exceptions import StoryExists
 from app.story.story_models import Story
 from app.story.story_repository import AbstractStoryRepository
@@ -33,6 +34,7 @@ class StoryService(AbstractStoryService):
         id_ = str(uuid.uuid4())
         try:
             new_story = Story(**story, id=id_)
+            self._validate_story(story=new_story)
             enabled = await self.game_service.is_game_enabled(game_name=new_story.game_name)
             if not enabled:
                 raise GameNotEnabledError(f"expected game {new_story.game_name=} to be enabled to add a new story")
@@ -41,6 +43,11 @@ class StoryService(AbstractStoryService):
             return new_story
         except DuplicateKeyError:
             raise StoryExists(f"story {id_=} already exists")
+
+    def _validate_story(self, story: Story):
+        game_name = story.game_name
+        game = get_game(game_name=game_name)
+        game.validate_story(nickname=story.nickname or "", round_=story.round_ or "", answers=story.answers)
 
     async def remove(self, story_id: str):
         await self.story_repository.remove(story_id)
