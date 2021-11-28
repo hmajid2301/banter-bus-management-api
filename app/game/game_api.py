@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=GameOut)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=GameOut, include_in_schema=False)
 async def add_game(
     game: GameIn, game_service: AbstractGameService = Depends(get_game_service), log: BoundLogger = Depends(get_logger)
 ):
@@ -25,7 +25,7 @@ async def add_game(
         log = log.bind(game_name=game.name)
         log.debug("trying to add new game")
         new_game = await game_service.add(
-            name=game.name, rules_url=game.rules_url, description=game.description, display_name=game.display_name
+            game_name=game.name, rules_url=game.rules_url, description=game.description, display_name=game.display_name
         )
         return new_game
     except GameExists:
@@ -42,10 +42,7 @@ async def add_game(
         )
 
 
-@router.delete(
-    "/{game_name}",
-    status_code=status.HTTP_200_OK,
-)
+@router.delete("/{game_name}", status_code=status.HTTP_200_OK, include_in_schema=False)
 async def remove_game(
     game_name: str,
     game_service: AbstractGameService = Depends(get_game_service),
@@ -54,7 +51,7 @@ async def remove_game(
     try:
         log = log.bind(game_name=game_name)
         log.debug("trying to remove existing game")
-        await game_service.remove(name=game_name)
+        await game_service.remove(game_name=game_name)
     except GameNotFound:
         log.warning("failed to remove game, it does not exist")
         raise HTTPException(
@@ -113,7 +110,7 @@ async def get_game(
     try:
         log = log.bind(game_name=game_name)
         log.debug("trying to get game")
-        game = await game_service.get(name=game_name)
+        game = await game_service.get(game_name=game_name)
         return game
     except GameNotFound:
         log.warning("failed to get game, it does not exist")

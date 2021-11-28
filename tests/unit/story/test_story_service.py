@@ -4,7 +4,7 @@ from typing import List
 import pytest
 from pytest_mock import MockFixture
 
-from app.game.game_service import GameService
+from app.game.game_service import AbstractGameService, GameService
 from app.story.story_exceptions import StoryNotFound
 from app.story.story_models import Story
 from app.story.story_service import StoryService
@@ -23,7 +23,7 @@ def mock_beanie_document(mocker: MockFixture):
 
 
 @pytest.fixture()
-def game_service() -> GameService:
+def game_service() -> AbstractGameService:
     from tests.data.game_collection import games
 
     game_repository = FakeGameRepository(games=games)
@@ -59,7 +59,7 @@ async def test_add_story(story_dict: dict, mocker: MockFixture):
     new_story = await story_service.add(story=story_dict)
     expected_story_dict = story_dict
     expected_story_dict["id"] = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
-    assert expected_story_dict == new_story.dict(exclude_none=True)
+    assert expected_story_dict == new_story.dict(exclude_none=True, by_alias=True)
 
 
 @pytest.mark.asyncio
@@ -68,7 +68,7 @@ async def test_add_story(story_dict: dict, mocker: MockFixture):
     add_story_fail_data,
     ids=[
         "try to add a story (missing game_name)",
-        "try to add a story (invalid game_name)",
+        "try to add a story (game not found)",
         "try to add a quibly story (invalid round)",
         "try to add a quibly story (missing round)",
         "try to add a quibly story (missing question)",
@@ -82,7 +82,7 @@ async def test_add_story(story_dict: dict, mocker: MockFixture):
         "try to add a drawlosseum story (missing nickname)",
     ],
 )
-async def test_add_story_bad_story(story_dict: dict, expected_exception, game_service: GameService):
+async def test_add_story_bad_story(story_dict: dict, expected_exception, game_service: AbstractGameService):
     story_repository = FakeStoryRepository(stories=[])
     story_service = StoryService(story_repository=story_repository, game_service=game_service)
 
@@ -91,7 +91,7 @@ async def test_add_story_bad_story(story_dict: dict, expected_exception, game_se
 
 
 @pytest.mark.asyncio
-async def test_remove_story(game_service: GameService):
+async def test_remove_story(game_service: AbstractGameService):
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     existing_story = {
         "id": story_id,
@@ -122,7 +122,7 @@ async def test_remove_story(game_service: GameService):
 
 
 @pytest.mark.asyncio
-async def test_remove_story_story_does_not_exist(game_service: GameService):
+async def test_remove_story_story_does_not_exist(game_service: AbstractGameService):
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     existing_story = {
         "id": story_id,
@@ -152,7 +152,7 @@ async def test_remove_story_story_does_not_exist(game_service: GameService):
 
 
 @pytest.mark.asyncio
-async def test_remove_story_story_no_stories_exist(game_service: GameService):
+async def test_remove_story_story_no_stories_exist(game_service: AbstractGameService):
     story_repository = FakeStoryRepository(stories=[])
     story_service = StoryService(story_repository=story_repository, game_service=game_service)
 
@@ -161,7 +161,7 @@ async def test_remove_story_story_no_stories_exist(game_service: GameService):
 
 
 @pytest.mark.asyncio
-async def test_get_story(game_service: GameService):
+async def test_get_story(game_service: AbstractGameService):
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     existing_story = {
         "id": story_id,
@@ -191,7 +191,7 @@ async def test_get_story(game_service: GameService):
 
 
 @pytest.mark.asyncio
-async def test_get_story_does_not_exist(game_service: GameService):
+async def test_get_story_does_not_exist(game_service: AbstractGameService):
     story_repository = FakeStoryRepository(stories=[])
     story_service = StoryService(story_repository=story_repository, game_service=game_service)
 

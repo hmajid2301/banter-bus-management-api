@@ -10,15 +10,15 @@ from app.game.game_repository import AbstractGameRepository
 
 class AbstractGameService(abc.ABC):
     @abc.abstractmethod
-    async def add(self, name: str, rules_url: str, description: str, display_name: str) -> Game:
+    async def add(self, game_name: str, rules_url: str, description: str, display_name: str) -> Game:
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def remove(self, name: str):
+    async def remove(self, game_name: str):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get(self, name: str) -> Game:
+    async def get(self, game_name: str) -> Game:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -29,26 +29,30 @@ class AbstractGameService(abc.ABC):
     async def update_enabled_status(self, game_name: str, enabled: bool) -> Game:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    async def is_game_enabled(self, game_name: str) -> bool:
+        raise NotImplementedError
+
 
 class GameService(AbstractGameService):
     def __init__(self, game_repository: AbstractGameRepository):
         self.game_repository = game_repository
 
-    async def add(self, name: str, rules_url: str, description: str, display_name: str) -> Game:
+    async def add(self, game_name: str, rules_url: str, description: str, display_name: str) -> Game:
         try:
             new_game = Game(
-                name=name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+                name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
             )
             await self.game_repository.add(new_game)
             return new_game
         except DuplicateKeyError:
-            raise GameExists(f"game {name=} already exists")
+            raise GameExists(f"game {game_name=} already exists")
 
-    async def remove(self, name: str):
-        await self.game_repository.remove(name)
+    async def remove(self, game_name: str):
+        await self.game_repository.remove(game_name)
 
-    async def get(self, name: str) -> Game:
-        game = await self.game_repository.get(name)
+    async def get(self, game_name: str) -> Game:
+        game = await self.game_repository.get(game_name)
         return game
 
     async def get_game_names(self, filter: str) -> List[str]:
@@ -67,3 +71,7 @@ class GameService(AbstractGameService):
     async def update_enabled_status(self, game_name: str, enabled: bool) -> Game:
         game = await self.game_repository.update_enable_status(game_name=game_name, enabled=enabled)
         return game
+
+    async def is_game_enabled(self, game_name: str) -> bool:
+        game = await self.get(game_name=game_name)
+        return game.enabled

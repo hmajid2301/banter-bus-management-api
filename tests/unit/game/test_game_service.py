@@ -12,6 +12,7 @@ from tests.unit.game.game_service_data import (
     disable_game_data,
     enable_game_data,
     get_game_name_data,
+    is_enabled_game_data,
     update_enable_status_data,
 )
 
@@ -32,7 +33,7 @@ async def test_add_game():
     display_name = "Quibly"
 
     game = await game_service.add(
-        name=game_name, rules_url=rules_url, description=description, display_name=display_name
+        game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
     )
     expected_game = Game(
         name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
@@ -54,7 +55,9 @@ async def test_add_game_that_exists():
     game_service = GameService(game_repository=game_repository)
 
     with pytest.raises(GameExists):
-        await game_service.add(name=game_name, rules_url=rules_url, description=description, display_name=display_name)
+        await game_service.add(
+            game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
+        )
 
 
 @pytest.mark.asyncio
@@ -76,7 +79,7 @@ async def test_add_game_game_name_is_unique():
     display_name = "Quibly"
 
     game = await game_service.add(
-        name=game_name, rules_url=rules_url, description=description, display_name=display_name
+        game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
     )
     expected_game = Game(
         name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
@@ -97,7 +100,7 @@ async def test_remove_game():
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
 
-    await game_service.remove(name=game_name)
+    await game_service.remove(game_name=game_name)
     with pytest.raises(GameNotFound):
         await game_repository.get(game_name=game_name)
 
@@ -117,7 +120,7 @@ async def test_remove_game_does_not_exist():
 
     game_name = "quiblyv2"
     with pytest.raises(GameNotFound):
-        await game_service.remove(name=game_name)
+        await game_service.remove(game_name=game_name)
 
 
 @pytest.mark.asyncio
@@ -127,7 +130,7 @@ async def test_remove_game_no_game_exists():
 
     game_name = "quibly"
     with pytest.raises(GameNotFound):
-        await game_service.remove(name=game_name)
+        await game_service.remove(game_name=game_name)
 
 
 @pytest.mark.asyncio
@@ -143,7 +146,7 @@ async def test_get_game():
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
 
-    game = await game_service.get(name=game_name)
+    game = await game_service.get(game_name=game_name)
     assert game == existing_game
 
 
@@ -153,7 +156,7 @@ async def test_get_game_does_not_exist():
     game_service = GameService(game_repository=game_repository)
 
     with pytest.raises(GameNotFound):
-        await game_service.get(name="quibly")
+        await game_service.get(game_name="quibly")
 
 
 @pytest.mark.asyncio
@@ -245,3 +248,23 @@ async def test_enable_status_game_does_not_exist(enabled_status):
 
     with pytest.raises(GameNotFound):
         await game_service.update_enabled_status(game_name="quibly_v3", enabled=enabled_status)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "factory_boy_args, game_name, expected_enabled_status",
+    is_enabled_game_data,
+    ids=[
+        "is game enabled (all games enabled)",
+        "is game enabled (all games disabled)",
+        "is game enabled enabled (one game enabled, one disabled)",
+        "is game enabled disabled (one game enabled, one disabled)",
+    ],
+)
+async def test_is_game_enabled(factory_boy_args: dict, game_name: str, expected_enabled_status: bool):
+    existing_games = GameFactory.build_batch(**factory_boy_args)
+    game_repository = FakeGameRepository(games=existing_games)
+    game_service = GameService(game_repository=game_repository)
+
+    enabled_status = await game_service.is_game_enabled(game_name=game_name)
+    assert enabled_status is expected_enabled_status

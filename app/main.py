@@ -7,6 +7,8 @@ from app.core.config import get_settings
 from app.factory import get_logger
 from app.game import game_api
 from app.game.game_models import Game
+from app.question import question_api
+from app.question.question_models import Question
 from app.story import story_api
 from app.story.story_models import Story
 
@@ -18,12 +20,13 @@ async def startup():
     config = get_settings()
     uri = config.get_mongodb_uri()
     client = motor_asyncio.AsyncIOMotorClient(uri)
-    await init_beanie(database=client[config.DB_NAME], document_models=[Game, Story])
+    await init_beanie(database=client[config.DB_NAME], document_models=[Game, Story, Question])
 
     log = get_logger()
     log.info(f"starting banter-bus-management-api {config.WEB_HOST}:{config.WEB_PORT}")
     app.include_router(game_api.router)
     app.include_router(story_api.router)
+    app.include_router(question_api.router)
 
 
 if __name__ == "__main__":

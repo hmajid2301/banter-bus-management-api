@@ -120,6 +120,27 @@ add_story_data = [
     ),
     (
         {
+            "game_name": "quibly_v2",
+            "question": "how many fish are there?",
+            "round": "pair",
+            "answers": [
+                {
+                    "nickname": "funnyMan420",
+                    "answer": "one",
+                    "votes": 12341,
+                },
+                {
+                    "nickname": "lima_Bean",
+                    "answer": "many",
+                    "votes": 0,
+                },
+            ],
+        },
+        status.HTTP_404_NOT_FOUND,
+        {},
+    ),
+    (
+        {
             "question": "how many fish are there?",
             "round": "pair",
             "answers": [
@@ -346,28 +367,6 @@ add_story_data = [
     (
         {
             "game_name": "fibbing_it",
-            "question": "What do you think about horses?",
-            "answers": [
-                {
-                    "answer": "tasty",
-                    "nickname": "!sus",
-                },
-                {
-                    "answer": "lame",
-                    "nickname": "!normal_guy",
-                },
-                {
-                    "answer": "lame",
-                    "nickname": "normal_guy1",
-                },
-            ],
-        },
-        status.HTTP_422_UNPROCESSABLE_ENTITY,
-        {},
-    ),
-    (
-        {
-            "game_name": "invalid",
             "question": "What do you think about horses?",
             "answers": [
                 {

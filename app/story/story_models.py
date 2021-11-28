@@ -5,6 +5,7 @@ from beanie import Document
 from pydantic import BaseModel, root_validator
 
 from app.core.models import CaertsianCoordinateColor
+from app.game.game_exceptions import GameNotFound
 
 
 class FibbingItAnswer(BaseModel):
@@ -22,12 +23,16 @@ class Story(Document):
     id: str
     game_name: str
     question: str
-    round: Optional[str]
+    round_: Optional[str]
     nickname: Optional[str]
     answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
 
+    class Config:
+        allow_population_by_field_name = True
+        fields = {"round_": "round"}
+
     @root_validator()
-    def check_expected_fields_set(cls, values):
+    def validate(cls, values: dict):
         validate_game_story_map: Dict[str, AbstractStoryValidator] = {
             "quibly": QuiblyValidator(),
             "fibbing_it": FibbingItValidator(),
@@ -41,29 +46,29 @@ class Story(Document):
 
         try:
             game = validate_game_story_map[game_name]
-            nickname, round, answers = values["nickname"], values["round"], values["answers"]
-            game.validate_story(nickname=nickname, round=round, answers=answers)
+            nickname, round_, answers = values["nickname"], values["round_"], values["answers"]
+            game.validate_story(nickname=nickname, round_=round_, answers=answers)
         except KeyError:
-            raise ValueError(f"invalid {game_name=}")
+            raise GameNotFound(f"invalid {game_name=}")
 
         return values
 
 
 class AbstractStoryValidator(abc.ABC):
     @abc.abstractmethod
-    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+    def validate_story(self, nickname: str, round_: str, answers: List[Any]):
         raise NotImplementedError
 
 
 class FibbingItValidator(AbstractStoryValidator):
-    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+    def validate_story(self, nickname: str, round_: str, answers: List[Any]):
         valid_rounds = {"opinion", "likely", "free_form"}
 
         if nickname:
             raise ValueError("unexpected field `nickname` for fibbing_it")
 
-        if round not in valid_rounds:
-            raise ValueError(f"expected round to be one of {', '.join(valid_rounds)} but received {round}")
+        if round_ not in valid_rounds:
+            raise ValueError(f"expected round to be one of {', '.join(valid_rounds)} but received {round_}")
 
         for answer in answers:
             if not isinstance(answer, FibbingItAnswer):
@@ -71,14 +76,14 @@ class FibbingItValidator(AbstractStoryValidator):
 
 
 class QuiblyValidator(AbstractStoryValidator):
-    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+    def validate_story(self, nickname: str, round_: str, answers: List[Any]):
         valid_rounds = {"pair", "group", "answers"}
 
         if nickname:
             raise ValueError("unexpected field `nickname` for quibly")
 
-        if round not in valid_rounds:
-            raise ValueError(f"expected round to be one of {', '.join(valid_rounds)} but received {round}")
+        if round_ not in valid_rounds:
+            raise ValueError(f"expected round to be one of {', '.join(valid_rounds)} but received {round_}")
 
         for answer in answers:
             if not isinstance(answer, QuiblyAnswer):
@@ -86,11 +91,11 @@ class QuiblyValidator(AbstractStoryValidator):
 
 
 class DrawlosseumValidator(AbstractStoryValidator):
-    def validate_story(self, nickname: str, round: str, answers: List[Any]):
+    def validate_story(self, nickname: str, round_: str, answers: List[Any]):
         if not nickname:
             raise ValueError("nickname is a required field for drawlosseum")
 
-        if round:
+        if round_:
             raise ValueError("unexpected field `round` for drawlosseum")
 
         for answer in answers:

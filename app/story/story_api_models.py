@@ -19,15 +19,23 @@ class QuiblyAnswer(BaseModel):
 class StoryIn(BaseModel):
     game_name: str
     question: str
-    round: Optional[str]
+    round_: Optional[str]
     nickname: Optional[str]
     answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
+
+    class Config:
+        allow_population_by_field_name = True
+        fields = {"round_": "round"}
 
 
 class StoryOut(BaseModel):
     id: str
     game_name: str
     question: str
-    round: Optional[str] = None
+    round_: Optional[str] = None
     nickname: Optional[str] = None
     answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
+
+    class Config:
+        allow_population_by_field_name = True
+        fields = {"round_": "round"}

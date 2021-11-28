@@ -18,19 +18,19 @@ from tests.integration.data.story_test_data import (
         "add a quibly story",
         "add a drawlosseum story (game disabled)",
         "add a fibbing_it story",
+        "try to add a story (game not found)",
         "try to add a story (missing game_name)",
         "try to add a quibly story (invalid round)",
         "try to add a quibly story (missing round)",
-        "try to add a quibly story (missing question)",
+        "try to add a quibly story (missing Story)",
         "try to add a quibly story (missing answer)",
         "try to add a quibly story (unexpected nickname)",
         "try to add a drawlosseum story (disabled game)",
         "try to add a drawlosseum story (missing nickname)",
         "try to add a fibbing_it story (invalid round)",
-        "try to add a fibbing_it story (missing question)",
+        "try to add a fibbing_it story (missing Story)",
         "try to add a fibbing_it story (missing round)",
         "try to add a fibbing_it story (unexpected nickname)",
-        "try to add a invalid story (game does not exist)",
     ],
 )
 async def test_add_story(client: AsyncClient, request_data: dict, expected_status_code: int, expected_result: dict):
@@ -73,7 +73,7 @@ async def test_get_story(client: AsyncClient, story_id: str, expected_status_cod
     ids=[
         "delete a quibly story",
         "delete a drawlosseum story",
-        "try to get a story that does not exist",
+        "try to delete a story that does not exist",
     ],
 )
 async def test_delete_story(client: AsyncClient, story_id: str, expected_status_code: int):

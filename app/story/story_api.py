@@ -3,7 +3,7 @@ from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
 from app.factory import get_logger
-from app.game.game_exceptions import GameNotEnabledError
+from app.game.game_exceptions import GameNotEnabledError, GameNotFound
 from app.story.story_api_models import StoryIn, StoryOut
 from app.story.story_exceptions import StoryNotFound
 from app.story.story_factory import get_story_service
@@ -25,15 +25,20 @@ async def add_story(
         log.debug("trying to add new story")
         new_story = await story_service.add(story=story.dict())
         return new_story.dict()
+    except GameNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error_message": str(e), "error_code": "game_not_found"},
+        )
     except GameNotEnabledError as e:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail={"error_message": str(e)},
+            detail={"error_message": str(e), "error_code": "game_not_enabled"},
         )
     except ValidationError as e:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"error_message": str(e)},
+            detail={"error_message": str(e), "error_code": "story_format_error"},
         )
     except Exception:
         log.exception("failed to add new story")

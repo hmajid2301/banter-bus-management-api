@@ -18,5 +18,5 @@ class StoryRepository(AbstractStoryRepository):
         return story
 
     async def remove(self, story_id: str):
-        story = await self.get(story_id=story_id)
-        await story.delete()
+        await self.get(story_id=story_id)
+        await Story.find_one(Story.id == story_id).delete()

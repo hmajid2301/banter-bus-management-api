@@ -1,6 +1,6 @@
 from typing import List
 
-from app.game.game_exceptions import GameNotEnabledError
+from app.game.game_exceptions import GameNotEnabledError, GameNotFound
 
 add_story_data = [
     (
@@ -103,7 +103,7 @@ add_story_fail_data = [
                 },
             ],
         },
-        ValueError,
+        GameNotFound,
     ),
     (
         {

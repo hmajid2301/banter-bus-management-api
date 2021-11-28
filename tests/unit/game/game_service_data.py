@@ -141,3 +141,42 @@ update_enable_status_data = [
     (True),
     (False),
 ]
+
+is_enabled_game_data = [
+    (
+        {
+            "size": 2,
+            "name": factory.Sequence(lambda n: ["quibly", "fibbing_it"][n % 2]),
+            "enabled": factory.sequence(lambda n: True),
+        },
+        "quibly",
+        True,
+    ),
+    (
+        {
+            "size": 2,
+            "name": factory.Sequence(lambda n: ["quibly", "fibbing_it"][n % 2]),
+            "enabled": factory.sequence(lambda n: False),
+        },
+        "quibly",
+        False,
+    ),
+    (
+        {
+            "size": 2,
+            "name": factory.Sequence(lambda n: ["quibly", "fibbing_it"][n % 2]),
+            "enabled": factory.sequence(lambda n: [True, False][n % 2]),
+        },
+        "quibly",
+        True,
+    ),
+    (
+        {
+            "size": 2,
+            "name": factory.Sequence(lambda n: ["quibly", "fibbing_it"][n % 2]),
+            "enabled": factory.sequence(lambda n: [True, False][n % 2]),
+        },
+        "fibbing_it",
+        False,
+    ),
+]

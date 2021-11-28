@@ -33,8 +33,8 @@ class StoryService(AbstractStoryService):
         id_ = str(uuid.uuid4())
         try:
             new_story = Story(**story, id=id_)
-            game = await self.game_service.get(name=new_story.game_name)
-            if not game.enabled:
+            enabled = await self.game_service.is_game_enabled(game_name=new_story.game_name)
+            if not enabled:
                 raise GameNotEnabledError(f"expected game {new_story.game_name=} to be enabled to add a new story")
 
             await self.story_repository.add(new_story)
