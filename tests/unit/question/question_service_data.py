@@ -5,7 +5,7 @@ add_question_data = [
     (
         {"content": "this is a question?", "round": "pair", "game_name": "quibly"},
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "quibly",
             "round": "pair",
             "enabled": True,
@@ -20,7 +20,7 @@ add_question_data = [
             "game_name": "quibly",
         },
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "quibly",
             "round": "answer",
             "enabled": True,
@@ -30,7 +30,7 @@ add_question_data = [
     (
         {"content": "what does ATGM stand for?", "round": "group", "game_name": "quibly"},
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "quibly",
             "round": "group",
             "enabled": True,
@@ -40,7 +40,7 @@ add_question_data = [
     (
         {"content": "pencil", "game_name": "drawlosseum"},
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "drawlosseum",
             "enabled": True,
             "content": {"en": "pencil"},
@@ -58,7 +58,7 @@ add_question_data = [
             },
         },
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "fibbing_it",
             "enabled": True,
             "round": "opinion",
@@ -80,7 +80,7 @@ add_question_data = [
             },
         },
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "fibbing_it",
             "enabled": True,
             "round": "opinion",
@@ -101,7 +101,7 @@ add_question_data = [
             },
         },
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "fibbing_it",
             "enabled": True,
             "round": "free_form",
@@ -118,7 +118,7 @@ add_question_data = [
             "round": "likely",
         },
         {
-            "id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
+            "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "fibbing_it",
             "enabled": True,
             "round": "likely",
@@ -232,12 +232,12 @@ add_question_data_fail = [
 ]
 
 
-get_question = [
+get_question_data = [
     (
         "4d18ac45-8034-4f8e-b636-cf730b17e51a",
         "quibly",
         {
-            "id": "4d18ac45-8034-4f8e-b636-cf730b17e51a",
+            "question_id": "4d18ac45-8034-4f8e-b636-cf730b17e51a",
             "game_name": "quibly",
             "round": "pair",
             "enabled": True,
@@ -248,7 +248,7 @@ get_question = [
         "7799e38a-758d-4a1b-a191-99c59440af76",
         "fibbing_it",
         {
-            "id": "7799e38a-758d-4a1b-a191-99c59440af76",
+            "question_id": "7799e38a-758d-4a1b-a191-99c59440af76",
             "game_name": "fibbing_it",
             "round": "opinion",
             "group": {"type": "question", "name": "horse_group"},
@@ -260,10 +260,18 @@ get_question = [
         "101464a5-337f-4ce7-a4df-2b00764e5d8d",
         "drawlosseum",
         {
-            "id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
+            "question_id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
             "game_name": "drawlosseum",
             "enabled": True,
             "content": {"en": "spoon"},
         },
+    ),
+]
+
+update_enabled_status_question_data = [
+    ("quibly", "a9c00e19-d41e-4b15-a8bd-ec921af9123d"),
+    (
+        "quibly",
+        "4d18ac45-8034-4f8e-b636-cf730b17e51a",
     ),
 ]

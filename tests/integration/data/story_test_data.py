@@ -393,7 +393,7 @@ get_story_data = [
         "1def4233-f674-4a3f-863d-6e850bfbfdb4",
         status.HTTP_200_OK,
         {
-            "id": "1def4233-f674-4a3f-863d-6e850bfbfdb4",
+            "story_id": "1def4233-f674-4a3f-863d-6e850bfbfdb4",
             "game_name": "quibly",
             "question": "how many fish are there?",
             "round": "pair",
@@ -407,7 +407,7 @@ get_story_data = [
         "a4ffd1c8-93c5-4f4c-8ace-71996edcbcb7",
         status.HTTP_200_OK,
         {
-            "id": "a4ffd1c8-93c5-4f4c-8ace-71996edcbcb7",
+            "story_id": "a4ffd1c8-93c5-4f4c-8ace-71996edcbcb7",
             "game_name": "drawlosseum",
             "question": "fish",
             "nickname": "i_cannotDraw",

@@ -18,7 +18,7 @@ class QuiblyAnswer(BaseModel):
 
 
 class Story(Document):
-    id: str
+    story_id: str
     game_name: str
     question: str
     round_: Optional[str]

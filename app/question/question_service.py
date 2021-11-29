@@ -22,6 +22,10 @@ class AbstractQuestionService(abc.ABC):
     async def get(self, question_id: str, game_name: str) -> Question:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    async def update_enabled_status(self, game_name: str, question_id: str, enabled: bool) -> Question:
+        raise NotImplementedError
+
 
 class QuestionService(AbstractQuestionService):
     def __init__(self, question_repository: AbstractQuestionRepository):
@@ -37,7 +41,7 @@ class QuestionService(AbstractQuestionService):
                 raise QuestionExistsException(f"question {question_dict} already exists")
 
             new_question_dict = {**question_dict, "content": {question.language: question.content}}
-            new_question = Question(**new_question_dict, id=id_)
+            new_question = Question(**new_question_dict, question_id=id_)
 
             await self.question_repository.add(new_question)
             return new_question
@@ -57,4 +61,9 @@ class QuestionService(AbstractQuestionService):
     async def get(self, question_id: str, game_name: str) -> Question:
         get_game(game_name=game_name)
         question = await self.question_repository.get(question_id)
+        return question
+
+    async def update_enabled_status(self, game_name: str, question_id: str, enabled: bool) -> Question:
+        get_game(game_name=game_name)
+        question = await self.question_repository.update_enable_status(question_id=question_id, enabled=enabled)
         return question

@@ -220,7 +220,7 @@ async def test_enable_game(factory_boy_args: dict, game_name: str):
         "disable enabled game (all games enabled)",
         "disable enabled game (all games disabled)",
         "disable enabled game",
-        "dsiable disabled game",
+        "disable disabled game",
     ],
 )
 async def test_disable_game(factory_boy_args: dict, game_name: str):

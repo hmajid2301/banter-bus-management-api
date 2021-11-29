@@ -29,7 +29,7 @@ class StoryIn(BaseModel):
 
 
 class StoryOut(BaseModel):
-    id: str
+    story_id: str
     game_name: str
     question: str
     round_: Optional[str] = None

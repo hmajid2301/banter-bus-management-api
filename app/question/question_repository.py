@@ -11,13 +11,17 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
     async def does_question_exist(self, new_question: NewQuestion) -> bool:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    async def update_enable_status(self, question_id: str, enabled: bool) -> Question:
+        raise NotImplementedError
+
 
 class QuestionRepository(AbstractQuestionRepository):
     async def add(self, question: Question):
         await Question.insert(question)
 
     async def get(self, question_id: str) -> Question:
-        question = await Question.find_one(Question.id == question_id)
+        question = await Question.find_one(Question.question_id == question_id)
         if not question:
             raise QuestionNotFound(f"unable to find {question_id=}")
 
@@ -25,7 +29,7 @@ class QuestionRepository(AbstractQuestionRepository):
 
     async def remove(self, question_id: str):
         await self.get(question_id=question_id)
-        await Question.find_one(Question.id == question_id).delete()
+        await Question.find_one(Question.question_id == question_id).delete()
 
     async def does_question_exist(self, new_question: NewQuestion) -> bool:
         questions: List[Question] = await Question.find(
@@ -44,3 +48,9 @@ class QuestionRepository(AbstractQuestionRepository):
 
         else:
             return False
+
+    async def update_enable_status(self, question_id: str, enabled: bool) -> Question:
+        question = await self.get(question_id=question_id)
+        question.enabled = enabled
+        await question.save()
+        return question

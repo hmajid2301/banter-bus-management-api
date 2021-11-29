@@ -29,7 +29,6 @@ async def add_game(
         )
         return new_game
     except GameExists:
-        log.warning("failed to add new game, it already exists")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={"error_message": f"game {game.name=} already exists", "error_code": "game_already_exists"},
@@ -56,7 +55,7 @@ async def remove_game(
         log.warning("failed to remove game, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": f"game {game_name=} does not exist", "error_code": "game_does_not_exist"},
+            detail={"error_message": f"game {game_name=} does not exist", "error_code": "game_not_found"},
         )
     except Exception:
         log.exception("failed to remove existing game")
@@ -84,7 +83,6 @@ async def get_all_game_names(
         game_names = await game_service.get_game_names(filter=filter)
         return game_names
     except InvalidGameFilter as e:
-        log.warning(str(e))
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"error_message": str(e), "error_code": "invalid_status"},
@@ -113,10 +111,9 @@ async def get_game(
         game = await game_service.get(game_name=game_name)
         return game
     except GameNotFound:
-        log.warning("failed to get game, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": f"game {game_name=} does not exist", "error_code": "game_does_not_exist"},
+            detail={"error_message": f"game {game_name=} does not exist", "error_code": "game_not_found"},
         )
     except Exception:
         log.exception("failed to get game")
@@ -136,7 +133,7 @@ async def enable_game(
     game_service: AbstractGameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ):
-    game = await update_enable_status(game_name=game_name, game_service=game_service, log=log, enabled=True)
+    game = await _update_enable_status(game_name=game_name, game_service=game_service, log=log, enabled=True)
     return game
 
 
@@ -150,11 +147,11 @@ async def disabled_game(
     game_service: AbstractGameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ):
-    game = await update_enable_status(game_name=game_name, game_service=game_service, log=log, enabled=False)
+    game = await _update_enable_status(game_name=game_name, game_service=game_service, log=log, enabled=False)
     return game
 
 
-async def update_enable_status(
+async def _update_enable_status(
     game_name: str, game_service: AbstractGameService, log: BoundLogger, enabled: bool
 ) -> Game:
     try:
@@ -163,10 +160,9 @@ async def update_enable_status(
         game = await game_service.update_enabled_status(game_name=game_name, enabled=enabled)
         return game
     except GameNotFound:
-        log.warning("failed to update game enabled status, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": f"game {game_name=} does not exist", "error_code": "game_does_not_exist"},
+            detail={"error_message": f"game {game_name=} does not exist", "error_code": "game_not_found"},
         )
     except Exception:
         log.exception("failed to update game enabled status")

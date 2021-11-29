@@ -12,11 +12,11 @@ class StoryRepository(AbstractStoryRepository):
         await Story.insert(story)
 
     async def get(self, story_id: str) -> Story:
-        story = await Story.find_one(Story.id == story_id)
+        story = await Story.find_one(Story.story_id == story_id)
         if not story:
             raise StoryNotFound(f"unable to find {story_id=}")
         return story
 
     async def remove(self, story_id: str):
         await self.get(story_id=story_id)
-        await Story.find_one(Story.id == story_id).delete()
+        await Story.find_one(Story.story_id == story_id).delete()

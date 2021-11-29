@@ -11,14 +11,14 @@ class FakeStoryRepository(AbstractStoryRepository):
 
     async def add(self, new_story: Story):
         for story in self.stories:
-            if story.id == new_story.id:
+            if story.story_id == new_story.story_id:
                 raise StoryExists("story already exists")
         else:
             self.stories.append(new_story)
 
     async def get(self, story_id: str) -> Story:
         for story in self.stories:
-            if story.id == story_id:
+            if story.story_id == story_id:
                 return story
 
         raise StoryNotFound("story not found")

@@ -43,7 +43,7 @@ async def test_add_story(client: AsyncClient, request_data: dict, expected_statu
 
 
 def _clean_response(response: dict):
-    del response["id"]
+    del response["story_id"]
     return response
 
 
@@ -82,5 +82,5 @@ async def test_delete_story(client: AsyncClient, story_id: str, expected_status_
     assert response.status_code == expected_status_code
 
     if response.status_code == status.HTTP_200_OK:
-        story = await Story.find_one(Story.id == story_id)
+        story = await Story.find_one(Story.story_id == story_id)
         assert story is None

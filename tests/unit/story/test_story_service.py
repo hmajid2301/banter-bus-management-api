@@ -58,7 +58,7 @@ async def test_add_story(story_dict: dict, mocker: MockFixture):
 
     new_story = await story_service.add(story=story_dict)
     expected_story_dict = story_dict
-    expected_story_dict["id"] = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
+    expected_story_dict["story_id"] = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     assert expected_story_dict == new_story.dict(exclude_none=True, by_alias=True)
 
 
@@ -94,7 +94,7 @@ async def test_add_story_bad_story(story_dict: dict, expected_exception, game_se
 async def test_remove_story(game_service: AbstractGameService):
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     existing_story = {
-        "id": story_id,
+        "story_id": story_id,
         "game_name": "quibly",
         "question": "how many fish are there?",
         "round": "pair",
@@ -125,7 +125,7 @@ async def test_remove_story(game_service: AbstractGameService):
 async def test_remove_story_story_does_not_exist(game_service: AbstractGameService):
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     existing_story = {
-        "id": story_id,
+        "story_id": story_id,
         "game_name": "quibly",
         "question": "how many fish are there?",
         "round": "pair",
@@ -164,7 +164,7 @@ async def test_remove_story_story_no_stories_exist(game_service: AbstractGameSer
 async def test_get_story(game_service: AbstractGameService):
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
     existing_story = {
-        "id": story_id,
+        "story_id": story_id,
         "game_name": "quibly",
         "question": "how many fish are there?",
         "round": "pair",

@@ -33,7 +33,7 @@ class StoryService(AbstractStoryService):
     async def add(self, story: dict) -> Story:
         id_ = str(uuid.uuid4())
         try:
-            new_story = Story(**story, id=id_)
+            new_story = Story(**story, story_id=id_)
             self._validate_story(story=new_story)
             enabled = await self.game_service.is_game_enabled(game_name=new_story.game_name)
             if not enabled:

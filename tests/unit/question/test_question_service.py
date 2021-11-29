@@ -12,7 +12,8 @@ from tests.unit.question.fake_question_repository import FakeQuestionRepository
 from tests.unit.question.question_service_data import (
     add_question_data,
     add_question_data_fail,
-    get_question,
+    get_question_data,
+    update_enabled_status_question_data,
 )
 
 
@@ -86,7 +87,7 @@ async def test_add_question_fail(question_dict: dict, expected_exception, questi
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "question_id, game_name, expected_question",
-    get_question,
+    get_question_data,
     ids=[
         "get a quibly question",
         "get a fibbing_it question",
@@ -153,3 +154,77 @@ async def test_remove_question_game_does_not_exist(questions: List[Question]):
     question_id = "101464a5-337f-4ce7-a4df-2b00764e5d8d"
     with pytest.raises(GameNotFound):
         await question_service.remove(question_id=question_id, game_name="quibly_v3")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id",
+    update_enabled_status_question_data,
+    ids=[
+        "enable disabled game",
+        "enable enabled game",
+    ],
+)
+async def test_enable_question(game_name: str, question_id: str, questions: List[Question]):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    question = await question_service.update_enabled_status(game_name=game_name, question_id=question_id, enabled=True)
+    assert question.enabled is True
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id",
+    update_enabled_status_question_data,
+    ids=[
+        "disable disabled game",
+        "disable enabled game",
+    ],
+)
+async def test_disable_question(game_name: str, question_id: str, questions: List[Question]):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    question = await question_service.update_enabled_status(game_name=game_name, question_id=question_id, enabled=False)
+    assert question.enabled is False
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "enabled_status",
+    [True, False],
+    ids=[
+        "try to enable game (game not found)",
+        "try to disable game (game not found)",
+    ],
+)
+async def test_update_enable_status_question_does_not_exist(enabled_status: bool, questions: List[Question]):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    question_id = "a-random_id"
+    with pytest.raises(QuestionNotFound):
+        await question_service.update_enabled_status(
+            game_name="quibly", question_id=question_id, enabled=enabled_status
+        )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "enabled_status",
+    [True, False],
+    ids=[
+        "try to enable game (game not found)",
+        "try to disable game (game not found)",
+    ],
+)
+async def test_update_enable_state_question_game_does_not_exist(enabled_status: bool, questions: List[Question]):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    question_id = "101464a5-337f-4ce7-a4df-2b00764e5d8d"
+    with pytest.raises(GameNotFound):
+        await question_service.update_enabled_status(
+            game_name="quibly_v3", question_id=question_id, enabled=enabled_status
+        )

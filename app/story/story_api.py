@@ -60,7 +60,6 @@ async def get_story(
         story = await story_service.get(story_id=story_id)
         return story.dict()
     except StoryNotFound:
-        log.warning("failed to get story, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": f"story {story_id=} does not exist", "error_code": "story_does_not_exist"},
@@ -87,7 +86,6 @@ async def delete_story(
         log.debug("trying to delete story")
         await story_service.remove(story_id=story_id)
     except StoryNotFound:
-        log.warning("failed to delete story, it does not exist")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": f"story {story_id=} does not exist", "error_code": "story_does_not_exist"},

@@ -11,14 +11,14 @@ class FakeQuestionRepository(AbstractQuestionRepository):
 
     async def add(self, new_question: Question):
         for question in self.questions:
-            if question.id == new_question.id:
+            if question.question_id == new_question.question_id:
                 raise QuestionExistsException("question already exists")
         else:
             self.questions.append(new_question)
 
     async def get(self, question_id: str) -> Question:
         for question in self.questions:
-            if question.id == question_id:
+            if question.question_id == question_id:
                 return question
         else:
             raise QuestionNotFound("question not found")
@@ -41,3 +41,11 @@ class FakeQuestionRepository(AbstractQuestionRepository):
                 return True
         else:
             return False
+
+    async def update_enable_status(self, question_id: str, enabled: bool) -> Question:
+        for question in self.questions:
+            if question.question_id == question_id:
+                question.enabled = enabled
+                return question
+        else:
+            raise QuestionNotFound("question not found")

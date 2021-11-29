@@ -5,6 +5,8 @@ from httpx import AsyncClient
 from app.question.question_models import Question
 from tests.integration.data.question_test_data import (
     add_question_data,
+    disabled_question_data,
+    enabled_question_data,
     get_question_data,
     remove_question_data,
 )
@@ -80,10 +82,54 @@ async def test_remove_question(client: AsyncClient, game_name: str, question_id:
     assert response.status_code == expected_status_code
 
     if response.status_code == status.HTTP_200_OK:
-        question = await Question.find_one(Question.id == question_id)
+        question = await Question.find_one(Question.question_id == question_id)
         assert question is None
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, expected_status_code, expected_result",
+    enabled_question_data,
+    ids=[
+        "enable a disabled question",
+        "enable an enabled question",
+        "try to enable question, id does not exist",
+        "try to enable question, game does not exist",
+    ],
+)
+async def test_enable_game(
+    client: AsyncClient, game_name: str, question_id: str, expected_status_code: int, expected_result: dict
+):
+    url = f"/game/{game_name}/question/{question_id}:enable"
+    response = await client.put(url)
+    assert response.status_code == expected_status_code
+
+    if response.status_code == status.HTTP_200_OK:
+        assert response.json() == expected_result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, expected_status_code, expected_result",
+    disabled_question_data,
+    ids=[
+        "disable an enabled question",
+        "disable an disabled question",
+        "try to disable question, id does not exist",
+        "try to disable question, game does not exist",
+    ],
+)
+async def test_disable_game(
+    client: AsyncClient, game_name: str, question_id: str, expected_status_code: int, expected_result: dict
+):
+    url = f"/game/{game_name}/question/{question_id}:disable"
+    response = await client.put(url)
+    assert response.status_code == expected_status_code
+
+    if response.status_code == status.HTTP_200_OK:
+        assert response.json() == expected_result
+
+
 def _clean_response(response: dict):
-    del response["id"]
+    del response["question_id"]
     return response
