@@ -1,20 +1,12 @@
 import abc
 from typing import Any, Dict, List
 
-import languagecodes
-
 from app.core.models import CaertsianCoordinateColor, QuestionGroup
 from app.game.game_exceptions import GameNotFound
 from app.story.story_models import FibbingItAnswer, QuiblyAnswer
 
 
 class AbstractGame(abc.ABC):
-    @staticmethod
-    def validate_language_code(language_code: str):
-        lang = languagecodes.iso_639_alpha3("en")
-        if lang is None:
-            raise ValueError(f"invalid {language_code=}")
-
     @abc.abstractmethod
     def validate_question(self, round_: str, group: QuestionGroup = None):
         raise NotImplementedError

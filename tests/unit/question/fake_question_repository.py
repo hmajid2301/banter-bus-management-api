@@ -25,8 +25,6 @@ class FakeQuestionRepository(AbstractQuestionRepository):
 
     async def remove(self, question_id: str):
         question = await self.get(question_id=question_id)
-        if not question:
-            raise QuestionNotFound("question not found")
         self.questions.remove(question)
 
     async def does_question_exist(self, new_question: NewQuestion) -> bool:
@@ -35,8 +33,8 @@ class FakeQuestionRepository(AbstractQuestionRepository):
                 question.round_ == new_question.round_
                 and new_question.game_name == question.game_name
                 and question.group == new_question.group
-                and new_question.language in question.content
-                and question.content[new_question.language] == new_question.content
+                and new_question.language_code in question.content
+                and question.content[new_question.language_code] == new_question.content
             ):
                 return True
         else:
@@ -49,3 +47,17 @@ class FakeQuestionRepository(AbstractQuestionRepository):
                 return question
         else:
             raise QuestionNotFound("question not found")
+
+    async def add_translation(self, question_id: str, language_code: str, content: str) -> Question:
+        question = await self.get(question_id=question_id)
+        if language_code in question.content:
+            raise QuestionExistsException("language code already ecists for question")
+        question.content[language_code] = content
+        return question
+
+    async def remove_translation(self, question_id: str, language_code: str):
+        question = await self.get(question_id=question_id)
+        try:
+            del question.content[language_code]
+        except KeyError:
+            raise QuestionNotFound(f"{language_code=} not found in question {question_id=}")

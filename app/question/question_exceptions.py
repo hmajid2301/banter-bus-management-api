@@ -1,4 +1,8 @@
-from app.core.exceptions import ExistsException, NotFoundException
+from app.core.exceptions import (
+    ExistsException,
+    IncorrectFormatException,
+    NotFoundException,
+)
 
 
 class QuestionNotFound(NotFoundException):
@@ -6,4 +10,8 @@ class QuestionNotFound(NotFoundException):
 
 
 class QuestionExistsException(ExistsException):
+    pass
+
+
+class InvalidLanguageCode(IncorrectFormatException):
     pass

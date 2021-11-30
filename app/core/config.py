@@ -6,7 +6,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "production"
-    LOG_LEVEL: str = "INFO"
+    LOG_LEVEL: str = "DEBUG"
 
     DB_USERNAME: str
     DB_PASSWORD: str

@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from app.core.repository import AbstractRepository
-from app.question.question_exceptions import QuestionNotFound
+from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
 from app.question.question_models import NewQuestion, Question
 
 
@@ -13,6 +13,14 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
 
     @abc.abstractmethod
     async def update_enable_status(self, question_id: str, enabled: bool) -> Question:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def add_translation(self, question_id: str, language_code: str, content: str) -> Question:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def remove_translation(self, question_id: str, language_code: str):
         raise NotImplementedError
 
 
@@ -40,7 +48,7 @@ class QuestionRepository(AbstractQuestionRepository):
 
         for question in questions:
             try:
-                content = question.content[new_question.language]
+                content = question.content[new_question.language_code]
                 if content == new_question.content:
                     return True
             except KeyError:
@@ -54,3 +62,19 @@ class QuestionRepository(AbstractQuestionRepository):
         question.enabled = enabled
         await question.save()
         return question
+
+    async def add_translation(self, question_id: str, language_code: str, content: str) -> Question:
+        question = await self.get(question_id=question_id)
+        if language_code in question.content:
+            raise QuestionExistsException(f"question translation {language_code=} already exists for {question_id=}")
+        question.content[language_code] = content
+        await question.save()
+        return question
+
+    async def remove_translation(self, question_id: str, language_code: str):
+        question = await self.get(question_id=question_id)
+        try:
+            del question.content[language_code]
+        except KeyError:
+            raise QuestionNotFound(f"{language_code=} not found in question {question_id=}")
+        await question.save()

@@ -1,3 +1,4 @@
+import copy
 import uuid
 from typing import List
 
@@ -12,7 +13,13 @@ from tests.unit.question.fake_question_repository import FakeQuestionRepository
 from tests.unit.question.question_service_data import (
     add_question_data,
     add_question_data_fail,
+    add_question_translation_data,
+    add_question_translation_fail_data,
     get_question_data,
+    get_question_translation_data,
+    get_question_translation_fail_data,
+    remove_question_translation_data,
+    remove_question_translation_fail_data,
     update_enabled_status_question_data,
 )
 
@@ -26,7 +33,7 @@ def mock_beanie_document(mocker: MockFixture):
 def questions() -> List[Question]:
     from tests.data.question_collection import questions
 
-    return questions
+    return copy.deepcopy(questions)
 
 
 @pytest.mark.asyncio
@@ -35,11 +42,11 @@ def questions() -> List[Question]:
     add_question_data,
     ids=[
         "add a quibly question, round pair",
-        "add a quibly question, round answer and language de",
+        "add a quibly question, round answer and language_code de",
         "add a quibly question, round group",
         "add a drawlosseum question",
-        "add a fibbing_it question, round opinion and group bike question, specify language en",
-        "add a fibbing_it question, round opinion and group bike answern",
+        "add a fibbing_it question, round opinion and group bike question, language_code en",
+        "add a fibbing_it question, round opinion and group bike answer",
         "add a fibbing_it question, round free_form and group horse",
         "add a fibbing_it question, round likely",
     ],
@@ -66,10 +73,11 @@ async def test_add_question(question_dict: dict, expected_result: dict, mocker: 
         "try to add a fibbing_it question, invalid round",
         "try to add a fibbing_it question, round opinion, invalid type",
         "try to add a fibbing_it question, round opinion, missing group ",
+        "try to add a fibbing_it question, invalid language code",
         "try to add a fibbing_it_v3 question game does not exist",
         "try to add a quibly question round pair already exists",
         "try to add a quibly question round answers, language de already exists",
-        "try to add a quibly question round group, language fr already exists",
+        "try to add a quibly question round group, language code fr already exists",
         "try to add a fibbing_it question round opinions already exists",
         "try to add a fibbing_it question round free_form already exists",
         "try to add a fibbing_it question round likely already exists",
@@ -91,7 +99,7 @@ async def test_add_question_fail(question_dict: dict, expected_exception, questi
     ids=[
         "get a quibly question",
         "get a fibbing_it question",
-        "get a drawlossuem question",
+        "get a drawlosseum question",
     ],
 )
 async def test_get_question(
@@ -227,4 +235,140 @@ async def test_update_enable_state_question_game_does_not_exist(enabled_status: 
     with pytest.raises(GameNotFound):
         await question_service.update_enabled_status(
             game_name="quibly_v3", question_id=question_id, enabled=enabled_status
+        )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, language_code, content, expected_result",
+    add_question_translation_data,
+    ids=[
+        "add a en quibly round group question",
+        "add a ur fibbing_it round group question",
+        "add a de drawlosseum round group question",
+    ],
+)
+async def test_add_question_translation(
+    game_name: str, question_id: str, language_code: str, content: str, expected_result: dict, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+    question = await question_service.add_translation(
+        game_name=game_name, question_id=question_id, language_code=language_code, content=content
+    )
+    assert question.dict(by_alias=True, exclude_none=True) == expected_result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, language_code, content, expected_exception",
+    add_question_translation_fail_data,
+    ids=[
+        "add a question translation (game not found)",
+        "add a question translation (question not found)",
+        "add a question translation (language code already exists)",
+        "add a question translation (invalid language code)",
+    ],
+)
+async def test_add_question_translation_fail(
+    game_name: str, question_id: str, language_code: str, content: str, expected_exception, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    with pytest.raises(expected_exception):
+        await question_service.add_translation(
+            game_name=game_name, question_id=question_id, language_code=language_code, content=content
+        )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, language_code, expected_result",
+    get_question_translation_data,
+    ids=[
+        "get a fr quibly round group question",
+        "get an en quibly round pair question",
+        "get an en fibbing_it round opinion question",
+        "get an en fibbing_it round free_form question",
+        "get an en fibbing_it round likely question",
+        "get an en drawlosseum question",
+    ],
+)
+async def test_get_question_translation(
+    game_name: str, question_id: str, language_code: str, expected_result: dict, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+    question = await question_service.get_translation(
+        game_name=game_name, question_id=question_id, language_code=language_code
+    )
+    assert question.dict(exclude_none=True, by_alias=True) == expected_result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, language_code, expected_exception",
+    get_question_translation_fail_data,
+    ids=[
+        "get a question translation (game not found)",
+        "get a question translation (question not found)",
+        "get a question translation (invalid language code)",
+    ],
+)
+async def test_get_question_translation_fail(
+    game_name: str, question_id: str, language_code: str, expected_exception, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    with pytest.raises(expected_exception):
+        await question_service.get_translation(
+            game_name=game_name, question_id=question_id, language_code=language_code
+        )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, language_code, expected_result",
+    remove_question_translation_data,
+    ids=[
+        "delete a fr quibly round group question",
+        "delete an en quibly round pair question",
+        "delete an en fibbing_it round opinion question",
+        "delete an en fibbing_it round free_form question",
+        "delete an en fibbing_it round likely question",
+        "delete an en drawlosseum question",
+    ],
+)
+async def test_remove_question_translation(
+    game_name: str, question_id: str, language_code: str, expected_result: dict, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+    await question_service.remove_translation(game_name=game_name, question_id=question_id, language_code=language_code)
+
+    question = await question_service.get(game_name=game_name, question_id=question_id)
+    assert question.dict(by_alias=True, exclude_none=True) == expected_result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, question_id, language_code, expected_exception",
+    remove_question_translation_fail_data,
+    ids=[
+        "delete a question translation (game not found)",
+        "delete a question translation (question not found)",
+        "delete a question translation (invalid language code)",
+    ],
+)
+async def test_remove_question_translation_fail(
+    game_name: str, question_id: str, language_code: str, expected_exception, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    with pytest.raises(expected_exception):
+        await question_service.remove_translation(
+            game_name=game_name, question_id=question_id, language_code=language_code
         )
