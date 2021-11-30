@@ -29,10 +29,6 @@ class AbstractGameService(abc.ABC):
     async def update_enabled_status(self, game_name: str, enabled: bool) -> Game:
         raise NotImplementedError
 
-    @abc.abstractmethod
-    async def is_game_enabled(self, game_name: str) -> bool:
-        raise NotImplementedError
-
 
 class GameService(AbstractGameService):
     def __init__(self, game_repository: AbstractGameRepository):
@@ -71,7 +67,3 @@ class GameService(AbstractGameService):
     async def update_enabled_status(self, game_name: str, enabled: bool) -> Game:
         game = await self.game_repository.update_enable_status(game_name=game_name, enabled=enabled)
         return game
-
-    async def is_game_enabled(self, game_name: str) -> bool:
-        game = await self.get(game_name=game_name)
-        return game.enabled

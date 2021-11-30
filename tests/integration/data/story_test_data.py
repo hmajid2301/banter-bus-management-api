@@ -40,45 +40,6 @@ add_story_data = [
     ),
     (
         {
-            "game_name": "drawlosseum",
-            "question": "fish",
-            "nickname": "i_cannotDraw",
-            "answers": [
-                {
-                    "start": {
-                        "x": 100,
-                        "y": -100,
-                    },
-                    "end": {
-                        "x": 90,
-                        "y": -100,
-                    },
-                    "color": "#000000",
-                },
-            ],
-        },
-        status.HTTP_409_CONFLICT,
-        {
-            "game_name": "drawlosseum",
-            "question": "fish",
-            "nickname": "i_cannotDraw",
-            "answers": [
-                {
-                    "start": {
-                        "x": 100,
-                        "y": -100,
-                    },
-                    "end": {
-                        "x": 90,
-                        "y": -100,
-                    },
-                    "color": "#000000",
-                },
-            ],
-        },
-    ),
-    (
-        {
             "game_name": "fibbing_it",
             "question": "What do you think about horses?",
             "round": "opinion",
@@ -249,28 +210,6 @@ add_story_data = [
             ],
         },
         status.HTTP_422_UNPROCESSABLE_ENTITY,
-        {},
-    ),
-    (
-        {
-            "game_name": "drawlosseum",
-            "nickname": "lima_bean_420",
-            "question": "fish",
-            "answers": [
-                {
-                    "start": {
-                        "x": 100,
-                        "y": -100,
-                    },
-                    "end": {
-                        "x": 90,
-                        "y": -100,
-                    },
-                    "color": "#000000",
-                },
-            ],
-        },
-        status.HTTP_409_CONFLICT,
         {},
     ),
     (

@@ -16,7 +16,6 @@ from tests.integration.data.story_test_data import (
     add_story_data,
     ids=[
         "add a quibly story",
-        "add a drawlosseum story (game disabled)",
         "add a fibbing_it story",
         "try to add a story (game not found)",
         "try to add a story (missing game_name)",
@@ -25,7 +24,6 @@ from tests.integration.data.story_test_data import (
         "try to add a quibly story (missing Story)",
         "try to add a quibly story (missing answer)",
         "try to add a quibly story (unexpected nickname)",
-        "try to add a drawlosseum story (disabled game)",
         "try to add a drawlosseum story (missing nickname)",
         "try to add a fibbing_it story (invalid round)",
         "try to add a fibbing_it story (missing Story)",

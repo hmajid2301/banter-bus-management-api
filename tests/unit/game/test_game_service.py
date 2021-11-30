@@ -12,7 +12,6 @@ from tests.unit.game.game_service_data import (
     disable_game_data,
     enable_game_data,
     get_game_name_data,
-    is_enabled_game_data,
     update_enable_status_data,
 )
 
@@ -248,23 +247,3 @@ async def test_enable_status_game_does_not_exist(enabled_status):
 
     with pytest.raises(GameNotFound):
         await game_service.update_enabled_status(game_name="quibly_v3", enabled=enabled_status)
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "factory_boy_args, game_name, expected_enabled_status",
-    is_enabled_game_data,
-    ids=[
-        "is game enabled (all games enabled)",
-        "is game enabled (all games disabled)",
-        "is game enabled enabled (one game enabled, one disabled)",
-        "is game enabled disabled (one game enabled, one disabled)",
-    ],
-)
-async def test_is_game_enabled(factory_boy_args: dict, game_name: str, expected_enabled_status: bool):
-    existing_games = GameFactory.build_batch(**factory_boy_args)
-    game_repository = FakeGameRepository(games=existing_games)
-    game_service = GameService(game_repository=game_repository)
-
-    enabled_status = await game_service.is_game_enabled(game_name=game_name)
-    assert enabled_status is expected_enabled_status

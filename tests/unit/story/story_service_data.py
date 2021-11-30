@@ -1,6 +1,6 @@
 from typing import List
 
-from app.game.game_exceptions import GameNotEnabledError, GameNotFound
+from app.game.game_exceptions import GameNotFound
 
 add_story_data = [
     (
@@ -296,27 +296,6 @@ add_story_fail_data = [
             ],
         },
         ValueError,
-    ),
-    (
-        {
-            "game_name": "drawlosseum",
-            "question": "fish",
-            "nickname": "go_lima_bean",
-            "answers": [
-                {
-                    "start": {
-                        "x": 100,
-                        "y": -100,
-                    },
-                    "end": {
-                        "x": 90,
-                        "y": -100,
-                    },
-                    "color": "#000000",
-                },
-            ],
-        },
-        GameNotEnabledError,
     ),
 ]
 

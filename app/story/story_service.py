@@ -3,8 +3,6 @@ import uuid
 
 from pymongo.errors import DuplicateKeyError
 
-from app.game.game_exceptions import GameNotEnabledError
-from app.game.game_service import AbstractGameService
 from app.game.games.game import get_game
 from app.story.story_exceptions import StoryExists
 from app.story.story_models import Story
@@ -26,18 +24,14 @@ class AbstractStoryService(abc.ABC):
 
 
 class StoryService(AbstractStoryService):
-    def __init__(self, story_repository: AbstractStoryRepository, game_service: AbstractGameService):
+    def __init__(self, story_repository: AbstractStoryRepository):
         self.story_repository = story_repository
-        self.game_service = game_service
 
     async def add(self, story: dict) -> Story:
         id_ = str(uuid.uuid4())
         try:
             new_story = Story(**story, story_id=id_)
             self._validate_story(story=new_story)
-            enabled = await self.game_service.is_game_enabled(game_name=new_story.game_name)
-            if not enabled:
-                raise GameNotEnabledError(f"expected game {new_story.game_name=} to be enabled to add a new story")
 
             await self.story_repository.add(new_story)
             return new_story
