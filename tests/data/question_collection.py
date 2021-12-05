@@ -141,6 +141,7 @@ questions: List[Question] = [
         **{
             "question_id": "815464a5-337f-4ce7-a4df-2b00764e5c6c",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "horse"},
         }
@@ -149,6 +150,7 @@ questions: List[Question] = [
         **{
             "question_id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "spoon"},
         }

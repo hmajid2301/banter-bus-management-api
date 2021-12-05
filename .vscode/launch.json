@@ -22,7 +22,10 @@
       "request": "launch",
       "module": "pytest",
       "args": ["-rf", "tests/integration"],
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "PYTHONASYNCIODEBUG": "1"
+      }
     },
     {
       "name": "Test: Current File",

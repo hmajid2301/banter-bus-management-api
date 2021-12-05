@@ -42,10 +42,9 @@ class GameRepository(AbstractGameRepository):
         games = await Game.find(Game.enabled == enabled).to_list()
         return self._get_game_names(games)
 
+    # TODO: use projection https://roman-right.github.io/beanie/tutorial/finding-documents/
     def _get_game_names(self, games: List[Game]):
-        game_names: List[str] = []
-        for game in games:
-            game_names.append(game.name)
+        game_names: List[str] = [game.name for game in games]
         return game_names
 
     async def update_enable_status(self, game_name: str, enabled: bool) -> Game:

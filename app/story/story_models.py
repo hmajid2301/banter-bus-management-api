@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 
-from beanie import Document
+from beanie import Document, Indexed
 from pydantic import BaseModel
 
 from app.core.models import CaertsianCoordinateColor
@@ -18,7 +18,7 @@ class QuiblyAnswer(BaseModel):
 
 
 class Story(Document):
-    story_id: str
+    story_id: Indexed(str, unique=True)  # type: ignore
     game_name: str
     question: str
     round_: Optional[str]

@@ -27,6 +27,7 @@ add_story_data = [
             "game_name": "drawlosseum",
             "question": "fish",
             "nickname": "i_cannotDraw",
+            "round": "drawing",
             "answers": [
                 {
                     "start": {

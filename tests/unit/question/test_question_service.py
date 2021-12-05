@@ -15,9 +15,15 @@ from tests.unit.question.question_service_data import (
     add_question_data_fail,
     add_question_translation_data,
     add_question_translation_fail_data,
+    get_groups_data,
+    get_groups_data_fail,
     get_question_data,
+    get_question_ids_data,
+    get_question_ids_data_fail,
     get_question_translation_data,
     get_question_translation_fail_data,
+    get_random_questions_data,
+    get_random_questions_data_fail,
     remove_question_translation_data,
     remove_question_translation_fail_data,
     update_enabled_status_question_data,
@@ -90,6 +96,165 @@ async def test_add_question_fail(question_dict: dict, expected_exception, questi
 
     with pytest.raises(expected_exception):
         await question_service.add(question_dict=question_dict)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, round_, language_code, limit, group_name, expected_result_num",
+    get_random_questions_data,
+    ids=[
+        "get some quibly questions for round pair",
+        "get some quibly questions for round answer",
+        "get some quibly questions for round group",
+        "get some quibly questions for round group, limit 10",
+        "get some quibly questions for round group, language ur",
+        "get some fibbing_it questions for round opinion, horse_group group",
+        "get some fibbing_it questions for round free_form, bike_group group",
+        "get some fibbing_it questions for round likely",
+        "get some drawlosseum questions",
+    ],
+)
+async def test_get_random_questions(
+    game_name: str,
+    round_: str,
+    language_code: str,
+    limit: int,
+    group_name: str,
+    expected_result_num: int,
+    questions: List[Question],
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    random_questions = await question_service.get_random(
+        game_name=game_name,
+        round_=round_,
+        language_code=language_code,
+        limit=limit,
+        group_name=group_name,
+    )
+    assert len(random_questions) == expected_result_num
+    for question in random_questions:
+        existing_question = await question_repository.get(question_id=question.question_id)
+        assert existing_question.content[language_code] == question.content
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, round_, language_code, limit, group_name, expected_exception",
+    get_random_questions_data_fail,
+    ids=[
+        "get random question, game not found",
+        "get random question, invalid limit",
+    ],
+)
+async def test_get_random_questions_fail(
+    game_name: str,
+    round_: str,
+    language_code: str,
+    limit: int,
+    group_name: str,
+    expected_exception,
+    questions: List[Question],
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    with pytest.raises(expected_exception):
+        await question_service.get_random(
+            game_name=game_name,
+            round_=round_,
+            language_code=language_code,
+            limit=limit,
+            group_name=group_name,
+        )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, round_, limit",
+    get_groups_data,
+    ids=[
+        "get quibly groups",
+        "get fibbing_it round opinion group",
+        "get fibbing_it round free_form groups",
+        "get fibbing_it round likely groups",
+        "get drawlossuem groups",
+    ],
+)
+async def test_get_groups(game_name: str, round_: str, limit: int, questions: List[Question]):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+    expected_groups = await question_repository.get_groups(game_name=game_name, round_=round_)
+
+    random_groups = await question_service.get_random_groups(game_name=game_name, round_=round_, limit=limit)
+
+    if expected_groups:
+        assert len(random_groups) == limit
+    else:
+        assert len(random_groups) == 0
+
+    for group in random_groups:
+        assert group in expected_groups
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, round_, limit, expected_exception",
+    get_groups_data_fail,
+    ids=[
+        "get groups, game not found",
+        "get groups, round not found",
+        "get groups, invalid limit",
+    ],
+)
+async def test_get_groups_fail(game_name: str, round_: str, limit: int, expected_exception, questions: List[Question]):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    with pytest.raises(expected_exception):
+        await question_service.get_random_groups(game_name=game_name, round_=round_, limit=limit)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, cursor, limit, expected_result",
+    get_question_ids_data,
+    ids=[
+        "get 5 questions from fibbing_it",
+        "get 5 questions from fibbing_it using cursor",
+        "get all questions from drawlossuem",
+        "get 2 questions from quibly",
+        "get questions from quibly using cursor",
+    ],
+)
+async def test_get_question_ids(
+    game_name: str, cursor: str, limit: int, expected_result: dict, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    question_ids = await question_service.get_ids(game_name=game_name, cursor=cursor, limit=limit)
+    assert question_ids.dict(exclude_none=True) == expected_result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "game_name, cursor, limit, expected_exception",
+    get_question_ids_data_fail,
+    ids=[
+        "get question ids (game not found)",
+        "get question ids (invalid limit)",
+    ],
+)
+async def test_get_question_ids_fail(
+    game_name: str, cursor: str, limit: int, expected_exception, questions: List[Question]
+):
+    question_repository = FakeQuestionRepository(questions=questions)
+    question_service = QuestionService(question_repository=question_repository)
+
+    with pytest.raises(expected_exception):
+        await question_service.get_ids(game_name=game_name, cursor=cursor, limit=limit)
 
 
 @pytest.mark.asyncio

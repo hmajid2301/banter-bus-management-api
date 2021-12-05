@@ -1,6 +1,7 @@
 from app.game.game_exceptions import GameNotFound
 from app.question.question_exceptions import (
     InvalidLanguageCode,
+    InvalidLimit,
     QuestionExistsException,
     QuestionNotFound,
 )
@@ -42,10 +43,11 @@ add_question_data = [
         },
     ),
     (
-        {"content": "pencil", "game_name": "drawlosseum"},
+        {"content": "pencil", "game_name": "drawlosseum", "round": "drawing"},
         {
             "question_id": "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "pencil"},
         },
@@ -240,11 +242,187 @@ add_question_data_fail = [
         {
             "game_name": "drawlosseum",
             "content": "spoon",
+            "round": "drawing",
         },
         QuestionExistsException,
     ),
 ]
 
+get_random_questions_data = [
+    (
+        "quibly",
+        "pair",
+        "en",
+        2,
+        "",
+        2,
+    ),
+    (
+        "quibly",
+        "answer",
+        "de",
+        1,
+        "",
+        1,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        1,
+        "",
+        1,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        10,
+        "",
+        1,
+    ),
+    (
+        "quibly",
+        "group",
+        "ur",
+        10,
+        "",
+        0,
+    ),
+    (
+        "fibbing_it",
+        "opinion",
+        "en",
+        99,
+        "horse_group",
+        5,
+    ),
+    (
+        "fibbing_it",
+        "free_form",
+        "en",
+        54,
+        "bike_group",
+        2,
+    ),
+    (
+        "fibbing_it",
+        "likely",
+        "en",
+        5,
+        "",
+        2,
+    ),
+    (
+        "drawlosseum",
+        "drawing",
+        "en",
+        5,
+        "",
+        2,
+    ),
+]
+
+get_random_questions_data_fail = [
+    (
+        "quibly_v3",
+        "group",
+        "fr",
+        10,
+        "",
+        GameNotFound,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        -1,
+        "",
+        InvalidLimit,
+    ),
+]
+
+get_groups_data = [
+    ("quibly", "pair", 1),
+    ("fibbing_it", "opinion", 1),
+    ("fibbing_it", "free_form", 1),
+    ("fibbing_it", "likely", 1),
+    ("drawlosseum", "drawing", 1),
+]
+
+get_groups_data_fail = [
+    ("quibly_v3", "pair", 1, GameNotFound),
+    ("quibly", "round", 1, ValueError),
+    ("quibly", "pair", -1, InvalidLimit),
+]
+
+get_question_ids_data = [
+    (
+        "fibbing_it",
+        "",
+        5,
+        {
+            "question_ids": [
+                "3e2889f6-56aa-4422-a7c5-033eafa9fd39",
+                "7799e38a-758d-4a1b-a191-99c59440af76",
+                "03a462ba-f483-4726-aeaf-b8b6b03ce3e2",
+                "d5aa9153-f48c-45cc-b411-fb9b2d38e78f",
+                "138bc208-2849-41f3-bbd8-3226a96c5370",
+            ],
+            "cursor": "138bc208-2849-41f3-bbd8-3226a96c5370",
+        },
+    ),
+    (
+        "fibbing_it",
+        "138bc208-2849-41f3-bbd8-3226a96c5370",
+        5,
+        {
+            "question_ids": [
+                "580aeb14-d907-4a22-82c8-f2ac544a2cd1",
+                "aa9fe2b5-79b5-458d-814b-45ff95a617fc",
+                "d80f2d90-0fb0-462a-8fbd-1aa00b4e42a5",
+                "d6318b0d-29e1-4f10-b6a7-37a648364ca6",
+                "714464a5-337f-4ce7-a4df-2b00764e5c5b",
+            ],
+            "cursor": "714464a5-337f-4ce7-a4df-2b00764e5c5b",
+        },
+    ),
+    (
+        "drawlosseum",
+        "",
+        5,
+        {
+            "question_ids": ["815464a5-337f-4ce7-a4df-2b00764e5c6c", "101464a5-337f-4ce7-a4df-2b00764e5d8d"],
+        },
+    ),
+    (
+        "quibly",
+        "",
+        2,
+        {
+            "question_ids": ["4d18ac45-8034-4f8e-b636-cf730b17e51a", "a9c00e19-d41e-4b15-a8bd-ec921af9123d"],
+            "cursor": "a9c00e19-d41e-4b15-a8bd-ec921af9123d",
+        },
+    ),
+    (
+        "quibly",
+        "a9c00e19-d41e-4b15-a8bd-ec921af9123d",
+        3,
+        {
+            "question_ids": ["bf64d60c-62ee-420a-976e-bfcaec77ad8b", "4b4dd325-04fd-4aa4-9382-2874dcfd5cae"],
+        },
+    ),
+]
+
+get_question_ids_data_fail = [
+    (
+        "fibbing_it_v3",
+        "",
+        5,
+        GameNotFound,
+    ),
+    ("fibbing_it", "", -1, InvalidLimit),
+]
 
 get_question_data = [
     (
@@ -276,6 +454,7 @@ get_question_data = [
         {
             "question_id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "spoon"},
         },
@@ -326,6 +505,7 @@ add_question_translation_data = [
         {
             "question_id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "spoon", "de": "german question"},
         },
@@ -415,6 +595,7 @@ get_question_translation_data = [
         {
             "question_id": "815464a5-337f-4ce7-a4df-2b00764e5c6c",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "language_code": "en",
             "enabled": True,
             "content": "horse",
@@ -499,6 +680,7 @@ remove_question_translation_data = [
         {
             "question_id": "815464a5-337f-4ce7-a4df-2b00764e5c6c",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {},
         },

@@ -1,8 +1,9 @@
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
 
 from app.core.models import QuestionGroup
+from app.question.question_models import QuestionType
 
 
 class QuestionIn(BaseModel):
@@ -45,3 +46,22 @@ class QuestionTranslationOut(BaseModel):
     class Config:
         allow_population_by_field_name = True
         fields = {"round_": "round"}
+
+
+class QuestionPaginationOut(BaseModel):
+    question_ids: List[str]
+    cursor: Optional[str] = None
+
+
+class QuestionGroups(BaseModel):
+    groups: List[str]
+
+
+class QuestionSimpleOut(BaseModel):
+    question_id: str
+    content: str
+    type_: QuestionType
+
+    class Config:
+        allow_population_by_field_name = True
+        fields = {"type_": "type"}

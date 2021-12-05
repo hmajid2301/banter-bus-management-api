@@ -14,11 +14,12 @@ add_question_data = [
     ),
     (
         "drawlosseum",
-        {"content": "pencil"},
+        {"content": "pencil", "round": "drawing"},
         status.HTTP_201_CREATED,
         {
             "game_name": "drawlosseum",
             "enabled": True,
+            "round": "drawing",
             "content": {"en": "pencil"},
         },
     ),
@@ -80,6 +81,7 @@ add_question_data = [
         "drawlosseum",
         {
             "content": "spoon",
+            "round": "drawing",
         },
         status.HTTP_409_CONFLICT,
         {},
@@ -122,6 +124,202 @@ add_question_data = [
     ),
 ]
 
+get_random_questions_data = [
+    (
+        "quibly",
+        "pair",
+        "en",
+        2,
+        "",
+        status.HTTP_200_OK,
+        2,
+    ),
+    (
+        "quibly",
+        "answer",
+        "de",
+        1,
+        "",
+        status.HTTP_200_OK,
+        1,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        1,
+        "",
+        status.HTTP_200_OK,
+        1,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        10,
+        "",
+        status.HTTP_200_OK,
+        1,
+    ),
+    (
+        "quibly_v3",
+        "group",
+        "fr",
+        10,
+        "",
+        status.HTTP_404_NOT_FOUND,
+        0,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        -1,
+        "",
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        1,
+    ),
+    (
+        "quibly",
+        "group",
+        "fr",
+        101,
+        "",
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        1,
+    ),
+]
+
+get_question_groups_data = [
+    (
+        "quibly",
+        "pair",
+        1,
+        status.HTTP_200_OK,
+        0,
+    ),
+    (
+        "fibbing_it",
+        "opinion",
+        2,
+        status.HTTP_200_OK,
+        1,
+    ),
+    (
+        "fibbing_it",
+        "free_form",
+        1,
+        status.HTTP_200_OK,
+        1,
+    ),
+    (
+        "fibbing_it",
+        "likely",
+        1,
+        status.HTTP_200_OK,
+        0,
+    ),
+    (
+        "drawlosseum",
+        "drawing",
+        1,
+        status.HTTP_200_OK,
+        0,
+    ),
+    (
+        "quibly_v3",
+        "pair",
+        1,
+        status.HTTP_404_NOT_FOUND,
+        0,
+    ),
+    (
+        "quibly",
+        "round",
+        1,
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        0,
+    ),
+    (
+        "quibly",
+        "pair",
+        -1,
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        0,
+    ),
+    (
+        "quibly",
+        "pair",
+        101,
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        0,
+    ),
+]
+
+
+get_question_ids_data = [
+    (
+        "fibbing_it",
+        "",
+        5,
+        status.HTTP_200_OK,
+        {
+            "cursor": "714464a5-337f-4ce7-a4df-2b00764e5c5b",
+            "question_ids": [
+                "03a462ba-f483-4726-aeaf-b8b6b03ce3e2",
+                "138bc208-2849-41f3-bbd8-3226a96c5370",
+                "3e2889f6-56aa-4422-a7c5-033eafa9fd39",
+                "580aeb14-d907-4a22-82c8-f2ac544a2cd1",
+                "714464a5-337f-4ce7-a4df-2b00764e5c5b",
+            ],
+        },
+    ),
+    (
+        "fibbing_it",
+        "138bc208-2849-41f3-bbd8-3226a96c5370",
+        5,
+        status.HTTP_200_OK,
+        {
+            "cursor": "aa9fe2b5-79b5-458d-814b-45ff95a617fc",
+            "question_ids": [
+                "3e2889f6-56aa-4422-a7c5-033eafa9fd39",
+                "580aeb14-d907-4a22-82c8-f2ac544a2cd1",
+                "714464a5-337f-4ce7-a4df-2b00764e5c5b",
+                "7799e38a-758d-4a1b-a191-99c59440af76",
+                "aa9fe2b5-79b5-458d-814b-45ff95a617fc",
+            ],
+        },
+    ),
+    (
+        "drawlosseum",
+        "",
+        10,
+        status.HTTP_200_OK,
+        {"question_ids": ["101464a5-337f-4ce7-a4df-2b00764e5d8d", "815464a5-337f-4ce7-a4df-2b00764e5c6c"]},
+    ),
+    (
+        "fibbing_it_v3",
+        "",
+        5,
+        status.HTTP_404_NOT_FOUND,
+        {},
+    ),
+    (
+        "fibbing_it",
+        "",
+        -1,
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        {},
+    ),
+    (
+        "fibbing_it",
+        "",
+        101,
+        status.HTTP_422_UNPROCESSABLE_ENTITY,
+        {},
+    ),
+]
+
 get_question_data = [
     (
         "quibly",
@@ -155,6 +353,7 @@ get_question_data = [
         {
             "question_id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "spoon"},
         },
@@ -322,6 +521,7 @@ add_question_translation_data = [
         {
             "question_id": "101464a5-337f-4ce7-a4df-2b00764e5d8d",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {"en": "spoon", "de": "german question"},
         },
@@ -398,6 +598,7 @@ get_question_translation_data = [
             "question_id": "815464a5-337f-4ce7-a4df-2b00764e5c6c",
             "game_name": "drawlosseum",
             "language_code": "en",
+            "round": "drawing",
             "enabled": True,
             "content": "horse",
         },
@@ -426,7 +627,7 @@ get_question_translation_data = [
 ]
 
 
-delete_question_translation = [
+remove_question_translation_data = [
     (
         "quibly",
         "a9c00e19-d41e-4b15-a8bd-ec921af9123d",
@@ -461,6 +662,7 @@ delete_question_translation = [
         {
             "question_id": "815464a5-337f-4ce7-a4df-2b00764e5c6c",
             "game_name": "drawlosseum",
+            "round": "drawing",
             "enabled": True,
             "content": {},
         },

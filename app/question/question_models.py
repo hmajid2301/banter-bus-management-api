@@ -1,13 +1,19 @@
-from typing import Dict, Optional
+from enum import Enum
+from typing import Dict, List, Optional
 
-from beanie import Document
+from beanie import Document, Indexed
 from pydantic import BaseModel
 
 from app.core.models import QuestionGroup
 
 
+class QuestionIDsPagination(BaseModel):
+    question_ids: List[str]
+    cursor: Optional[str] = None
+
+
 class Question(Document):
-    question_id: str
+    question_id: Indexed(str, unique=True)  # type: ignore
     game_name: str
     round_: Optional[str]
     enabled: bool = True
@@ -43,3 +49,22 @@ class NewQuestion(BaseModel):
     class Config:
         allow_population_by_field_name = True
         fields = {"round_": "round"}
+
+
+class QuestionType(str, Enum):
+    answer = "answer"
+    question = "question"
+
+
+class QuestionSimple(BaseModel):
+    question_id: str
+    content: str
+    type_: QuestionType
+
+    class Config:
+        allow_population_by_field_name = True
+        fields = {"type_": "type"}
+
+
+class QuestionGroups(BaseModel):
+    groups: List[str]

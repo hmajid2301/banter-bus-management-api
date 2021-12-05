@@ -1,4 +1,5 @@
-from typing import List
+import random
+from typing import List, Optional, Set
 
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
 from app.question.question_models import NewQuestion, Question
@@ -61,3 +62,63 @@ class FakeQuestionRepository(AbstractQuestionRepository):
             del question.content[language_code]
         except KeyError:
             raise QuestionNotFound(f"{language_code=} not found in question {question_id=}")
+
+    async def get_ids(
+        self,
+        game_name: str,
+        limit: int,
+        cursor: Optional[str] = None,
+    ) -> List[str]:
+        question_ids: List[str] = []
+        at_cursor = False if cursor else True
+        q = [question for question in self.questions if question.game_name == game_name]
+        for question in q:
+            if not at_cursor and question.question_id == cursor:
+                at_cursor = True
+                continue
+            if at_cursor:
+                question_ids.append(question.question_id)
+
+            if len(question_ids) == limit:
+                break
+
+        return question_ids
+
+    async def get_random(
+        self,
+        game_name: str,
+        round_: str,
+        language_code: str,
+        limit: int = 5,
+    ) -> List[Question]:
+        questions: List[Question] = []
+        for question in self.questions:
+            if question.game_name == game_name and question.round_ == round_ and language_code in question.content:
+                questions.append(question)
+
+        num_of_questions = min(len(questions), limit)
+        random_questions = random.sample(questions, k=num_of_questions)
+        return random_questions
+
+    async def get_questions_in_group(
+        self, game_name: str, round_: str, language_code: str, group_name: str
+    ) -> List[Question]:
+        questions: List[Question] = []
+        for question in self.questions:
+            if (
+                question.group
+                and question.group.name == group_name
+                and question.game_name == game_name
+                and question.round_ == round_
+                and language_code in question.content
+            ):
+                questions.append(question)
+        return questions
+
+    async def get_groups(self, game_name: str, round_: str) -> List[str]:
+        groups: Set[str] = set()
+        for question in self.questions:
+            if question.game_name == game_name and question.round_ == round_:
+                if question.group:
+                    groups.add(question.group.name)
+        return list(groups)

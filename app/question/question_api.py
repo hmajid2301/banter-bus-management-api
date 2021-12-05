@@ -1,17 +1,24 @@
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.param_functions import Query
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
 from app.factory import get_logger
 from app.game.game_exceptions import GameNotFound
 from app.question.question_api_models import (
+    QuestionGroups,
     QuestionIn,
     QuestionOut,
+    QuestionPaginationOut,
+    QuestionSimpleOut,
     QuestionTranslationIn,
     QuestionTranslationOut,
 )
 from app.question.question_exceptions import (
     InvalidLanguageCode,
+    InvalidLimit,
     QuestionExistsException,
     QuestionNotFound,
 )
@@ -57,6 +64,131 @@ async def add_question(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={"error_message": f"failed to add question {question=}", "error_code": "failed_create_question"},
+        )
+
+
+@router.get(
+    "/id",
+    status_code=status.HTTP_200_OK,
+    response_model=QuestionPaginationOut,
+    response_model_exclude_none=True,
+)
+async def get_question_ids(
+    game_name: str,
+    cursor: Optional[str],
+    limit: int = Query(5, ge=1, le=100),
+    question_service: AbstractQuestionService = Depends(get_question_service),
+    log: BoundLogger = Depends(get_logger),
+):
+    try:
+        log.debug("trying to get question ids")
+        question_ids = await question_service.get_ids(
+            game_name=game_name,
+            cursor=cursor,
+            limit=limit,
+        )
+        return question_ids
+    except GameNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error_message": str(e), "error_code": "game_not_found"},
+        )
+    except InvalidLimit as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_message": str(e), "error_code": "query_format_error"},
+        )
+    except Exception:
+        log.exception("failed to get question ids")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error_message": "failed to get question ids",
+                "error_code": "failed_get_question_ids",
+            },
+        )
+
+
+@router.get(
+    ":random",
+    status_code=status.HTTP_200_OK,
+    response_model=List[QuestionSimpleOut],
+)
+async def get_random_questions(
+    game_name: str,
+    round_: str = Query(None, alias="round"),
+    language_code: str = "en",
+    group_name: Optional[str] = None,
+    limit: int = Query(5, ge=1, le=100),
+    question_service: AbstractQuestionService = Depends(get_question_service),
+    log: BoundLogger = Depends(get_logger),
+):
+    try:
+        log.debug("trying to get random questions")
+        random_questions = await question_service.get_random(
+            game_name=game_name, round_=round_, language_code=language_code, group_name=group_name, limit=limit
+        )
+        return random_questions
+    except GameNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error_message": str(e), "error_code": "game_not_found"},
+        )
+    except InvalidLimit as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_message": str(e), "error_code": "query_format_error"},
+        )
+    except Exception:
+        log.exception("failed to get random questions")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error_message": "failed to get random questions",
+                "error_code": "failed_get_random_question",
+            },
+        )
+
+
+@router.get(
+    "/group:random",
+    status_code=status.HTTP_200_OK,
+    response_model=QuestionGroups,
+)
+async def get_random_groups(
+    game_name: str,
+    round_: str = Query(None, alias="round"),
+    limit: int = Query(5, ge=1, le=100),
+    question_service: AbstractQuestionService = Depends(get_question_service),
+    log: BoundLogger = Depends(get_logger),
+):
+    try:
+        log.debug("trying to get question groups")
+        question_groups = await question_service.get_random_groups(game_name=game_name, round_=round_, limit=limit)
+        return QuestionGroups(groups=question_groups)
+    except GameNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error_message": str(e), "error_code": "game_not_found"},
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_message": str(e), "error_code": "format_error"},
+        )
+    except InvalidLimit as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_message": str(e), "error_code": "query_format_error"},
+        )
+    except Exception:
+        log.exception("failed to get question groups")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error_message": "failed to get question groups",
+                "error_code": "failed_get_question_groups",
+            },
         )
 
 

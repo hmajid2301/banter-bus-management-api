@@ -1,9 +1,11 @@
 import abc
-from typing import List
+from typing import List, Optional
+
+from beanie.operators import GT, Exists
 
 from app.core.repository import AbstractRepository
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
-from app.question.question_models import NewQuestion, Question
+from app.question.question_models import NewQuestion, Question, QuestionGroups
 
 
 class AbstractQuestionRepository(AbstractRepository[Question]):
@@ -21,6 +23,24 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
 
     @abc.abstractmethod
     async def remove_translation(self, question_id: str, language_code: str):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> List[str]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_random(self, game_name: str, round_: str, language_code: str, limit: int) -> List[Question]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_questions_in_group(
+        self, game_name: str, round_: str, language_code: str, group_name: str
+    ) -> List[Question]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def get_groups(self, game_name: str, round_: str) -> List[str]:
         raise NotImplementedError
 
 
@@ -78,3 +98,64 @@ class QuestionRepository(AbstractQuestionRepository):
         except KeyError:
             raise QuestionNotFound(f"{language_code=} not found in question {question_id=}")
         await question.save()
+
+    async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> List[str]:
+        questions = (
+            await Question.find(Question.game_name == game_name, GT(Question.question_id, cursor))
+            .limit(limit)
+            .to_list()
+        )
+        question_ids = [question.question_id for question in questions]
+        return question_ids
+
+    async def get_random(self, game_name: str, round_: str, language_code: str, limit: int) -> List[Question]:
+        questions = (
+            await Question.find(
+                Question.game_name == game_name,
+                Question.round_ == round_,
+                Exists(Question.content[language_code], True),
+            )
+            .aggregate(
+                [
+                    {
+                        "$sample": {"size": limit},
+                    },
+                ],
+                projection_model=Question,
+            )
+            .to_list()
+        )
+
+        return questions
+
+    async def get_questions_in_group(
+        self, game_name: str, round_: str, language_code: str, group_name: str
+    ) -> List[Question]:
+        questions = await Question.find(
+            Question.game_name == game_name,
+            Question.round_ == round_,
+            Question.group.name == group_name,  # type: ignore
+            Exists(Question.content[language_code], True),
+        ).to_list()
+        return questions
+
+    async def get_groups(self, game_name: str, round_: str) -> List[str]:
+        # TODO: move to when fixed https://github.com/roman-right/beanie/issues/133
+        question_groups_list: List[QuestionGroups] = (
+            await Question.find(Question.game_name == game_name, Question.round_ == round_)
+            .aggregate(
+                [
+                    {
+                        "$group": {
+                            "_id": 1,
+                            "groups": {"$addToSet": "$group.name"},
+                        },
+                    },
+                ],
+                projection_model=QuestionGroups,
+            )
+            .to_list()
+        )
+
+        question_groups = question_groups_list[0]
+        return question_groups.groups

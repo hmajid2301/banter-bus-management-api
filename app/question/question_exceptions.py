@@ -15,3 +15,7 @@ class QuestionExistsException(ExistsException):
 
 class InvalidLanguageCode(IncorrectFormatException):
     pass
+
+
+class InvalidLimit(IncorrectFormatException):
+    pass
