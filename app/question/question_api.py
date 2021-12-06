@@ -13,8 +13,6 @@ from app.question.question_api_models import (
     QuestionOut,
     QuestionPaginationOut,
     QuestionSimpleOut,
-    QuestionTranslationIn,
-    QuestionTranslationOut,
 )
 from app.question.question_exceptions import (
     InvalidLanguageCode,
@@ -25,11 +23,13 @@ from app.question.question_exceptions import (
 from app.question.question_factory import get_question_service
 from app.question.question_models import Question
 from app.question.question_service import AbstractQuestionService
+from app.question.translation.question_api import router as translation_router
 
 router = APIRouter(
     prefix="/game/{game_name}/question",
     tags=["questions"],
 )
+router.include_router(translation_router)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=QuestionOut, response_model_exclude_none=True)
@@ -67,6 +67,49 @@ async def add_question(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={"error_message": f"failed to add question {question=}", "error_code": "failed_create_question"},
+        )
+
+
+@router.get(
+    ":random",
+    status_code=status.HTTP_200_OK,
+    response_model=List[QuestionSimpleOut],
+)
+async def get_random_questions(
+    game_name: str,
+    round_: str = Query(None, alias="round"),
+    language_code: str = "en",
+    group_name: Optional[str] = None,
+    limit: int = Query(5, ge=1, le=100),
+    question_service: AbstractQuestionService = Depends(get_question_service),
+    log: BoundLogger = Depends(get_logger),
+):
+    try:
+        log.debug("trying to get random questions")
+        random_questions = await question_service.get_random(
+            game_name=game_name, round_=round_, language_code=language_code, group_name=group_name, limit=limit
+        )
+        return random_questions
+    except GameNotFound as e:
+        log.warning("game not found", game_name=game_name)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error_message": str(e), "error_code": "game_not_found"},
+        )
+    except InvalidLimit as e:
+        log.warning("invalid limit", error=e)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_message": str(e), "error_code": "query_format_error"},
+        )
+    except Exception:
+        log.exception("failed to get random questions")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error_message": "failed to get random questions",
+                "error_code": "failed_get_random_question",
+            },
         )
 
 
@@ -110,49 +153,6 @@ async def get_question_ids(
             detail={
                 "error_message": "failed to get question ids",
                 "error_code": "failed_get_question_ids",
-            },
-        )
-
-
-@router.get(
-    ":random",
-    status_code=status.HTTP_200_OK,
-    response_model=List[QuestionSimpleOut],
-)
-async def get_random_questions(
-    game_name: str,
-    round_: str = Query(None, alias="round"),
-    language_code: str = "en",
-    group_name: Optional[str] = None,
-    limit: int = Query(5, ge=1, le=100),
-    question_service: AbstractQuestionService = Depends(get_question_service),
-    log: BoundLogger = Depends(get_logger),
-):
-    try:
-        log.debug("trying to get random questions")
-        random_questions = await question_service.get_random(
-            game_name=game_name, round_=round_, language_code=language_code, group_name=group_name, limit=limit
-        )
-        return random_questions
-    except GameNotFound as e:
-        log.warning("game not found", game_name=game_name)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "game_not_found"},
-        )
-    except InvalidLimit as e:
-        log.warning("invalid limit", error=e)
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"error_message": str(e), "error_code": "query_format_error"},
-        )
-    except Exception:
-        log.exception("failed to get random questions")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "error_message": "failed to get random questions",
-                "error_code": "failed_get_random_question",
             },
         )
 
@@ -333,155 +333,5 @@ async def _update_enable_status(
             detail={
                 "error_message": f"failed to update game {question_id=} enabled status to {enabled=}",
                 "error_code": "failed_update_question_enable",
-            },
-        )
-
-
-@router.post(
-    "/{question_id}/{language_code}",
-    status_code=status.HTTP_201_CREATED,
-    response_model=QuestionOut,
-    response_model_exclude_none=True,
-)
-async def add_question_translation(
-    game_name: str,
-    question_id: str,
-    language_code: str,
-    question_translation: QuestionTranslationIn,
-    question_service: AbstractQuestionService = Depends(get_question_service),
-    log: BoundLogger = Depends(get_logger),
-):
-    try:
-        log.debug("trying to add a question translation")
-        content = question_translation.content
-        question = await question_service.add_translation(
-            question_id=question_id, game_name=game_name, language_code=language_code, content=content
-        )
-        return question
-    except QuestionNotFound as e:
-        log.warning("question not found", question_id=question_id)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "question_not_found"},
-        )
-    except GameNotFound as e:
-        log.warning("game not found", game_name=game_name)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "game_not_found"},
-        )
-    except QuestionExistsException as e:
-        log.warning("question already exists", language_code=language_code, question=question_translation.dict())
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={"error_message": str(e), "error_code": "question_already_exists"},
-        )
-    except InvalidLanguageCode as e:
-        log.warning("invalid language code", language_code=language_code)
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"error_message": str(e), "error_code": "question_format_error"},
-        )
-    except Exception:
-        log.exception("failed to add a question translation")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "error_message": f"failed to add question {question_id=} {language_code=}",
-                "error_code": "failed_add_question_translation",
-            },
-        )
-
-
-@router.get(
-    "/{question_id}/{language_code}",
-    status_code=status.HTTP_200_OK,
-    response_model=QuestionTranslationOut,
-    response_model_exclude_none=True,
-)
-async def get_question_translation(
-    game_name: str,
-    question_id: str,
-    language_code: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
-    log: BoundLogger = Depends(get_logger),
-):
-    try:
-        log.debug("trying to get a question translation")
-        question = await question_service.get_translation(
-            question_id=question_id, game_name=game_name, language_code=language_code
-        )
-        return question
-    except QuestionNotFound as e:
-        log.warning("question not found", question_id=question_id)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "question_not_found"},
-        )
-    except GameNotFound as e:
-        log.warning("game not found", game_name=game_name)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "game_not_found"},
-        )
-    except InvalidLanguageCode as e:
-        log.warning("invalid language code", language_code=language_code)
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"error_message": str(e), "error_code": "question_format_error"},
-        )
-    except Exception:
-        log.exception("failed to get a question translation")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "error_message": f"failed to get question {question_id=} {language_code=}",
-                "error_code": "failed_get_question_translation",
-            },
-        )
-
-
-@router.delete(
-    "/{question_id}/{language_code}",
-    status_code=status.HTTP_200_OK,
-)
-async def remove_question_translation(
-    game_name: str,
-    question_id: str,
-    language_code: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
-    log: BoundLogger = Depends(get_logger),
-):
-    try:
-        log.debug("trying to remove a question translation")
-        question = await question_service.remove_translation(
-            question_id=question_id, game_name=game_name, language_code=language_code
-        )
-        return question
-    except QuestionNotFound as e:
-        log.warning("question not found", question_id=question_id)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "question_not_found"},
-        )
-    except GameNotFound as e:
-        log.warning("game not found", game_name=game_name)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "game_not_found"},
-        )
-    except InvalidLanguageCode as e:
-        log.warning("invalid language code", language_code=language_code)
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"error_message": str(e), "error_code": "question_format_error"},
-        )
-    except Exception:
-        log.exception("failed to remove a question translation")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "error_message": f"failed to get question {question_id=} {language_code=}",
-                "error_code": "failed_remove_question_translation",
             },
         )
