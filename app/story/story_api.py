@@ -26,16 +26,19 @@ async def add_story(
         new_story = await story_service.add(story=story.dict())
         return new_story.dict()
     except GameNotFound as e:
+        log.warning("game not found")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": str(e), "error_code": "game_not_found"},
         )
     except GameNotEnabledError as e:
+        log.warning(f"{story.game_name=} not enabled")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={"error_message": str(e), "error_code": "game_not_enabled"},
         )
     except (ValidationError, ValueError) as e:
+        log.warning("validation error, creating story")
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"error_message": str(e), "error_code": "story_format_error"},
@@ -60,6 +63,7 @@ async def get_story(
         story = await story_service.get(story_id=story_id)
         return story.dict()
     except StoryNotFound:
+        log.warning("story not found")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": f"story {story_id=} does not exist", "error_code": "story_does_not_exist"},
@@ -86,6 +90,7 @@ async def delete_story(
         log.debug("trying to delete story")
         await story_service.remove(story_id=story_id)
     except StoryNotFound:
+        log.warning("story not found")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": f"story {story_id=} does not exist", "error_code": "story_does_not_exist"},
