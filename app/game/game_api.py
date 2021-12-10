@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.param_functions import Query
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger
+from app.factory import get_logger, get_write_scopes
 from app.game.game_api_models import GameIn, GameOut
 from app.game.game_exceptions import GameExists, GameNotFound, InvalidGameFilter
 from app.game.game_factory import get_game_service
@@ -17,7 +17,13 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=GameOut, include_in_schema=False)
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+    response_model=GameOut,
+    include_in_schema=False,
+    dependencies=[Depends(get_write_scopes)],
+)
 async def add_game(
     game: GameIn, game_service: AbstractGameService = Depends(get_game_service), log: BoundLogger = Depends(get_logger)
 ):
@@ -42,7 +48,9 @@ async def add_game(
         )
 
 
-@router.delete("/{game_name}", status_code=status.HTTP_200_OK, include_in_schema=False)
+@router.delete(
+    "/{game_name}", status_code=status.HTTP_200_OK, include_in_schema=False, dependencies=[Depends(get_write_scopes)]
+)
 async def remove_game(
     game_name: str,
     game_service: AbstractGameService = Depends(get_game_service),
@@ -130,6 +138,7 @@ async def get_game(
     "/{game_name}:enable",
     status_code=status.HTTP_200_OK,
     response_model=GameOut,
+    dependencies=[Depends(get_write_scopes)],
 )
 async def enable_game(
     game_name: str,
@@ -144,6 +153,7 @@ async def enable_game(
     "/{game_name}:disable",
     status_code=status.HTTP_200_OK,
     response_model=GameOut,
+    dependencies=[Depends(get_write_scopes)],
 )
 async def disabled_game(
     game_name: str,

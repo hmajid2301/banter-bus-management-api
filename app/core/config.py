@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     WEB_HOST: str = "0.0.0.0"
     WEB_PORT: int = 8080
 
+    AUTH0_DOMAIN: str
+    AUTH0_CUSTOM_API: str
+
     class Config:
         env_prefix = "BANTER_BUS_MANAGEMENT_API_"
         env_file = ".env"

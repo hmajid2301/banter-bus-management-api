@@ -5,7 +5,7 @@ from fastapi.param_functions import Query
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger
+from app.factory import get_logger, get_read_scopes, get_write_scopes
 from app.game.game_exceptions import GameNotFound
 from app.question.question_api_models import (
     QuestionGroups,
@@ -32,7 +32,13 @@ router = APIRouter(
 router.include_router(translation_router)
 
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=QuestionOut, response_model_exclude_none=True)
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+    response_model=QuestionOut,
+    response_model_exclude_none=True,
+    dependencies=[Depends(get_write_scopes)],
+)
 async def add_question(
     game_name: str,
     question: QuestionIn,
@@ -118,6 +124,7 @@ async def get_random_questions(
     status_code=status.HTTP_200_OK,
     response_model=QuestionPaginationOut,
     response_model_exclude_none=True,
+    dependencies=[Depends(get_read_scopes)],
 )
 async def get_question_ids(
     game_name: str,
@@ -203,7 +210,11 @@ async def get_random_groups(
 
 
 @router.get(
-    "/{question_id}", status_code=status.HTTP_200_OK, response_model=QuestionOut, response_model_exclude_none=True
+    "/{question_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=QuestionOut,
+    response_model_exclude_none=True,
+    dependencies=[Depends(get_read_scopes)],
 )
 async def get_question(
     game_name: str,
@@ -235,7 +246,11 @@ async def get_question(
         )
 
 
-@router.delete("/{question_id}", status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{question_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(get_write_scopes)],
+)
 async def remove_question(
     game_name: str,
     question_id: str,
@@ -273,6 +288,7 @@ async def remove_question(
     status_code=status.HTTP_200_OK,
     response_model=QuestionOut,
     response_model_exclude_none=True,
+    dependencies=[Depends(get_write_scopes)],
 )
 async def enable_question(
     game_name: str,
@@ -291,6 +307,7 @@ async def enable_question(
     status_code=status.HTTP_200_OK,
     response_model=QuestionOut,
     response_model_exclude_none=True,
+    dependencies=[Depends(get_write_scopes)],
 )
 async def disable_question(
     game_name: str,

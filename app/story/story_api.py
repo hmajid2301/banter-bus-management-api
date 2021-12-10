@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger
+from app.factory import get_logger, get_write_scopes
 from app.game.game_exceptions import GameNotEnabledError, GameNotFound
 from app.story.story_api_models import StoryIn, StoryOut
 from app.story.story_exceptions import StoryNotFound
@@ -79,6 +79,7 @@ async def get_story(
 @router.delete(
     "/{story_id}",
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(get_write_scopes)],
 )
 async def delete_story(
     story_id: str,
