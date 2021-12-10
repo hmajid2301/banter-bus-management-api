@@ -3,7 +3,7 @@ from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
 from app.factory import get_logger, get_write_scopes
-from app.game.game_exceptions import GameNotEnabledError, GameNotFound
+from app.game.game_exceptions import GameNotEnabledError
 from app.story.story_api_models import StoryIn, StoryOut
 from app.story.story_exceptions import StoryNotFound
 from app.story.story_factory import get_story_service
@@ -25,12 +25,6 @@ async def add_story(
         log.debug("trying to add new story")
         new_story = await story_service.add(story=story.dict())
         return new_story.dict()
-    except GameNotFound as e:
-        log.warning("game not found")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error_message": str(e), "error_code": "game_not_found"},
-        )
     except GameNotEnabledError as e:
         log.warning(f"{story.game_name=} not enabled")
         raise HTTPException(
@@ -42,12 +36,6 @@ async def add_story(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"error_message": str(e), "error_code": "story_format_error"},
-        )
-    except Exception:
-        log.exception("failed to add new story")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"error_message": f"failed to add story {story.game_name=}", "error_code": "failed_create_story"},
         )
 
 
@@ -67,12 +55,6 @@ async def get_story(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": f"story {story_id=} does not exist", "error_code": "story_does_not_exist"},
-        )
-    except Exception:
-        log.exception("failed to get story")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"error_message": f"failed to get story {story_id=}", "error_code": "failed_get_story"},
         )
 
 
@@ -95,10 +77,4 @@ async def delete_story(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error_message": f"story {story_id=} does not exist", "error_code": "story_does_not_exist"},
-        )
-    except Exception:
-        log.exception("failed to delete story")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"error_message": f"failed to delete story {story_id=}", "error_code": "failed_remove_story"},
         )

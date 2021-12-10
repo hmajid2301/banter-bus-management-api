@@ -51,7 +51,7 @@ class QuestionRepository(AbstractQuestionRepository):
     async def get(self, question_id: str) -> Question:
         question = await Question.find_one(Question.question_id == question_id)
         if not question:
-            raise QuestionNotFound(f"unable to find {question_id=}")
+            raise QuestionNotFound(question_id=question_id)
 
         return question
 
@@ -96,7 +96,7 @@ class QuestionRepository(AbstractQuestionRepository):
         try:
             del question.content[language_code]
         except KeyError:
-            raise QuestionNotFound(f"{language_code=} not found in question {question_id=}")
+            raise QuestionNotFound(question_id=question_id, language_code=language_code)
         await question.save()
 
     async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> List[str]:

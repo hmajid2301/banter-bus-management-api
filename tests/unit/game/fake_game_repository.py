@@ -41,17 +41,12 @@ class FakeGameRepository(AbstractGameRepository):
         else:
             raise GameNotFound("game not found")
 
-    async def get_all_game_names(self) -> List[str]:
+    async def get_all_game_names(self, enabled: bool = None) -> List[str]:
         names: List[str] = []
         for game in self.games:
-            names.append(game.name)
-
-        return names
-
-    async def get_all_game_names_filter_on_enabled_status(self, enabled: bool) -> List[str]:
-        names: List[str] = []
-        for game in self.games:
-            if game.enabled == enabled:
+            if enabled is not None and game.enabled == enabled:
+                names.append(game.name)
+            elif enabled is None:
                 names.append(game.name)
 
         return names

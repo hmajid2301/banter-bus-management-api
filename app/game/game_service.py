@@ -1,5 +1,5 @@
 import abc
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from pymongo.errors import DuplicateKeyError
 
@@ -52,14 +52,15 @@ class GameService(AbstractGameService):
         return game
 
     async def get_game_names(self, filter: str) -> List[str]:
-        filter_map: Dict[str, List[str]] = {
-            "all": await self.game_repository.get_all_game_names(),
-            "enabled": await self.game_repository.get_all_game_names_filter_on_enabled_status(enabled=True),
-            "disabled": await self.game_repository.get_all_game_names_filter_on_enabled_status(enabled=False),
+        filter_map: Dict[str, Union[bool, None]] = {
+            "all": None,
+            "enabled": True,
+            "disabled": False,
         }
 
         try:
-            game_names = filter_map[filter]
+            filter_bool = filter_map[filter]
+            game_names = await self.game_repository.get_all_game_names(enabled=filter_bool)
             return game_names
         except KeyError:
             raise InvalidGameFilter(f"invalid {filter=} must be one of {', '.join(filter_map.keys())}")

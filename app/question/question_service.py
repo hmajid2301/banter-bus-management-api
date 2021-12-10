@@ -127,7 +127,7 @@ class QuestionService(AbstractQuestionService):
             question_dict["content"] = content
             single_content_question = QuestionTranslation(**question_dict, language_code=language_code)
         except KeyError:
-            raise QuestionNotFound(f"{language_code} does not exist for question {question_id}")
+            raise QuestionNotFound(question_id=question_id, language_code=language_code)
 
         return single_content_question
 
@@ -139,7 +139,7 @@ class QuestionService(AbstractQuestionService):
     async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> QuestionIDsPagination:
         get_game(game_name=game_name)
         if limit < 1:
-            raise InvalidLimit(f"expected limit to be > 0, however received {limit=}")
+            raise InvalidLimit(limit=limit, min=0)
 
         question_ids = await self.question_repository.get_ids(game_name=game_name, limit=limit, cursor=cursor)
         new_cursor = None
@@ -154,7 +154,7 @@ class QuestionService(AbstractQuestionService):
     ) -> List[QuestionSimple]:
         game = get_game(game_name=game_name)
         if limit < 1:
-            raise InvalidLimit(f"expected limit to be > 0, however received {limit=}")
+            raise InvalidLimit(limit=limit, min=0)
 
         if group_name:
             questions = await self.question_repository.get_questions_in_group(
@@ -180,7 +180,7 @@ class QuestionService(AbstractQuestionService):
         game_round_has_groups = game.has_groups(round_=round_)
 
         if limit < 0:
-            raise InvalidLimit("limit must be greater than 0")
+            raise InvalidLimit(limit=limit, min=0)
 
         random_groups: List[str] = []
         if game_round_has_groups:
@@ -195,4 +195,4 @@ class QuestionService(AbstractQuestionService):
     def _validate_language_code(language_code: str):
         lang = languagecodes.iso_639_alpha2(language_code)
         if lang is None:
-            raise InvalidLanguageCode(f"invalid {language_code=}")
+            raise InvalidLanguageCode(language_code=language_code)
