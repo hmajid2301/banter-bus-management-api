@@ -4,7 +4,7 @@ from typing import List
 from pymongo.errors import DuplicateKeyError
 
 from app.core.repository import AbstractRepository
-from app.game.game_exceptions import GameExists, GameNotFound
+from app.game.game_exceptions import GameExistsException, GameNotFound
 from app.game.game_models import Game
 
 
@@ -23,7 +23,7 @@ class GameRepository(AbstractGameRepository):
         try:
             await Game.insert(game)
         except DuplicateKeyError:
-            raise GameExists(f"game {game.name=} already exists")
+            raise GameExistsException(f"game {game.name=} already exists")
 
     async def get(self, game_name: str) -> Game:
         game = await Game.find_one(Game.name == game_name)

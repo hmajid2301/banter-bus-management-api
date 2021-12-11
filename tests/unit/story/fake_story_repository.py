@@ -1,6 +1,6 @@
 from typing import List
 
-from app.story.story_exceptions import StoryExists, StoryNotFound
+from app.story.story_exceptions import StoryExistsException, StoryNotFound
 from app.story.story_models import Story
 from app.story.story_repository import AbstractStoryRepository
 
@@ -12,7 +12,7 @@ class FakeStoryRepository(AbstractStoryRepository):
     async def add(self, new_story: Story):
         for story in self.stories:
             if story.story_id == new_story.story_id:
-                raise StoryExists("story already exists")
+                raise StoryExistsException("story already exists")
         else:
             self.stories.append(new_story)
 

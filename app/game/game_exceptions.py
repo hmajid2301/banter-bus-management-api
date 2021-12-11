@@ -10,7 +10,7 @@ class GameNotFound(NotFoundException):
         self.game_name = game_name
 
 
-class GameExists(ExistsException):
+class GameExistsException(ExistsException):
     pass
 
 

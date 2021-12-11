@@ -1,6 +1,6 @@
 from typing import List
 
-from app.game.game_exceptions import GameExists, GameNotFound
+from app.game.game_exceptions import GameExistsException, GameNotFound
 from app.game.game_models import Game
 from app.game.game_repository import AbstractGameRepository
 
@@ -12,7 +12,7 @@ class FakeGameRepository(AbstractGameRepository):
     async def add(self, new_game: Game):
         for game in self.games:
             if game.name == new_game.name:
-                raise GameExists("game already exists")
+                raise GameExistsException("game already exists")
         else:
             self.games.append(new_game)
 

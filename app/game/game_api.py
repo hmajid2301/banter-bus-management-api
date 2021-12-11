@@ -7,7 +7,7 @@ from structlog.stdlib import BoundLogger
 from app.core.logger import get_logger
 from app.factory import get_write_scopes
 from app.game.game_api_models import GameIn, GameOut
-from app.game.game_exceptions import GameExists, InvalidGameFilter
+from app.game.game_exceptions import GameExistsException, InvalidGameFilter
 from app.game.game_factory import get_game_service
 from app.game.game_models import Game
 from app.game.game_service import AbstractGameService
@@ -35,7 +35,7 @@ async def add_game(
             game_name=game.name, rules_url=game.rules_url, description=game.description, display_name=game.display_name
         )
         return new_game
-    except GameExists:
+    except GameExistsException:
         log.warning("game already exists")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

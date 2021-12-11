@@ -3,7 +3,11 @@ from typing import List
 import pytest
 from pytest_mock import MockFixture
 
-from app.game.game_exceptions import GameExists, GameNotFound, InvalidGameFilter
+from app.game.game_exceptions import (
+    GameExistsException,
+    GameNotFound,
+    InvalidGameFilter,
+)
 from app.game.game_models import Game
 from app.game.game_service import GameService
 from tests.unit.factories import GameFactory
@@ -53,7 +57,7 @@ async def test_add_game_that_exists():
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
 
-    with pytest.raises(GameExists):
+    with pytest.raises(GameExistsException):
         await game_service.add(
             game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
         )

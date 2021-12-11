@@ -9,7 +9,7 @@ class StoryNotFound(NotFoundException):
     pass
 
 
-class StoryExists(ExistsException):
+class StoryExistsException(ExistsException):
     pass
 
 
