@@ -100,7 +100,7 @@ dev = ["mypy", "wheel"]
 
 [[package]]
 name = "beanie"
-version = "1.8.2"
+version = "1.8.5"
 description = "Asynchronous Python ODM for MongoDB"
 category = "main"
 optional = false
@@ -1061,8 +1061,8 @@ banal = [
     {file = "banal-1.0.6.tar.gz", hash = "sha256:2fe02c9305f53168441948f4a03dfbfa2eacc73db30db4a93309083cb0e250a5"},
 ]
 beanie = [
-    {file = "beanie-1.8.2-py3-none-any.whl", hash = "sha256:8f96bc33aba468ed62bc32c3db0a6eee2c1f12997cc96120c8ef9711319a9388"},
-    {file = "beanie-1.8.2.tar.gz", hash = "sha256:c3a17df39f78e7d985d7a9ef82eaedc2cae19ec55f7dae26e67832ee5128ded0"},
+    {file = "beanie-1.8.5-py3-none-any.whl", hash = "sha256:e7468926c419ae5996d626798ba6b99d6c687a7775db4e9061ef2214bc261a58"},
+    {file = "beanie-1.8.5.tar.gz", hash = "sha256:e72e96328de8616337e894d1e329ec5d6154a0dc3bc4ec03a9d4a72a4462d058"},
 ]
 black = [
     {file = "black-21.11b1-py3-none-any.whl", hash = "sha256:802c6c30b637b28645b7fde282ed2569c0cd777dbe493a41b6a03c1d903f99ac"},
