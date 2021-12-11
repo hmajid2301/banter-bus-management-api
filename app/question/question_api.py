@@ -5,7 +5,8 @@ from fastapi.param_functions import Query
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger, get_read_scopes, get_write_scopes
+from app.core.logger import get_logger
+from app.factory import get_read_scopes, get_write_scopes
 from app.question.question_api_models import (
     QuestionGroups,
     QuestionIn,

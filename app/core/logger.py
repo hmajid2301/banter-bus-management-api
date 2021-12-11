@@ -4,7 +4,7 @@ import structlog
 from structlog.stdlib import BoundLogger
 
 
-def get_struct_logger(log_level: str) -> BoundLogger:
+def setup_logger(log_level: str):
     logging.getLogger(__name__).setLevel(log_level)
     structlog.configure(
         processors=[
@@ -20,5 +20,7 @@ def get_struct_logger(log_level: str) -> BoundLogger:
         cache_logger_on_first_use=False,
     )
 
+
+def get_logger() -> BoundLogger:
     log = structlog.get_logger()
     return log

@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from motor import motor_asyncio
 
 from app.core.config import get_settings
-from app.factory import get_logger
+from app.core.logger import get_logger, setup_logger
 from app.game import game_api
 from app.game.game_exceptions import add_game_exceptions
 from app.game.game_models import Game
@@ -21,6 +21,7 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup():
     config = get_settings()
+    log = setup_logger(config.LOG_LEVEL)
     uri = config.get_mongodb_uri()
     client = motor_asyncio.AsyncIOMotorClient(uri)
     await init_beanie(database=client[config.DB_NAME], document_models=[Game, Story, Question])

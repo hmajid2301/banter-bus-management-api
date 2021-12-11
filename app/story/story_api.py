@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger, get_write_scopes
+from app.core.logger import get_logger
+from app.factory import get_write_scopes
 from app.game.game_exceptions import GameNotEnabledError
 from app.story.story_api_models import StoryIn, StoryOut
 from app.story.story_exceptions import StoryNotFound

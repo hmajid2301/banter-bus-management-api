@@ -8,7 +8,7 @@ from app.core.exceptions import (
     IncorrectFormatException,
     NotFoundException,
 )
-from app.factory import get_logger
+from app.core.logger import get_logger
 
 
 class QuestionNotFound(NotFoundException):

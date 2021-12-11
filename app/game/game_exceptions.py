@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from app.core.exceptions import ExistsException, InvalidFilter, NotFoundException
-from app.factory import get_logger
+from app.core.logger import get_logger
 
 
 class GameNotFound(NotFoundException):

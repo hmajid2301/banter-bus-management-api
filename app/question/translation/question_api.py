@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger, get_read_scopes, get_write_scopes
+from app.core.logger import get_logger
+from app.factory import get_read_scopes, get_write_scopes
 from app.question.question_api_models import QuestionOut
 from app.question.question_exceptions import QuestionExistsException
 from app.question.question_factory import get_question_service

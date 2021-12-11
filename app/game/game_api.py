@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.param_functions import Query
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_logger, get_write_scopes
+from app.core.logger import get_logger
+from app.factory import get_write_scopes
 from app.game.game_api_models import GameIn, GameOut
 from app.game.game_exceptions import GameExists, InvalidGameFilter
 from app.game.game_factory import get_game_service
