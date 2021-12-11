@@ -1,10 +1,7 @@
 import abc
 import uuid
 
-from pymongo.errors import DuplicateKeyError
-
 from app.game.games.game import get_game
-from app.story.story_exceptions import StoryExists
 from app.story.story_models import Story
 from app.story.story_repository import AbstractStoryRepository
 
@@ -29,14 +26,11 @@ class StoryService(AbstractStoryService):
 
     async def add(self, story: dict) -> Story:
         id_ = str(uuid.uuid4())
-        try:
-            new_story = Story(**story, story_id=id_)
-            self._validate_story(story=new_story)
+        new_story = Story(**story, story_id=id_)
+        self._validate_story(story=new_story)
 
-            await self.story_repository.add(new_story)
-            return new_story
-        except DuplicateKeyError:
-            raise StoryExists(f"story {id_=} already exists")
+        await self.story_repository.add(new_story)
+        return new_story
 
     def _validate_story(self, story: Story):
         game_name = story.game_name

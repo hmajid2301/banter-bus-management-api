@@ -1,8 +1,10 @@
 import abc
 from typing import List
 
+from pymongo.errors import DuplicateKeyError
+
 from app.core.repository import AbstractRepository
-from app.game.game_exceptions import GameNotFound
+from app.game.game_exceptions import GameExists, GameNotFound
 from app.game.game_models import Game
 
 
@@ -18,7 +20,10 @@ class AbstractGameRepository(AbstractRepository[Game]):
 
 class GameRepository(AbstractGameRepository):
     async def add(self, game: Game):
-        await Game.insert(game)
+        try:
+            await Game.insert(game)
+        except DuplicateKeyError:
+            raise GameExists(f"game {game.name=} already exists")
 
     async def get(self, game_name: str) -> Game:
         game = await Game.find_one(Game.name == game_name)

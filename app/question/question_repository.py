@@ -2,6 +2,7 @@ import abc
 from typing import List, Optional
 
 from beanie.operators import GT, Exists
+from pymongo.errors import DuplicateKeyError
 
 from app.core.repository import AbstractRepository
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
@@ -46,7 +47,10 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
 
 class QuestionRepository(AbstractQuestionRepository):
     async def add(self, question: Question):
-        await Question.insert(question)
+        try:
+            await Question.insert(question)
+        except DuplicateKeyError:
+            raise QuestionExistsException(f"question {question.question_id=} already exists")
 
     async def get(self, question_id: str) -> Question:
         question = await Question.find_one(Question.question_id == question_id)

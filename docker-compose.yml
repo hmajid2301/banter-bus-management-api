@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api:
-    container_name: banter-bus-api
+    container_name: banter-bus-management-api
     build:
       context: .
       dockerfile: Dockerfile

@@ -4,7 +4,6 @@ import uuid
 from typing import List, Optional
 
 import languagecodes
-from pymongo.errors import DuplicateKeyError
 
 from app.game.games.game import get_game
 from app.question.question_exceptions import (
@@ -74,19 +73,17 @@ class QuestionService(AbstractQuestionService):
     async def add(self, question_dict: dict) -> Question:
         id_ = str(uuid.uuid4())
         question = NewQuestion(**question_dict)
-        try:
-            self._validate_question(question=question)
-            exists = await self.question_repository.does_question_exist(new_question=question)
-            if exists:
-                raise QuestionExistsException(f"question {question_dict} already exists")
 
-            new_question_dict = {**question_dict, "content": {question.language_code: question.content}}
-            new_question = Question(**new_question_dict, question_id=id_)
+        self._validate_question(question=question)
+        exists = await self.question_repository.does_question_exist(new_question=question)
+        if exists:
+            raise QuestionExistsException(f"question {question_dict} already exists")
 
-            await self.question_repository.add(new_question)
-            return new_question
-        except DuplicateKeyError:
-            raise QuestionExistsException(f"question {id_=} already exists")
+        new_question_dict = {**question_dict, "content": {question.language_code: question.content}}
+        new_question = Question(**new_question_dict, question_id=id_)
+
+        await self.question_repository.add(new_question)
+        return new_question
 
     def _validate_question(self, question: NewQuestion):
         game_name = question.game_name

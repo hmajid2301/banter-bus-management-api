@@ -46,7 +46,7 @@ RUN poetry install
 WORKDIR /app
 
 EXPOSE 8000
-CMD ["uvicorn", "--reload", "main:app"]
+CMD ["uvicorn", "--reload", "app.main:app"]
 
 
 FROM python-base as production
@@ -56,4 +56,4 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./app /app/
 
 WORKDIR /app
-CMD ["uvicorn", "main:app"]
+CMD ["uvicorn", "app.main:app"]

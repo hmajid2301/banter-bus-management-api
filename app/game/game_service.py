@@ -1,9 +1,7 @@
 import abc
 from typing import Dict, List, Union
 
-from pymongo.errors import DuplicateKeyError
-
-from app.game.game_exceptions import GameExists, InvalidGameFilter
+from app.game.game_exceptions import InvalidGameFilter
 from app.game.game_models import Game
 from app.game.game_repository import AbstractGameRepository
 
@@ -35,14 +33,11 @@ class GameService(AbstractGameService):
         self.game_repository = game_repository
 
     async def add(self, game_name: str, rules_url: str, description: str, display_name: str) -> Game:
-        try:
-            new_game = Game(
-                name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
-            )
-            await self.game_repository.add(new_game)
-            return new_game
-        except DuplicateKeyError:
-            raise GameExists(f"game {game_name=} already exists")
+        new_game = Game(
+            name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        )
+        await self.game_repository.add(new_game)
+        return new_game
 
     async def remove(self, game_name: str):
         await self.game_repository.remove(game_name)

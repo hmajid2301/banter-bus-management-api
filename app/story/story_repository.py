@@ -1,5 +1,7 @@
+from pymongo.errors import DuplicateKeyError
+
 from app.core.repository import AbstractRepository
-from app.story.story_exceptions import StoryNotFound
+from app.story.story_exceptions import StoryExists, StoryNotFound
 from app.story.story_models import Story
 
 
@@ -9,7 +11,10 @@ class AbstractStoryRepository(AbstractRepository[Story]):
 
 class StoryRepository(AbstractStoryRepository):
     async def add(self, story: Story):
-        await Story.insert(story)
+        try:
+            await Story.insert(story)
+        except DuplicateKeyError:
+            raise StoryExists(f"story {story.story_id=} already exists")
 
     async def get(self, story_id: str) -> Story:
         story = await Story.find_one(Story.story_id == story_id)
