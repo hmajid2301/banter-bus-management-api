@@ -24,6 +24,7 @@ router = APIRouter(
     response_model=QuestionOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="add_question_translation",
 )
 async def add_question_translation(
     game_name: str,
@@ -54,6 +55,7 @@ async def add_question_translation(
     response_model=QuestionTranslationOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_read_scopes)],
+    operation_id="get_question_translation",
 )
 async def get_question_translation(
     game_name: str,
@@ -73,6 +75,7 @@ async def get_question_translation(
     "",
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="remove_question_translation",
 )
 async def remove_question_translation(
     game_name: str,

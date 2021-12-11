@@ -16,7 +16,13 @@ router = APIRouter(
 )
 
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=StoryOut, response_model_exclude_none=True)
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+    response_model=StoryOut,
+    response_model_exclude_none=True,
+    operation_id="add_story",
+)
 async def add_story(
     story: StoryIn,
     story_service: AbstractStoryService = Depends(get_story_service),
@@ -40,7 +46,13 @@ async def add_story(
         )
 
 
-@router.get("/{story_id}", status_code=status.HTTP_200_OK, response_model=StoryOut, response_model_exclude_none=True)
+@router.get(
+    "/{story_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=StoryOut,
+    response_model_exclude_none=True,
+    operation_id="get_story",
+)
 async def get_story(
     story_id: str,
     story_service: AbstractStoryService = Depends(get_story_service),
@@ -63,8 +75,9 @@ async def get_story(
     "/{story_id}",
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="remove_story",
 )
-async def delete_story(
+async def remove_story(
     story_id: str,
     story_service: AbstractStoryService = Depends(get_story_service),
     log: BoundLogger = Depends(get_logger),

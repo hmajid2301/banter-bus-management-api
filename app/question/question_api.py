@@ -33,6 +33,7 @@ router.include_router(translation_router)
     response_model=QuestionOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="add_question",
 )
 async def add_question(
     game_name: str,
@@ -63,6 +64,7 @@ async def add_question(
     ":random",
     status_code=status.HTTP_200_OK,
     response_model=List[QuestionSimpleOut],
+    operation_id="get_random_questions",
 )
 async def get_random_questions(
     game_name: str,
@@ -86,6 +88,7 @@ async def get_random_questions(
     response_model=QuestionPaginationOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_read_scopes)],
+    operation_id="get_question_ids",
 )
 async def get_question_ids(
     game_name: str,
@@ -107,6 +110,7 @@ async def get_question_ids(
     "/group:random",
     status_code=status.HTTP_200_OK,
     response_model=QuestionGroups,
+    operation_id="get_random_groups",
 )
 async def get_random_groups(
     game_name: str,
@@ -133,6 +137,7 @@ async def get_random_groups(
     response_model=QuestionOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_read_scopes)],
+    operation_id="get_question",
 )
 async def get_question(
     game_name: str,
@@ -149,6 +154,7 @@ async def get_question(
     "/{question_id}",
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="remove_question",
 )
 async def remove_question(
     game_name: str,
@@ -166,6 +172,7 @@ async def remove_question(
     response_model=QuestionOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="enable_question",
 )
 async def enable_question(
     game_name: str,
@@ -185,6 +192,7 @@ async def enable_question(
     response_model=QuestionOut,
     response_model_exclude_none=True,
     dependencies=[Depends(get_write_scopes)],
+    operation_id="disable_question",
 )
 async def disable_question(
     game_name: str,
