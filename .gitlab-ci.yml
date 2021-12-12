@@ -73,6 +73,7 @@ test:coverage:
   extends:
     - .mongo
   script:
+    - cp .env.test .env
     - make coverage
   coverage: '/^TOTAL.+?(\S+\%)$/'
   artifacts:
