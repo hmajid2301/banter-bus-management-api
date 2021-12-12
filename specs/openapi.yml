@@ -1,0 +1,931 @@
+openapi: 3.0.2
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /game:
+    get:
+      tags:
+        - games
+      summary: Get All Game Names
+      operationId: get_all_game_names
+      parameters:
+        - required: false
+          schema:
+            title: Status
+            type: string
+            default: all
+          name: status
+          in: query
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get All Game Names Game Get
+                type: array
+                items:
+                  type: string
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}:
+    get:
+      tags:
+        - games
+      summary: Get Game
+      operationId: get_game
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}:enable:
+    put:
+      tags:
+        - games
+      summary: Enable Game
+      operationId: enable_game
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}:disable:
+    put:
+      tags:
+        - games
+      summary: Disabled Game
+      operationId: disable_game
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /story:
+    post:
+      tags:
+        - stories
+      summary: Add Story
+      operationId: add_story
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoryIn"
+        required: true
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /story/{story_id}:
+    get:
+      tags:
+        - stories
+      summary: Get Story
+      operationId: get_story
+      parameters:
+        - required: true
+          schema:
+            title: Story Id
+            type: string
+          name: story_id
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - stories
+      summary: Remove Story
+      operationId: remove_story
+      parameters:
+        - required: true
+          schema:
+            title: Story Id
+            type: string
+          name: story_id
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question/{question_id}/{language_code}:
+    get:
+      tags:
+        - questions
+        - questions
+      summary: Get Question Translation
+      operationId: get_question_translation
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+        - required: true
+          schema:
+            title: Language Code
+            type: string
+          name: language_code
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionTranslationOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    post:
+      tags:
+        - questions
+        - questions
+      summary: Add Question Translation
+      operationId: add_question_translation
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+        - required: true
+          schema:
+            title: Language Code
+            type: string
+          name: language_code
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionTranslationIn"
+        required: true
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - questions
+        - questions
+      summary: Remove Question Translation
+      operationId: remove_question_translation
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+        - required: true
+          schema:
+            title: Language Code
+            type: string
+          name: language_code
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question:
+    post:
+      tags:
+        - questions
+      summary: Add Question
+      operationId: add_question
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionIn"
+        required: true
+      responses:
+        "201":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question:random:
+    get:
+      tags:
+        - questions
+      summary: Get Random Questions
+      operationId: get_random_questions
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: false
+          schema:
+            title: Round
+            type: string
+          name: round
+          in: query
+        - required: false
+          schema:
+            title: Language Code
+            type: string
+            default: en
+          name: language_code
+          in: query
+        - required: false
+          schema:
+            title: Group Name
+            type: string
+          name: group_name
+          in: query
+        - required: false
+          schema:
+            title: Limit
+            maximum: 100
+            minimum: 1
+            type: integer
+            default: 5
+          name: limit
+          in: query
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get Random Questions Game  Game Name  Question Random Get
+                type: array
+                items:
+                  $ref: "#/components/schemas/QuestionSimpleOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question/id:
+    get:
+      tags:
+        - questions
+      summary: Get Question Ids
+      operationId: get_question_ids
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Cursor
+            type: string
+          name: cursor
+          in: query
+        - required: false
+          schema:
+            title: Limit
+            maximum: 100
+            minimum: 1
+            type: integer
+            default: 5
+          name: limit
+          in: query
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionPaginationOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question/group:random:
+    get:
+      tags:
+        - questions
+      summary: Get Random Groups
+      operationId: get_random_groups
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: false
+          schema:
+            title: Round
+            type: string
+          name: round
+          in: query
+        - required: false
+          schema:
+            title: Limit
+            maximum: 100
+            minimum: 1
+            type: integer
+            default: 5
+          name: limit
+          in: query
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionGroups"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question/{question_id}:
+    get:
+      tags:
+        - questions
+      summary: Get Question
+      operationId: get_question
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+        - questions
+      summary: Remove Question
+      operationId: remove_question
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question/{question_id}:enable:
+    put:
+      tags:
+        - questions
+      summary: Enable Question
+      operationId: enable_question
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /game/{game_name}/question/{question_id}:disable:
+    put:
+      tags:
+        - questions
+      summary: Disable Question
+      operationId: disable_question
+      parameters:
+        - required: true
+          schema:
+            title: Game Name
+            type: string
+          name: game_name
+          in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: string
+          name: question_id
+          in: path
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionOut"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    CaertsianCoordinateColor:
+      title: CaertsianCoordinateColor
+      required:
+        - start
+        - end
+        - color
+      type: object
+      properties:
+        start:
+          $ref: "#/components/schemas/DrawingPoint"
+        end:
+          $ref: "#/components/schemas/DrawingPoint"
+        color:
+          title: Color
+          type: string
+    DrawingPoint:
+      title: DrawingPoint
+      required:
+        - x
+        - "y"
+      type: object
+      properties:
+        x:
+          title: X
+          type: number
+        "y":
+          title: "Y"
+          type: number
+    FibbingItAnswer:
+      title: FibbingItAnswer
+      required:
+        - nickname
+        - answer
+      type: object
+      properties:
+        nickname:
+          title: Nickname
+          type: string
+        answer:
+          title: Answer
+          type: string
+    GameOut:
+      title: GameOut
+      required:
+        - name
+        - display_name
+        - description
+        - enabled
+        - rules_url
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+        display_name:
+          title: Display Name
+          type: string
+        description:
+          title: Description
+          type: string
+        enabled:
+          title: Enabled
+          type: boolean
+        rules_url:
+          title: Rules Url
+          type: string
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationError"
+    QuestionGroup:
+      title: QuestionGroup
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+        type:
+          title: Type
+          type: string
+    QuestionGroups:
+      title: QuestionGroups
+      required:
+        - groups
+      type: object
+      properties:
+        groups:
+          title: Groups
+          type: array
+          items:
+            type: string
+    QuestionIn:
+      title: QuestionIn
+      required:
+        - content
+      type: object
+      properties:
+        round:
+          title: Round
+          type: string
+        content:
+          title: Content
+          type: string
+        language_code:
+          title: Language Code
+          type: string
+          default: en
+        group:
+          $ref: "#/components/schemas/QuestionGroup"
+    QuestionOut:
+      title: QuestionOut
+      required:
+        - question_id
+        - game_name
+        - content
+      type: object
+      properties:
+        question_id:
+          title: Question Id
+          type: string
+        game_name:
+          title: Game Name
+          type: string
+        round:
+          title: Round
+          type: string
+        enabled:
+          title: Enabled
+          type: boolean
+          default: true
+        content:
+          title: Content
+          type: object
+          additionalProperties:
+            type: string
+        group:
+          $ref: "#/components/schemas/QuestionGroup"
+    QuestionPaginationOut:
+      title: QuestionPaginationOut
+      required:
+        - question_ids
+      type: object
+      properties:
+        question_ids:
+          title: Question Ids
+          type: array
+          items:
+            type: string
+        cursor:
+          title: Cursor
+          type: string
+    QuestionSimpleOut:
+      title: QuestionSimpleOut
+      required:
+        - question_id
+        - content
+        - type
+      type: object
+      properties:
+        question_id:
+          title: Question Id
+          type: string
+        content:
+          title: Content
+          type: string
+        type:
+          $ref: "#/components/schemas/QuestionType"
+    QuestionTranslationIn:
+      title: QuestionTranslationIn
+      required:
+        - content
+      type: object
+      properties:
+        content:
+          title: Content
+          type: string
+    QuestionTranslationOut:
+      title: QuestionTranslationOut
+      required:
+        - question_id
+        - game_name
+        - language_code
+        - content
+      type: object
+      properties:
+        question_id:
+          title: Question Id
+          type: string
+        game_name:
+          title: Game Name
+          type: string
+        language_code:
+          title: Language Code
+          type: string
+        round:
+          title: Round
+          type: string
+        enabled:
+          title: Enabled
+          type: boolean
+          default: true
+        content:
+          title: Content
+          type: string
+        group:
+          $ref: "#/components/schemas/QuestionGroup"
+    QuestionType:
+      title: QuestionType
+      enum:
+        - answer
+        - question
+      type: string
+      description: An enumeration.
+    QuiblyAnswer:
+      title: QuiblyAnswer
+      required:
+        - nickname
+        - answer
+        - votes
+      type: object
+      properties:
+        nickname:
+          title: Nickname
+          type: string
+        answer:
+          title: Answer
+          type: string
+        votes:
+          title: Votes
+          type: integer
+    StoryIn:
+      title: StoryIn
+      required:
+        - game_name
+        - question
+        - answers
+      type: object
+      properties:
+        game_name:
+          title: Game Name
+          type: string
+        question:
+          title: Question
+          type: string
+        round:
+          title: Round
+          type: string
+        nickname:
+          title: Nickname
+          type: string
+        answers:
+          title: Answers
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/QuiblyAnswer"
+            - type: array
+              items:
+                $ref: "#/components/schemas/FibbingItAnswer"
+            - type: array
+              items:
+                $ref: "#/components/schemas/CaertsianCoordinateColor"
+    StoryOut:
+      title: StoryOut
+      required:
+        - story_id
+        - game_name
+        - question
+        - answers
+      type: object
+      properties:
+        story_id:
+          title: Story Id
+          type: string
+        game_name:
+          title: Game Name
+          type: string
+        question:
+          title: Question
+          type: string
+        round:
+          title: Round
+          type: string
+        nickname:
+          title: Nickname
+          type: string
+        answers:
+          title: Answers
+          anyOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/QuiblyAnswer"
+            - type: array
+              items:
+                $ref: "#/components/schemas/FibbingItAnswer"
+            - type: array
+              items:
+                $ref: "#/components/schemas/CaertsianCoordinateColor"
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string

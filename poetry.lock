@@ -273,6 +273,17 @@ python-jose = ">=3.2.0,<4.0.0"
 requests = ">=2.24.0,<3.0.0"
 
 [[package]]
+name = "fastapi-health"
+version = "0.4.0"
+description = "Heath check on FastAPI applications."
+category = "main"
+optional = false
+python-versions = ">=3.6.1,<4.0.0"
+
+[package.dependencies]
+fastapi = ">=0.63.0"
+
+[[package]]
 name = "filelock"
 version = "3.4.0"
 description = "A platform independent file lock."
@@ -643,6 +654,7 @@ optional = false
 python-versions = ">=3.6.1"
 
 [package.dependencies]
+python-dotenv = {version = ">=0.10.4", optional = true, markers = "extra == \"dotenv\""}
 typing-extensions = ">=3.7.4.3"
 
 [package.extras]
@@ -1021,7 +1033,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<4.0"
-content-hash = "e4e08cd8433d6e8a61ab7b23bee6f5c4d07fb9c64b82b3e519e82c8499b46049"
+content-hash = "20c503f4254c65eaf95c235723dba43166120830369f1bdf50b1cb8de04e478b"
 
 [metadata.files]
 anyio = [
@@ -1115,6 +1127,10 @@ fastapi = [
 fastapi-cloudauth = [
     {file = "fastapi-cloudauth-0.4.0.tar.gz", hash = "sha256:cbd8d2f55d56aee61771ee32d4b1ee0963b13f1d5be25d46a112973fc0dab7b5"},
     {file = "fastapi_cloudauth-0.4.0-py3-none-any.whl", hash = "sha256:e32cbf2c589bdefe81c505c0e0c282baf242aa8df7cb12cc4e16d146eac246ce"},
+]
+fastapi-health = [
+    {file = "fastapi-health-0.4.0.tar.gz", hash = "sha256:a0781b2359732d50cddda1195784f78950265c6b3689d7a1e6e65a21aed4d6a5"},
+    {file = "fastapi_health-0.4.0-py3-none-any.whl", hash = "sha256:d6c1795f7596009cffa7a84d5a67a6b66bbf9d6ce79b040fd50601ed5392089f"},
 ]
 filelock = [
     {file = "filelock-3.4.0-py3-none-any.whl", hash = "sha256:2e139a228bcf56dd8b2274a65174d005c4a6b68540ee0bdbb92c76f43f29f7e8"},

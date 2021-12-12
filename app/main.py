@@ -1,7 +1,7 @@
 import uvicorn
 from beanie import init_beanie
-from fastapi import FastAPI, Request, status
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
+from fastapi_health import health
 from motor import motor_asyncio
 
 from app.core.config import get_settings
@@ -9,6 +9,7 @@ from app.core.logger import get_logger, setup_logger
 from app.game import game_api
 from app.game.game_exceptions import add_game_exceptions
 from app.game.game_models import Game
+from app.middleware import catch_exceptions_middleware
 from app.question import question_api
 from app.question.question_exceptions import add_question_exceptions
 from app.question.question_models import Question
@@ -32,24 +33,18 @@ async def startup():
     app.include_router(game_api.router)
     app.include_router(story_api.router)
     app.include_router(question_api.router)
+    app.add_api_route("/health", health([db_healthcheck]))
 
     add_game_exceptions(app)
     add_question_exceptions(app)
 
 
-async def catch_exceptions_middleware(request: Request, call_next):
+def db_healthcheck() -> bool:
     try:
-        return await call_next(request)
+        Game.find()
+        return True
     except Exception:
-        log = get_logger()
-        log.exception("failed to complete operation", request=request)
-        return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "error_message": "failed to complete operation internal server error",
-                "error_code": "server_error",
-            },
-        )
+        return False
 
 
 if __name__ == "__main__":

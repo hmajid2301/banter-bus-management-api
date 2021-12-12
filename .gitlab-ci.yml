@@ -21,7 +21,6 @@ services:
 stages:
   - pre
   - test
-  - publish
 
 before_script:
   - pip install tox
@@ -38,6 +37,19 @@ publish-docker:test:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -f Dockerfile -t ${CI_REGISTRY_IMAGE}:test .
     - docker push ${CI_REGISTRY_IMAGE}:test
+
+publish-docker:seed:
+  stage: pre
+  image: docker
+  only:
+    - main
+  services:
+    - docker:dind
+  before_script: []
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
+    - docker push ${CI_REGISTRY_IMAGE}/database-seed
 
 test:lint:
   stage: test
@@ -61,8 +73,6 @@ test:coverage:
   extends:
     - .mongo
   script:
-    - echo $BANTER_BUS_MANAGEMENT_API_DB_PASSWORD
-    - cp .env.test .env
     - make coverage
   coverage: '/^TOTAL.+?(\S+\%)$/'
   artifacts:
@@ -80,16 +90,3 @@ test:integration-tests:
   script:
     - cp .env.test .env
     - make integration_tests
-
-publish-docker:seed:
-  stage: publish
-  image: docker
-  only:
-    - main
-  services:
-    - docker:dind
-  before_script: []
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
-    - docker push ${CI_REGISTRY_IMAGE}/database-seed
