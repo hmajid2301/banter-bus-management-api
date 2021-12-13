@@ -1,4 +1,3 @@
-import abc
 from typing import Dict, List, Union
 
 from app.game.game_exceptions import InvalidGameFilter
@@ -6,29 +5,7 @@ from app.game.game_models import Game
 from app.game.game_repository import AbstractGameRepository
 
 
-class AbstractGameService(abc.ABC):
-    @abc.abstractmethod
-    async def add(self, game_name: str, rules_url: str, description: str, display_name: str) -> Game:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def remove(self, game_name: str):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get(self, game_name: str) -> Game:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get_game_names(self, filter: str) -> List[str]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def update_enabled_status(self, game_name: str, enabled: bool) -> Game:
-        raise NotImplementedError
-
-
-class GameService(AbstractGameService):
+class GameService:
     def __init__(self, game_repository: AbstractGameRepository):
         self.game_repository = game_repository
 

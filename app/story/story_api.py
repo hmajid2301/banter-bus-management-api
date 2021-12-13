@@ -8,7 +8,7 @@ from app.game.game_exceptions import GameNotEnabledError
 from app.story.story_api_models import StoryIn, StoryOut
 from app.story.story_exceptions import StoryNotFound
 from app.story.story_factory import get_story_service
-from app.story.story_service import AbstractStoryService
+from app.story.story_service import StoryService
 
 router = APIRouter(
     prefix="/story",
@@ -25,7 +25,7 @@ router = APIRouter(
 )
 async def add_story(
     story: StoryIn,
-    story_service: AbstractStoryService = Depends(get_story_service),
+    story_service: StoryService = Depends(get_story_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:
@@ -55,7 +55,7 @@ async def add_story(
 )
 async def get_story(
     story_id: str,
-    story_service: AbstractStoryService = Depends(get_story_service),
+    story_service: StoryService = Depends(get_story_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:
@@ -79,7 +79,7 @@ async def get_story(
 )
 async def remove_story(
     story_id: str,
-    story_service: AbstractStoryService = Depends(get_story_service),
+    story_service: StoryService = Depends(get_story_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:

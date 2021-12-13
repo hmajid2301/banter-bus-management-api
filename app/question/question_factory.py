@@ -4,7 +4,7 @@ from app.question.question_repository import (
     AbstractQuestionRepository,
     QuestionRepository,
 )
-from app.question.question_service import AbstractQuestionService, QuestionService
+from app.question.question_service import QuestionService
 
 
 def get_question_repository() -> AbstractQuestionRepository:
@@ -13,6 +13,6 @@ def get_question_repository() -> AbstractQuestionRepository:
 
 def get_question_service(
     question_repository: AbstractQuestionRepository = Depends(get_question_repository),
-) -> AbstractQuestionService:
+) -> QuestionService:
     question_service = QuestionService(question_repository=question_repository)
     return question_service

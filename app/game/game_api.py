@@ -10,7 +10,7 @@ from app.game.game_api_models import GameIn, GameOut
 from app.game.game_exceptions import GameExistsException, InvalidGameFilter
 from app.game.game_factory import get_game_service
 from app.game.game_models import Game
-from app.game.game_service import AbstractGameService
+from app.game.game_service import GameService
 
 router = APIRouter(
     prefix="/game",
@@ -27,7 +27,7 @@ router = APIRouter(
     operation_id="add_game",
 )
 async def add_game(
-    game: GameIn, game_service: AbstractGameService = Depends(get_game_service), log: BoundLogger = Depends(get_logger)
+    game: GameIn, game_service: GameService = Depends(get_game_service), log: BoundLogger = Depends(get_logger)
 ):
     try:
         log = log.bind(game_name=game.name)
@@ -53,7 +53,7 @@ async def add_game(
 )
 async def remove_game(
     game_name: str,
-    game_service: AbstractGameService = Depends(get_game_service),
+    game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log = log.bind(game_name=game_name)
@@ -69,7 +69,7 @@ async def remove_game(
 )
 async def get_all_game_names(
     filter: Optional[str] = Query("all", alias="status"),
-    game_service: AbstractGameService = Depends(get_game_service),
+    game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ) -> List[str]:
     try:
@@ -95,7 +95,7 @@ async def get_all_game_names(
 )
 async def get_game(
     game_name: str,
-    game_service: AbstractGameService = Depends(get_game_service),
+    game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log = log.bind(game_name=game_name)
@@ -113,7 +113,7 @@ async def get_game(
 )
 async def enable_game(
     game_name: str,
-    game_service: AbstractGameService = Depends(get_game_service),
+    game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ):
     game = await _update_enable_status(game_name=game_name, game_service=game_service, log=log, enabled=True)
@@ -129,16 +129,14 @@ async def enable_game(
 )
 async def disabled_game(
     game_name: str,
-    game_service: AbstractGameService = Depends(get_game_service),
+    game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ):
     game = await _update_enable_status(game_name=game_name, game_service=game_service, log=log, enabled=False)
     return game
 
 
-async def _update_enable_status(
-    game_name: str, game_service: AbstractGameService, log: BoundLogger, enabled: bool
-) -> Game:
+async def _update_enable_status(game_name: str, game_service: GameService, log: BoundLogger, enabled: bool) -> Game:
     log = log.bind(game_name=game_name)
     log.debug(f"trying to update enable status  to {enabled=}")
     game = await game_service.update_enabled_status(game_name=game_name, enabled=enabled)

@@ -1,7 +1,7 @@
 from fastapi import Depends
 
 from app.game.game_repository import AbstractGameRepository, GameRepository
-from app.game.game_service import AbstractGameService, GameService
+from app.game.game_service import GameService
 
 
 def get_game_repository() -> AbstractGameRepository:
@@ -10,6 +10,6 @@ def get_game_repository() -> AbstractGameRepository:
 
 def get_game_service(
     game_repository: AbstractGameRepository = Depends(get_game_repository),
-) -> AbstractGameService:
+) -> GameService:
     game_service = GameService(game_repository=game_repository)
     return game_service

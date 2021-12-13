@@ -1,4 +1,3 @@
-import abc
 import uuid
 
 from app.game.games.game import get_game
@@ -6,21 +5,7 @@ from app.story.story_models import Story
 from app.story.story_repository import AbstractStoryRepository
 
 
-class AbstractStoryService(abc.ABC):
-    @abc.abstractmethod
-    async def add(self, story: dict) -> Story:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def remove(self, story_id: str):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get(self, story_id: str) -> Story:
-        raise NotImplementedError
-
-
-class StoryService(AbstractStoryService):
+class StoryService:
     def __init__(self, story_repository: AbstractStoryRepository):
         self.story_repository = story_repository
 

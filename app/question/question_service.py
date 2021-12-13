@@ -1,4 +1,3 @@
-import abc
 import random
 import uuid
 from typing import List, Optional
@@ -22,51 +21,7 @@ from app.question.question_models import (
 from app.question.question_repository import AbstractQuestionRepository
 
 
-class AbstractQuestionService(abc.ABC):
-    @abc.abstractmethod
-    async def add(self, question_dict: dict) -> Question:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def remove(self, question_id: str, game_name: str):
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get(self, question_id: str, game_name: str) -> Question:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def update_enabled_status(self, game_name: str, question_id: str, enabled: bool) -> Question:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def add_translation(self, game_name: str, question_id: str, language_code: str, content: str) -> Question:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get_translation(self, game_name: str, question_id: str, language_code: str) -> QuestionTranslation:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def remove_translation(self, game_name: str, question_id: str, language_code: str) -> QuestionTranslation:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> QuestionIDsPagination:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get_random(
-        self, game_name: str, round_: str, language_code: str, limit: int, group_name: Optional[str] = None
-    ) -> List[QuestionSimple]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    async def get_random_groups(self, game_name: str, round_: str, limit: int = 1) -> List[str]:
-        raise NotImplementedError
-
-
-class QuestionService(AbstractQuestionService):
+class QuestionService:
     def __init__(self, question_repository: AbstractQuestionRepository):
         self.question_repository = question_repository
 

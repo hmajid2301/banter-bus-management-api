@@ -43,9 +43,7 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 
 RUN poetry install
 
-WORKDIR /app
-
-EXPOSE 8000
+WORKDIR /
 CMD ["uvicorn", "--reload", "app.main:app"]
 
 
@@ -53,7 +51,8 @@ FROM python-base as production
 
 ENV FASTAPI_ENV=production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-COPY ./app /app/
+COPY ./app /app
 
-WORKDIR /app
+WORKDIR /
+EXPOSE 8000
 CMD ["uvicorn", "app.main:app"]

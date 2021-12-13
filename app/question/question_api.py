@@ -17,7 +17,7 @@ from app.question.question_api_models import (
 from app.question.question_exceptions import QuestionExistsException
 from app.question.question_factory import get_question_service
 from app.question.question_models import Question
-from app.question.question_service import AbstractQuestionService
+from app.question.question_service import QuestionService
 from app.question.translation.question_api import router as translation_router
 
 router = APIRouter(
@@ -38,7 +38,7 @@ router.include_router(translation_router)
 async def add_question(
     game_name: str,
     question: QuestionIn,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:
@@ -72,7 +72,7 @@ async def get_random_questions(
     language_code: str = "en",
     group_name: Optional[str] = None,
     limit: int = Query(5, ge=1, le=100),
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log.debug("trying to get random questions")
@@ -94,7 +94,7 @@ async def get_question_ids(
     game_name: str,
     cursor: Optional[str],
     limit: int = Query(5, ge=1, le=100),
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log.debug("trying to get question ids")
@@ -116,7 +116,7 @@ async def get_random_groups(
     game_name: str,
     round_: str = Query(None, alias="round"),
     limit: int = Query(5, ge=1, le=100),
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:
@@ -142,7 +142,7 @@ async def get_random_groups(
 async def get_question(
     game_name: str,
     question_id: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log.debug("trying to get a question")
@@ -159,7 +159,7 @@ async def get_question(
 async def remove_question(
     game_name: str,
     question_id: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log.debug("trying to remove a question")
@@ -177,7 +177,7 @@ async def remove_question(
 async def enable_question(
     game_name: str,
     question_id: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     question = await _update_enable_status(
@@ -197,7 +197,7 @@ async def enable_question(
 async def disable_question(
     game_name: str,
     question_id: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     question = await _update_enable_status(
@@ -207,7 +207,7 @@ async def disable_question(
 
 
 async def _update_enable_status(
-    game_name: str, question_id: str, question_service: AbstractQuestionService, log: BoundLogger, enabled: bool
+    game_name: str, question_id: str, question_service: QuestionService, log: BoundLogger, enabled: bool
 ) -> Question:
     log = log.bind(question_id=question_id, new_status=enabled)
     log.debug("trying to update enable status")

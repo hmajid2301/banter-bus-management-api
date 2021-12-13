@@ -6,7 +6,7 @@ from app.factory import get_read_scopes, get_write_scopes
 from app.question.question_api_models import QuestionOut
 from app.question.question_exceptions import QuestionExistsException
 from app.question.question_factory import get_question_service
-from app.question.question_service import AbstractQuestionService
+from app.question.question_service import QuestionService
 from app.question.translation.question_translation_api_models import (
     QuestionTranslationIn,
     QuestionTranslationOut,
@@ -31,7 +31,7 @@ async def add_question_translation(
     question_id: str,
     language_code: str,
     question_translation: QuestionTranslationIn,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:
@@ -61,7 +61,7 @@ async def get_question_translation(
     game_name: str,
     question_id: str,
     language_code: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log.debug("trying to get a question translation")
@@ -81,7 +81,7 @@ async def remove_question_translation(
     game_name: str,
     question_id: str,
     language_code: str,
-    question_service: AbstractQuestionService = Depends(get_question_service),
+    question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     log.debug("trying to remove a question translation")
