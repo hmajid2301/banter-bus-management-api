@@ -13,8 +13,10 @@ ENV PYTHONUNBUFFERED=1 \
 	POETRY_NO_INTERACTION=1 \
 	\
 	PYSETUP_PATH="/opt/pysetup" \
-	VENV_PATH="/opt/pysetup/.venv"
-
+	VENV_PATH="/opt/pysetup/.venv" \
+	\
+	BANTER_BUS_MANAGEMENT_API_WEB_HOST="0.0.0.0" \
+	BANTER_BUS_MANAGEMENT_API_WEB_PORT=8080
 
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
@@ -44,7 +46,7 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 RUN poetry install
 
 WORKDIR /
-CMD ["uvicorn", "--reload", "app.main:app"]
+CMD uvicorn --reload  app.main:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT}
 
 
 FROM python-base as production
@@ -55,4 +57,4 @@ COPY ./app /app
 
 WORKDIR /
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app"]
+CMD uvicorn  app.main:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT}
