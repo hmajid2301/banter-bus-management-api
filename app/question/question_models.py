@@ -24,6 +24,9 @@ class Question(Document):
         allow_population_by_field_name = True
         fields = {"round_": "round"}
 
+    class Collection:
+        name = "question"
+
 
 class QuestionTranslation(BaseModel):
     question_id: str

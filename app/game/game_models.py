@@ -7,3 +7,6 @@ class Game(Document):
     enabled: bool
     description: str
     display_name: str
+
+    class Collection:
+        name = "game"

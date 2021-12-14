@@ -28,3 +28,6 @@ class Story(Document):
     class Config:
         allow_population_by_field_name = True
         fields = {"round_": "round"}
+
+    class Collection:
+        name = "story"
