@@ -22,13 +22,14 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup():
     config = get_settings()
-    log = setup_logger(config.LOG_LEVEL)
+    log = setup_logger(log_level=config.LOG_LEVEL, env=config.ENVIRONMENT)
     uri = config.get_mongodb_uri()
     client = motor_asyncio.AsyncIOMotorClient(uri)
     await init_beanie(database=client[config.DB_NAME], document_models=[Game, Story, Question])
 
     log = get_logger()
     log.info(f"starting banter-bus-management-api {config.WEB_HOST}:{config.WEB_PORT}")
+
     app.middleware("http")(catch_exceptions_middleware)
     app.include_router(game_api.router)
     app.include_router(story_api.router)
