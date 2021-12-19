@@ -1,6 +1,6 @@
 [
   {
-    "_story_id": { "$ostory_id": "61162ad137f6d318f097986c" },
+    "_id": { "$ostory_id": "61162ad137f6d318f097986c" },
     "game_name": "fibbing_it",
     "story_id": "8a7e92a9-2bc2-43f1-be33-2ff8645b227c",
     "question": "most likely to get arrested?",
@@ -13,7 +13,7 @@
     ]
   },
   {
-    "_story_id": { "$ostory_id": "61162ad137f6d318f097986b" },
+    "_id": { "$ostory_id": "61162ad137f6d318f097986b" },
     "game_name": "fibbing_it",
     "story_id": "a5d158b5-7fc4-419b-8299-7363d1567840",
     "question": "what do you think about horses?",
@@ -26,7 +26,7 @@
     ]
   },
   {
-    "_story_id": { "$ostory_id": "61162ad137f6d318f097986a" },
+    "_id": { "$ostory_id": "61162ad137f6d318f097986a" },
     "game_name": "fibbing_it",
     "story_id": "479d0463-ed35-44bf-a976-801367be4246",
     "question": "What do you think about horses?",
@@ -39,7 +39,7 @@
     ]
   },
   {
-    "_story_id": { "$ostory_id": "61162ad137f6d318f0979869" },
+    "_id": { "$ostory_id": "61162ad137f6d318f0979869" },
     "game_name": "drawlosseum",
     "story_id": "a4ffd1c8-93c5-4f4c-8ace-71996edcbcb7",
     "question": "fish",
@@ -53,7 +53,7 @@
     ]
   },
   {
-    "_story_id": { "$ostory_id": "61162ad137f6d318f0979868" },
+    "_id": { "$ostory_id": "61162ad137f6d318f0979868" },
     "game_name": "quibly",
     "story_id": "1def4233-f674-4a3f-863d-6e850bfbfdb4",
     "question": "how many fish are there?",

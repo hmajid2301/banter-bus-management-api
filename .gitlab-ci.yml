@@ -13,15 +13,18 @@ cache:
 
 .mongo:
   services:
-    - mongo:4.4.4
+    - name: mongo:4.4.4
+      alias: banter-bus-database
   variables:
     MONGO_INITDB_ROOT_USERNAME: banterbus
     MONGO_INITDB_ROOT_PASSWORD: banterbus
     MONGO_INITDB_DATABASE: test
     BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
     BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
-    BANTER_BUS_MANAGEMENT_API_DB_HOST: mongo
+    BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
     BANTER_BUS_MANAGEMENT_API_DB_NAME: test
+    BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN: domain
+    BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API: custom-api
 
 services:
   - docker:dind
@@ -84,7 +87,6 @@ test:coverage:
   extends:
     - .mongo
   script:
-    - cp .env.test .env
     - make coverage
   coverage: '/^TOTAL.+?(\S+\%)$/'
   artifacts:
@@ -100,5 +102,4 @@ test:integration-tests:
   extends:
     - .mongo
   script:
-    - cp .env.test .env
     - make integration_tests
