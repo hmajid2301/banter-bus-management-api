@@ -43,7 +43,7 @@ async def startup():
 def db_healthcheck() -> bool:
     try:
         Game.find()
-        return True
+        return False
     except Exception:
         return False
 
