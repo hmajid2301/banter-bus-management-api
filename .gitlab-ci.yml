@@ -116,6 +116,6 @@ publish:cloud-run:
     - cat $GCP_CLOUD_BUILD_KEY | docker login -u _json_key --password-stdin https://eu.gcr.io
     - gcloud auth activate-service-account --key-file $GCP_CLOUD_BUILD_KEY
     - gcloud config set project banter-bus
-    - docker build -f Dockerfile -t eu.gcr.io/$GCP_PROJECT_ID/banterbus-management-api --target production .
-    - docker push eu.gcr.io/$GCP_PROJECT_ID/banterbus-management-api
-    - gcloud run deploy banterbus-management-api --image eu.gcr.io/$GCP_PROJECT_ID/banterbus-management-api --region europe-west1 --platform managed --allow-unauthenticated
+    - docker build -f Dockerfile -t eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api --target production .
+    - docker push eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
+    - gcloud run deploy banter-bus-management-api --image eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api --region europe-west1 --platform managed --allow-unauthenticated
