@@ -30,40 +30,14 @@ cache:
 
 stages:
   - pre
-  - test
   - publish
+  - test
 
 before_script:
   - pip download --dest=${PIP_DOWNLOAD_DIR} poetry
   - pip install --find-links=${PIP_DOWNLOAD_DIR} poetry
   - poetry config virtualenvs.in-project true
   - poetry install -vv
-
-publish-docker:test:
-  stage: pre
-  only:
-    - main
-  image: docker
-  services:
-    - docker:dind
-  before_script: []
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f Dockerfile -t ${CI_REGISTRY_IMAGE}:test --target production .
-    - docker push ${CI_REGISTRY_IMAGE}:test
-
-publish-docker:seed:
-  stage: pre
-  image: docker
-  only:
-    - main
-  services:
-    - docker:dind
-  before_script: []
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
-    - docker push ${CI_REGISTRY_IMAGE}/database-seed
 
 test:lint:
   stage: test
@@ -103,6 +77,32 @@ test:integration-tests:
     - .mongo
   script:
     - make integration_tests
+
+publish-docker:test:
+  stage: publish
+  only:
+    - main
+  image: docker
+  services:
+    - docker:dind
+  before_script: []
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f Dockerfile -t ${CI_REGISTRY_IMAGE}:test --target production .
+    - docker push ${CI_REGISTRY_IMAGE}:test
+
+publish-docker:seed:
+  stage: publish
+  image: docker
+  only:
+    - main
+  services:
+    - docker:dind
+  before_script: []
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
+    - docker push ${CI_REGISTRY_IMAGE}/database-seed
 
 publish:cloud-run:
   stage: publish
