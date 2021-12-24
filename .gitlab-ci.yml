@@ -5,6 +5,13 @@ variables:
   PIP_DOWNLOAD_DIR: ".pip"
   DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://docker:2375
+  BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
+  BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
+  BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
+  BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
+  BANTER_BUS_MANAGEMENT_API_DB_NAME: test
+  BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN: domain
+  BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API: custom-api
 
 cache:
   key: "${CI_JOB_NAME}"
@@ -20,24 +27,54 @@ cache:
     MONGO_INITDB_ROOT_USERNAME: banterbus
     MONGO_INITDB_ROOT_PASSWORD: banterbus
     MONGO_INITDB_DATABASE: test
-    BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
-    BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
-    BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
-    BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
-    BANTER_BUS_MANAGEMENT_API_DB_NAME: test
-    BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN: domain
-    BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API: custom-api
+
+.management_api:
+  services:
+    - name: registry.gitlab.com/banter-bus/banter-bus-management-api:test
+      alias: banter-bus-management-api
+    - name: registry.gitlab.com/banter-bus/banter-bus-management-api/database-seed:latest
+      alias: banter-bus-database-seed
+  variables:
+    MONGO_HOSTNAME: banter-bus-database:27017
+    FF_NETWORK_PER_BUILD: 1
 
 stages:
   - pre
-  - publish
   - test
+  - verify
+  - publish
 
 before_script:
   - pip download --dest=${PIP_DOWNLOAD_DIR} poetry
   - pip install --find-links=${PIP_DOWNLOAD_DIR} poetry
   - poetry config virtualenvs.in-project true
   - poetry install -vv
+
+publish-docker:test:
+  stage: pre
+  only:
+    - main
+  image: docker
+  services:
+    - docker:dind
+  before_script: []
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f Dockerfile -t ${CI_REGISTRY_IMAGE}:test --target production .
+    - docker push ${CI_REGISTRY_IMAGE}:test
+
+publish-docker:seed:
+  stage: pre
+  image: docker
+  only:
+    - main
+  services:
+    - docker:dind
+  before_script: []
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
+    - docker push ${CI_REGISTRY_IMAGE}/database-seed
 
 test:lint:
   stage: test
@@ -78,31 +115,28 @@ test:integration-tests:
   script:
     - make integration_tests
 
-publish-docker:test:
-  stage: publish
-  only:
-    - main
-  image: docker
-  services:
-    - docker:dind
-  before_script: []
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f Dockerfile -t ${CI_REGISTRY_IMAGE}:test --target production .
-    - docker push ${CI_REGISTRY_IMAGE}:test
-
-publish-docker:seed:
-  stage: publish
-  image: docker
+verify:test-contract:
+  stage: verify
+  image:
+    name: pactfoundation/pact-cli:latest
+    entrypoint: [""]
   only:
     - main
   services:
-    - docker:dind
+    - !reference [.mongo, services]
+    - !reference [.management_api, services]
+  extends:
+    - .mongo
+    - .management_api
+  variables:
+    BANTER_BUS_MANAGEMENT_API_URL: http://banter-bus-management-api
+    BANTER_BUS_MANAGEMENT_API_PORT: 8080
   before_script: []
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
-    - docker push ${CI_REGISTRY_IMAGE}/database-seed
+    - |
+      pact verify --pact-broker-base-url 'https://banterbus.pactflow.io' --provider management_api \
+      --broker-token ${BROKER_TOKEN} --provider-app-version ${MANAGEMENT_API_VERSION} \
+      --provider-base-url "${BANTER_BUS_MANAGEMENT_API_URL}:${BANTER_BUS_MANAGEMENT_API_PORT}" --publish-verification-results
 
 publish:cloud-run:
   stage: publish
@@ -116,6 +150,7 @@ publish:cloud-run:
     - cat $GCP_CLOUD_BUILD_KEY | docker login -u _json_key --password-stdin https://eu.gcr.io
     - gcloud auth activate-service-account --key-file $GCP_CLOUD_BUILD_KEY
     - gcloud config set project banter-bus
-    - docker build -f Dockerfile -t eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api --target production .
+    - docker pull ${CI_REGISTRY_IMAGE}:test
+    - docker tag ${CI_REGISTRY_IMAGE}:test eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
     - docker push eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
     - gcloud run deploy banter-bus-management-api --image eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api --region europe-west1 --platform managed --allow-unauthenticated
