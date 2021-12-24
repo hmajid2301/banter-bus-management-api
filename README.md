@@ -1,6 +1,6 @@
 # Banter Bus Management API
 
-A RESTful API to manage the games and questions for the banter bus app.
+A RESTful API to manage the games and questions for the Banter Bus application.
 
 ## Running using devcontainer
 
