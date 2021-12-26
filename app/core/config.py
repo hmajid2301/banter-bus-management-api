@@ -1,7 +1,7 @@
 from functools import lru_cache
-from typing import Optional
+from typing import List, Optional
 
-from pydantic import BaseSettings
+from pydantic import AnyHttpUrl, BaseSettings
 
 
 class Settings(BaseSettings):
@@ -21,6 +21,9 @@ class Settings(BaseSettings):
 
     AUTH0_DOMAIN: str
     AUTH0_CUSTOM_API: str
+
+    CORS: List[AnyHttpUrl] = []
+    REGEX_CORS: Optional[str] = None
 
     class Config:
         env_prefix = "BANTER_BUS_MANAGEMENT_API_"

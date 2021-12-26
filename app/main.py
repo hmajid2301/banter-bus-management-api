@@ -1,6 +1,7 @@
 import uvicorn
 from beanie import init_beanie
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_health import health
 from motor import motor_asyncio
 
@@ -29,8 +30,16 @@ async def startup():
 
     log = get_logger()
     log.info(f"starting banter-bus-management-api {config.WEB_HOST}:{config.WEB_PORT}")
-
     app.middleware("http")(catch_exceptions_middleware)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=config.CORS,
+        allow_origin_regex=config.REGEX_CORS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     app.include_router(game_api.router)
     app.include_router(story_api.router)
     app.include_router(question_api.router)
