@@ -41,7 +41,7 @@ cache:
 stages:
   - pre
   - test
-  - verify
+  - pre-publish
   - publish
 
 before_script:
@@ -50,7 +50,7 @@ before_script:
   - poetry config virtualenvs.in-project true
   - poetry install -vv
 
-publish-docker:test:
+publish:docker-test:
   stage: pre
   only:
     - main
@@ -116,7 +116,7 @@ test:integration-tests:
     - make integration_tests
 
 verify:test-contract:
-  stage: verify
+  stage: pre-publish
   image:
     name: pactfoundation/pact-cli:latest
     entrypoint: [""]
@@ -138,11 +138,30 @@ verify:test-contract:
       --broker-token ${BROKER_TOKEN} --provider-app-version ${MANAGEMENT_API_VERSION} \
       --provider-base-url "${BANTER_BUS_MANAGEMENT_API_URL}:${BANTER_BUS_MANAGEMENT_API_PORT}" --publish-verification-results
 
+edit:service-yaml:
+  stage: pre-publish
+  image:
+    name: mikefarah/yq
+    entrypoint: [""]
+  only:
+    - main
+  before_script: []
+  script:
+    - export RANDOM_NAME=$(echo $RANDOM | md5sum | head -c 8; echo)
+    - export RANDOM_STR="banter-bus-management-api-$RANDOM_NAME"
+    - yq -i e ".spec.template.metadata.name = \"$RANDOM_STR\"" service.yaml
+  artifacts:
+    paths:
+      - service.yaml
+
 publish:cloud-run:
   stage: publish
   services:
     - docker:dind
   image: google/cloud-sdk
+  dependencies:
+    - publish:docker-test
+    - edit:service-yaml
   only:
     - main
   before_script: []
@@ -153,4 +172,4 @@ publish:cloud-run:
     - docker pull ${CI_REGISTRY_IMAGE}:test
     - docker tag ${CI_REGISTRY_IMAGE}:test eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
     - docker push eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
-    - gcloud run deploy banter-bus-management-api --image eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api --region europe-west1 --platform managed --allow-unauthenticated
+    - gcloud run services replace --platform=managed service.yaml

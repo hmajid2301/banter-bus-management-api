@@ -1,0 +1,87 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: banter-bus-management-api
+  namespace: "78358389381"
+  selfLink: /apis/serving.knative.dev/v1/namespaces/78358389381/services/banter-bus-management-api
+  uid: cd81d4f7-90fb-4b91-94c0-8a7dc6bb1dbe
+  resourceVersion: AAXUDvb7nkA
+  creationTimestamp: "2021-12-19T22:54:27.607029Z"
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  annotations:
+    run.googleapis.com/client-name: gcloud
+    serving.knative.dev/creator: hmajid2301@gmail.com
+    serving.knative.dev/lastModifier: cloud-build-gitlab-ci@banter-bus.iam.gserviceaccount.com
+    client.knative.dev/user-image: eu.gcr.io/banter-bus/banter-bus-management-api
+    run.googleapis.com/client-version: 367.0.0
+    run.googleapis.com/launch-stage: BETA
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+spec:
+  template:
+    metadata:
+      name: banter-bus-management-api
+      annotations:
+        run.googleapis.com/client-name: gcloud
+        client.knative.dev/user-image: eu.gcr.io/banter-bus/banter-bus-management-api
+        run.googleapis.com/client-version: 367.0.0
+        run.googleapis.com/execution-environment: gen2
+        autoscaling.knative.dev/maxScale: "3"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      serviceAccountName: 78358389381-compute@developer.gserviceaccount.com
+      containers:
+        - image: eu.gcr.io/banter-bus/banter-bus-management-api
+          ports:
+            - name: http1
+              containerPort: 8080
+          env:
+            - name: BANTER_BUS_MANAGEMENT_API_ENVIRONMENT
+              value: production
+            - name: BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API
+            - name: BANTER_BUS_MANAGEMENT_API_DB_NAME
+              value: management_api
+            - name: BANTER_BUS_MANAGEMENT_API_DB_HOST
+              value: banter-bus-database.ffljl.mongodb.net
+            - name: BANTER_BUS_MANAGEMENT_API_DB_USERNAME
+              value: banter-bus
+            - name: BANTER_BUS_MANAGEMENT_API_DB_SCHEMA
+              value: mongodb+srv
+            - name: BANTER_BUS_MANAGEMENT_API_CORS
+              value: '["https://banterbus.games","https://core.api.banterbus.games"]'
+            - name: BANTER_BUS_MANAGEMENT_API_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: latest
+                  name: banter-bus-db-password
+            - name: BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  key: latest
+                  name: banter-bus-auth0-domain
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+  traffic:
+    - percent: 100
+      latestRevision: true
+status:
+  conditions:
+    - type: Ready
+      status: "True"
+      lastTransitionTime: "2021-12-26T16:20:21.869120Z"
+    - type: ConfigurationsReady
+      status: "True"
+      lastTransitionTime: "2021-12-26T16:20:16.593021Z"
+    - type: RoutesReady
+      status: "True"
+      lastTransitionTime: "2021-12-26T16:20:21.869120Z"
+  traffic:
+    percent: 100
+    latestRevision: true
+  url: https://banter-bus-management-api-x6ccwlffzq-ew.a.run.app
+  address:
+    url: https://banter-bus-management-api-x6ccwlffzq-ew.a.run.app
