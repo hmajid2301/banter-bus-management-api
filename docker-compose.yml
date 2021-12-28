@@ -1,18 +1,24 @@
 version: "3.8"
 
 services:
-  api:
+  app:
     container_name: banter-bus-management-api
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
-    env_file:
-      - .env
+      target: development
+    environment:
+      BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
+      BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
+      BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
+      BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
+      BANTER_BUS_MANAGEMENT_API_DB_NAME: test
+      BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN: domain
+      BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API: custom-api
     ports:
       - 8080:8080
     volumes:
-      - ${PWD}/app/:/app/
+      - ./:/app
     depends_on:
       - database
 

@@ -24,7 +24,7 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
 FROM base as builder
 
-RUN apt-get update && apt-get install curl -y
+RUN apt-get update && apt-get install curl make -y
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
 WORKDIR $PYSETUP_PATH
@@ -35,25 +35,22 @@ RUN poetry install --no-dev
 
 FROM base as production
 
-ENV BANTER_BUS_MANAGEMENT_API_ENVIRONMENT=production
+ENV BANTER_BUS_CORE_API_ENVIRONMENT=production
 COPY --from=builder $VENV_PATH $VENV_PATH
-COPY ./app /app
+COPY ./app /app/app
 
-WORKDIR /
+WORKDIR /app
 EXPOSE 8080
-CMD uvicorn app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT}
+CMD uvicorn app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT} --app-dir /app
 
 
-FROM base as development
+FROM builder as development
 
 ENV BANTER_BUS_CORE_API_ENVIRONMENT=development
-WORKDIR $PYSETUP_PATH
 
-COPY --from=builder $POETRY_HOME $POETRY_HOME
-COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
-
+COPY ./ /app
 RUN poetry install
 
-WORKDIR /
+WORKDIR /app
 EXPOSE 8080
-CMD uvicorn --reload app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT}
+CMD uvicorn --reload app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT} --app-dir /app
