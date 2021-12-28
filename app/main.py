@@ -1,4 +1,3 @@
-import uvicorn
 from beanie import init_beanie
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,10 +16,10 @@ from app.question.question_models import Question
 from app.story import story_api
 from app.story.story_models import Story
 
-app = FastAPI()
+application = FastAPI()
 
 
-@app.on_event("startup")
+@application.on_event("startup")
 async def startup():
     config = get_settings()
     log = setup_logger(log_level=config.LOG_LEVEL, env=config.ENVIRONMENT)
@@ -30,8 +29,8 @@ async def startup():
 
     log = get_logger()
     log.info(f"starting banter-bus-management-api {config.WEB_HOST}:{config.WEB_PORT}")
-    app.middleware("http")(catch_exceptions_middleware)
-    app.add_middleware(
+    application.middleware("http")(catch_exceptions_middleware)
+    application.add_middleware(
         CORSMiddleware,
         allow_origins=config.CORS,
         allow_origin_regex=config.REGEX_CORS,
@@ -40,13 +39,13 @@ async def startup():
         allow_headers=["*"],
     )
 
-    app.include_router(game_api.router)
-    app.include_router(story_api.router)
-    app.include_router(question_api.router)
-    app.add_api_route("/health", health([db_healthcheck]))
+    application.include_router(game_api.router)
+    application.include_router(story_api.router)
+    application.include_router(question_api.router)
+    application.add_api_route("/health", health([db_healthcheck]))
 
-    add_game_exceptions(app)
-    add_question_exceptions(app)
+    add_game_exceptions(application)
+    add_question_exceptions(application)
 
 
 def db_healthcheck() -> bool:
@@ -55,8 +54,3 @@ def db_healthcheck() -> bool:
         return False
     except Exception:
         return False
-
-
-if __name__ == "__main__":
-    config = get_settings()
-    uvicorn.run(app, host=config.WEB_HOST, port=config.WEB_PORT)  # type: ignore

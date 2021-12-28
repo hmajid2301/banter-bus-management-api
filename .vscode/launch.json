@@ -6,7 +6,7 @@
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["app.main:app", "--reload"]
+      "args": ["app:app", "--reload", "--port", "8080"]
     },
     {
       "name": "Tests: Unit",

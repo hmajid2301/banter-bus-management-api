@@ -5,7 +5,7 @@ from asgi_lifespan import LifespanManager
 from httpx import AsyncClient
 
 from app.factory import get_read_scopes, get_write_scopes
-from app.main import app
+from app.main import application
 
 
 def get_auth_override():
@@ -14,11 +14,11 @@ def get_auth_override():
 
 @pytest.fixture()
 async def client() -> AsyncIterator[AsyncClient]:
-    app.dependency_overrides[get_write_scopes] = get_auth_override
-    app.dependency_overrides[get_read_scopes] = get_auth_override
+    application.dependency_overrides[get_write_scopes] = get_auth_override
+    application.dependency_overrides[get_read_scopes] = get_auth_override
 
-    async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url="http://localhost") as client:
+    async with LifespanManager(application):
+        async with AsyncClient(app=application, base_url="http://localhost") as client:
             yield client
 
 
