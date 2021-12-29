@@ -4,8 +4,6 @@ metadata:
   name: banter-bus-management-api
   namespace: "78358389381"
   selfLink: /apis/serving.knative.dev/v1/namespaces/78358389381/services/banter-bus-management-api
-  uid: cd81d4f7-90fb-4b91-94c0-8a7dc6bb1dbe
-  resourceVersion: AAXUDvb7nkA
   creationTimestamp: "2021-12-19T22:54:27.607029Z"
   labels:
     cloud.googleapis.com/location: europe-west1
@@ -38,19 +36,20 @@ spec:
             - name: http1
               containerPort: 8080
           env:
-            - name: BANTER_BUS_MANAGEMENT_API_ENVIRONMENT
-              value: production
-            - name: BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API
-            - name: BANTER_BUS_MANAGEMENT_API_DB_NAME
-              value: management_api
-            - name: BANTER_BUS_MANAGEMENT_API_DB_HOST
-              value: banter-bus-database.ffljl.mongodb.net
             - name: BANTER_BUS_MANAGEMENT_API_DB_USERNAME
               value: banter-bus
+            - name: BANTER_BUS_MANAGEMENT_API_DB_HOST
+              value: banter-bus-database.ffljl.mongodb.net
+            - name: BANTER_BUS_MANAGEMENT_API_DB_NAME
+              value: management_api
             - name: BANTER_BUS_MANAGEMENT_API_DB_SCHEMA
               value: mongodb+srv
+            - name: BANTER_BUS_MANAGEMENT_API_ENVIRONMENT
+              value: production
             - name: BANTER_BUS_MANAGEMENT_API_CORS
               value: '["https://banterbus.games","https://core.api.banterbus.games"]'
+            - name: BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API
+              value: ""
             - name: BANTER_BUS_MANAGEMENT_API_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -72,13 +71,10 @@ status:
   conditions:
     - type: Ready
       status: "True"
-      lastTransitionTime: "2021-12-26T16:20:21.869120Z"
     - type: ConfigurationsReady
       status: "True"
-      lastTransitionTime: "2021-12-26T16:20:16.593021Z"
     - type: RoutesReady
       status: "True"
-      lastTransitionTime: "2021-12-26T16:20:21.869120Z"
   traffic:
     percent: 100
     latestRevision: true
