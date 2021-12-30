@@ -76,6 +76,19 @@ publish-docker:seed:
     - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
     - docker push ${CI_REGISTRY_IMAGE}/database-seed
 
+publish-docker:seed:
+  stage: pre
+  image: docker
+  only:
+    - main
+  services:
+    - docker:dind
+  before_script: []
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
+    - docker push ${CI_REGISTRY_IMAGE}/database-seed
+
 test:lint:
   stage: test
   only:
@@ -114,6 +127,29 @@ test:integration-tests:
     - .mongo
   script:
     - make integration_tests
+
+verify:test-contract:
+  stage: pre-publish
+  image:
+    name: pactfoundation/pact-cli:latest
+    entrypoint: [""]
+  only:
+    - main
+  services:
+    - !reference [.mongo, services]
+    - !reference [.management_api, services]
+  extends:
+    - .mongo
+    - .management_api
+  variables:
+    BANTER_BUS_MANAGEMENT_API_URL: http://banter-bus-management-api
+    BANTER_BUS_MANAGEMENT_API_PORT: 8080
+  before_script: []
+  script:
+    - |
+      pact verify --pact-broker-base-url 'https://banterbus.pactflow.io' --provider management_api \
+      --broker-token ${BROKER_TOKEN} --provider-app-version ${MANAGEMENT_API_VERSION} \
+      --provider-base-url "${BANTER_BUS_MANAGEMENT_API_URL}:${BANTER_BUS_MANAGEMENT_API_PORT}" --publish-verification-results
 
 verify:test-contract:
   stage: pre-publish

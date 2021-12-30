@@ -47,6 +47,9 @@ async def startup():
     add_game_exceptions(application)
     add_question_exceptions(application)
 
+    add_game_exceptions(application)
+    add_question_exceptions(application)
+
 
 def db_healthcheck() -> bool:
     try:
