@@ -1,6 +1,6 @@
+from omnibus.database.repository import AbstractRepository
 from pymongo.errors import DuplicateKeyError
 
-from app.core.repository import AbstractRepository
 from app.story.story_exceptions import StoryExistsException, StoryNotFound
 from app.story.story_models import Story
 

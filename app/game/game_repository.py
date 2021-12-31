@@ -1,9 +1,9 @@
 import abc
 from typing import List
 
+from omnibus.database.repository import AbstractRepository
 from pymongo.errors import DuplicateKeyError
 
-from app.core.repository import AbstractRepository
 from app.game.game_exceptions import GameExistsException, GameNotFound
 from app.game.game_models import Game
 

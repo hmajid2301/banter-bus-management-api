@@ -2,9 +2,9 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.param_functions import Query
+from omnibus.log.logger import get_logger
 from structlog.stdlib import BoundLogger
 
-from app.core.logger import get_logger
 from app.factory import get_write_scopes
 from app.game.game_api_models import GameIn, GameOut
 from app.game.game_exceptions import GameExistsException, InvalidGameFilter
@@ -24,7 +24,6 @@ router = APIRouter(
     response_model=GameOut,
     include_in_schema=False,
     dependencies=[Depends(get_write_scopes)],
-    operation_id="add_game",
 )
 async def add_game(
     game: GameIn, game_service: GameService = Depends(get_game_service), log: BoundLogger = Depends(get_logger)
@@ -49,7 +48,6 @@ async def add_game(
     status_code=status.HTTP_200_OK,
     include_in_schema=False,
     dependencies=[Depends(get_write_scopes)],
-    operation_id="remove_game",
 )
 async def remove_game(
     game_name: str,
@@ -65,7 +63,6 @@ async def remove_game(
     "",
     status_code=status.HTTP_200_OK,
     response_model=List[str],
-    operation_id="get_all_game_names",
 )
 async def get_all_game_names(
     filter: Optional[str] = Query("all", alias="status"),
@@ -91,7 +88,6 @@ async def get_all_game_names(
     "/{game_name}",
     status_code=status.HTTP_200_OK,
     response_model=GameOut,
-    operation_id="get_game",
 )
 async def get_game(
     game_name: str,
@@ -109,7 +105,6 @@ async def get_game(
     status_code=status.HTTP_200_OK,
     response_model=GameOut,
     dependencies=[Depends(get_write_scopes)],
-    operation_id="enable_game",
 )
 async def enable_game(
     game_name: str,
@@ -125,7 +120,6 @@ async def enable_game(
     status_code=status.HTTP_200_OK,
     response_model=GameOut,
     dependencies=[Depends(get_write_scopes)],
-    operation_id="disable_game",
 )
 async def disabled_game(
     game_name: str,

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from omnibus.log.logger import get_logger
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
-from app.core.logger import get_logger
 from app.factory import get_write_scopes
 from app.game.game_exceptions import GameNotEnabledError
 from app.story.story_api_models import StoryIn, StoryOut
@@ -21,7 +21,6 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     response_model=StoryOut,
     response_model_exclude_none=True,
-    operation_id="add_story",
 )
 async def add_story(
     story: StoryIn,
@@ -51,7 +50,6 @@ async def add_story(
     status_code=status.HTTP_200_OK,
     response_model=StoryOut,
     response_model_exclude_none=True,
-    operation_id="get_story",
 )
 async def get_story(
     story_id: str,
@@ -75,7 +73,6 @@ async def get_story(
     "/{story_id}",
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_write_scopes)],
-    operation_id="remove_story",
 )
 async def remove_story(
     story_id: str,

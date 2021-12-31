@@ -2,9 +2,9 @@ import abc
 from typing import List, Optional
 
 from beanie.operators import GT, Exists
+from omnibus.database.repository import AbstractRepository
 from pymongo.errors import DuplicateKeyError
 
-from app.core.repository import AbstractRepository
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
 from app.question.question_models import NewQuestion, Question, QuestionGroups
 

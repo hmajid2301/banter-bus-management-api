@@ -6,7 +6,8 @@
       "type": "python",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["app:app", "--reload", "--port", "8080"]
+      "args": ["app:app", "--reload", "--port", "8080"],
+      "justMyCode": false
     },
     {
       "name": "Tests: Unit",
@@ -14,7 +15,7 @@
       "request": "launch",
       "module": "pytest",
       "args": ["-rf", "tests/unit"],
-      "justMyCode": true
+      "justMyCode": false
     },
     {
       "name": "Tests: Integration",
@@ -22,10 +23,7 @@
       "request": "launch",
       "module": "pytest",
       "args": ["-rf", "tests/integration"],
-      "justMyCode": true,
-      "env": {
-        "PYTHONASYNCIODEBUG": "1"
-      }
+      "justMyCode": false
     },
     {
       "name": "Test: Current File",
@@ -33,7 +31,7 @@
       "request": "launch",
       "module": "pytest",
       "args": ["-rf", "${file}"],
-      "justMyCode": true
+      "justMyCode": false
     }
   ]
 }
