@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from omnibus.log.logger import get_logger
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_read_scopes, get_write_scopes
+from app.auth import get_auth
 from app.question.question_api_models import QuestionOut
 from app.question.question_exceptions import QuestionExistsException
 from app.question.question_factory import get_question_service
@@ -23,7 +23,7 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     response_model=QuestionOut,
     response_model_exclude_none=True,
-    dependencies=[Depends(get_write_scopes)],
+    dependencies=[Depends(get_auth())],
 )
 async def add_question_translation(
     game_name: str,
@@ -53,7 +53,7 @@ async def add_question_translation(
     status_code=status.HTTP_200_OK,
     response_model=QuestionTranslationOut,
     response_model_exclude_none=True,
-    dependencies=[Depends(get_read_scopes)],
+    dependencies=[Depends(get_auth())],
 )
 async def get_question_translation(
     game_name: str,
@@ -72,7 +72,7 @@ async def get_question_translation(
 @router.delete(
     "",
     status_code=status.HTTP_200_OK,
-    dependencies=[Depends(get_write_scopes)],
+    dependencies=[Depends(get_auth())],
 )
 async def remove_question_translation(
     game_name: str,

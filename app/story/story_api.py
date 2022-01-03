@@ -3,7 +3,7 @@ from omnibus.log.logger import get_logger
 from pydantic.error_wrappers import ValidationError
 from structlog.stdlib import BoundLogger
 
-from app.factory import get_write_scopes
+from app.auth import get_auth
 from app.game.game_exceptions import GameNotEnabledError
 from app.story.story_api_models import StoryIn, StoryOut
 from app.story.story_exceptions import StoryNotFound
@@ -72,7 +72,7 @@ async def get_story(
 @router.delete(
     "/{story_id}",
     status_code=status.HTTP_200_OK,
-    dependencies=[Depends(get_write_scopes)],
+    dependencies=[Depends(get_auth())],
 )
 async def remove_story(
     story_id: str,

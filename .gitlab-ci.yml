@@ -12,6 +12,8 @@ variables:
   BANTER_BUS_MANAGEMENT_API_DB_NAME: test
   BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN: domain
   BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API: custom-api
+  BANTER_BUS_MANAGEMENT_API_CLIENT_ID: client_id
+  BANTER_BUS_MANAGEMENT_API_USE_AUTH: "False"
 
 cache:
   key: "${CI_COMMIT_SHA}"
@@ -88,7 +90,6 @@ test:unit-tests:
   only:
     - merge_request
   script:
-    - cat /builds/banter-bus/banter-bus-management-api/.venv/lib/python3.9/site-packages/omnibus/middleware/exceptions.py
     - make unit_tests
 
 test:coverage:
