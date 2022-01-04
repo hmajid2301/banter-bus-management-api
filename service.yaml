@@ -48,8 +48,10 @@ spec:
               value: production
             - name: BANTER_BUS_MANAGEMENT_API_CORS
               value: '["https://banterbus.games","https://core.api.banterbus.games"]'
-            - name: BANTER_BUS_MANAGEMENT_API_AUTH0_CUSTOM_API
-              value: ""
+            - name: BANTER_BUS_MANAGEMENT_API_CLIENT_ID
+              value: 78358389381-o5nq31qc9ntq5evfg03n4565cjbf8qpo.apps.googleusercontent.com
+            - name: BANTER_BUS_MANAGEMENT_API_USE_AUTH
+              value: True
             - name: BANTER_BUS_MANAGEMENT_API_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
