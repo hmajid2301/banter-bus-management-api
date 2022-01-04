@@ -59,7 +59,7 @@ publish:docker-test:
     - docker:dind
   before_script: []
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build -f Dockerfile --target production -t ${CI_REGISTRY_IMAGE}:test .
     - docker push ${CI_REGISTRY_IMAGE}:test
 
@@ -72,7 +72,7 @@ publish-docker:seed:
     - docker:dind
   before_script: []
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker build -f db/Dockerfile -t ${CI_REGISTRY_IMAGE}/database-seed .
     - docker push ${CI_REGISTRY_IMAGE}/database-seed
 
@@ -166,10 +166,10 @@ publish:cloud-run:
     - main
   before_script: []
   script:
-    - cat $GCP_CLOUD_BUILD_KEY | docker login -u _json_key --password-stdin https://eu.gcr.io
-    - gcloud auth activate-service-account --key-file $GCP_CLOUD_BUILD_KEY
+    - cat ${GCP_CLOUD_BUILD_KEY} | docker login -u _json_key --password-stdin https://eu.gcr.io
+    - gcloud auth activate-service-account --key-file ${GCP_CLOUD_BUILD_KEY}
     - gcloud config set project banter-bus
     - docker pull ${CI_REGISTRY_IMAGE}:test
-    - docker tag ${CI_REGISTRY_IMAGE}:test eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
-    - docker push eu.gcr.io/$GCP_PROJECT_ID/banter-bus-management-api
+    - docker tag ${CI_REGISTRY_IMAGE}:test eu.gcr.io/${GCP_PROJECT_ID}/banter-bus-management-api
+    - docker push eu.gcr.io/${GCP_PROJECT_ID}/banter-bus-management-api
     - gcloud run services replace --platform=managed service.yaml

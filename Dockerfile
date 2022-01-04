@@ -35,7 +35,7 @@ RUN poetry install --no-dev
 
 FROM base as production
 
-ENV BANTER_BUS_CORE_API_ENVIRONMENT=production
+ENV BANTER_BUS_MANAGEMENT_API_ENVIRONMENT=production
 COPY --from=builder $VENV_PATH $VENV_PATH
 COPY ./app /app/app
 
@@ -46,10 +46,10 @@ CMD uvicorn app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER
 
 FROM builder as development
 
-ENV BANTER_BUS_CORE_API_ENVIRONMENT=development
+ENV BANTER_BUS_MANAGEMENT_API_ENVIRONMENT=development
 
-COPY ./ /app
 RUN poetry install
+COPY ./ /app
 
 WORKDIR /app
 EXPOSE 8080
