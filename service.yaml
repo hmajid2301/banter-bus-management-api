@@ -51,7 +51,7 @@ spec:
             - name: BANTER_BUS_MANAGEMENT_API_CLIENT_ID
               value: 78358389381-o5nq31qc9ntq5evfg03n4565cjbf8qpo.apps.googleusercontent.com
             - name: BANTER_BUS_MANAGEMENT_API_USE_AUTH
-              value: True
+              value: "True"
             - name: BANTER_BUS_MANAGEMENT_API_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
