@@ -57,11 +57,6 @@ spec:
                 secretKeyRef:
                   key: latest
                   name: banter-bus-db-password
-            - name: BANTER_BUS_MANAGEMENT_API_AUTH0_DOMAIN
-              valueFrom:
-                secretKeyRef:
-                  key: latest
-                  name: banter-bus-auth0-domain
           resources:
             limits:
               cpu: 1000m
