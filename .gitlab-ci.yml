@@ -131,6 +131,7 @@ verify:test-contract:
   variables:
     BANTER_BUS_MANAGEMENT_API_URL: http://banter-bus-management-api
     BANTER_BUS_MANAGEMENT_API_PORT: 8080
+  before_script: []
   script:
     - |
       pact verify --pact-broker-base-url 'https://banterbus.pactflow.io' --provider management_api \
