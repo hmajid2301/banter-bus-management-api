@@ -5,6 +5,13 @@ variables:
   PIP_DOWNLOAD_DIR: ".pip"
   DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://docker:2375
+  BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
+  BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
+  BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
+  BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
+  BANTER_BUS_MANAGEMENT_API_DB_NAME: test
+  BANTER_BUS_MANAGEMENT_API_CLIENT_ID: client_id
+  BANTER_BUS_MANAGEMENT_API_USE_AUTH: "False"
 
 cache:
   key: "${CI_COMMIT_SHA}"
@@ -27,6 +34,8 @@ cache:
       alias: banter-bus-management-api
     - name: registry.gitlab.com/banter-bus/banter-bus-management-api/database-seed:latest
       alias: banter-bus-database-seed
+  before_script:
+    - export $(grep -v '^#' .env.test | xargs)
   variables:
     MONGO_HOSTNAME: banter-bus-database:27017
     FF_NETWORK_PER_BUILD: 1
@@ -38,7 +47,6 @@ stages:
   - publish
 
 before_script:
-  - export $(grep -v '^#' .env.test | xargs)
   - pip download --dest=${PIP_DOWNLOAD_DIR} poetry
   - pip install --find-links=${PIP_DOWNLOAD_DIR} poetry
   - poetry config virtualenvs.in-project true
@@ -114,8 +122,8 @@ verify:test-contract:
   image:
     name: pactfoundation/pact-cli:latest
     entrypoint: [""]
-  only:
-    - main
+  # only:
+  #   - main
   services:
     - !reference [.mongo, services]
     - !reference [.management_api, services]

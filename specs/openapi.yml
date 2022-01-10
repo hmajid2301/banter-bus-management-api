@@ -1,8 +1,18 @@
 openapi: 3.0.2
 info:
-  title: FastAPI
+  title: banter-bus-management-api
   version: 0.1.0
 paths:
+  /health:
+    get:
+      summary: Endpoint
+      operationId: endpoint
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
   /game:
     get:
       tags:
@@ -90,7 +100,7 @@ paths:
       tags:
         - games
       summary: Disabled Game
-      operationId: disable_game
+      operationId: disabled_game
       parameters:
         - required: true
           schema:
@@ -654,6 +664,8 @@ components:
         - description
         - enabled
         - rules_url
+        - minimum_players
+        - maximum_players
       type: object
       properties:
         name:
@@ -671,6 +683,12 @@ components:
         rules_url:
           title: Rules Url
           type: string
+        minimum_players:
+          title: Minimum Players
+          type: integer
+        maximum_players:
+          title: Maximum Players
+          type: integer
     HTTPValidationError:
       title: HTTPValidationError
       type: object

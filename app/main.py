@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from omnibus.app import setup_app
 from omnibus.middleware.exceptions import catch_exceptions_http
+from omnibus.operation_id import use_route_names_as_operation_ids
 
 from app.core.config import get_settings
 from app.game import game_api
@@ -26,6 +27,7 @@ async def startup():
     app.include_router(game_api.router)
     app.include_router(story_api.router)
     app.include_router(question_api.router)
+    use_route_names_as_operation_ids(app)
 
     add_game_exceptions(app)
     add_question_exceptions(app)

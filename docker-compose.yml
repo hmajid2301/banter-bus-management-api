@@ -7,8 +7,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    env_file:
-      - .env.test
+    environment:
+      BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
+      BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
+      BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
+      BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
+      BANTER_BUS_MANAGEMENT_API_DB_NAME: test
+      BANTER_BUS_MANAGEMENT_API_CLIENT_ID: client_id
+      BANTER_BUS_MANAGEMENT_API_USE_AUTH: False
     ports:
       - 8080:8080
     volumes:
