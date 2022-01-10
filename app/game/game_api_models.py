@@ -6,6 +6,8 @@ class GameIn(BaseModel):
     display_name: str
     description: str
     rules_url: str
+    minimum_players: int
+    maximum_players: int
 
 
 class GameOut(BaseModel):
@@ -14,3 +16,5 @@ class GameOut(BaseModel):
     description: str
     enabled: bool
     rules_url: str
+    minimum_players: int
+    maximum_players: int

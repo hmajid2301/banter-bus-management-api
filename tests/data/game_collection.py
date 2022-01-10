@@ -10,6 +10,8 @@ games: List[Game] = [
             "enabled": True,
             "description": "A game about quibbing.",
             "display_name": "Quibly",
+            "minimum_players": 4,
+            "maximum_players": 16,
         }
     ),
     Game(
@@ -19,6 +21,8 @@ games: List[Game] = [
             "enabled": True,
             "description": "A game about lying.",
             "display_name": "Fibbing IT!",
+            "minimum_players": 4,
+            "maximum_players": 10,
         }
     ),
     Game(
@@ -28,6 +32,8 @@ games: List[Game] = [
             "enabled": False,
             "description": "A game about drawing.",
             "display_name": "Drawlosseum",
+            "minimum_players": 4,
+            "maximum_players": 16,
         }
     ),
 ]

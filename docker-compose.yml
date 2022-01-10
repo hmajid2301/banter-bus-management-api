@@ -7,14 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    environment:
-      BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
-      BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
-      BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
-      BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
-      BANTER_BUS_MANAGEMENT_API_DB_NAME: test
-      BANTER_BUS_MANAGEMENT_API_CLIENT_ID: client_id
-      BANTER_BUS_MANAGEMENT_API_USE_AUTH: "False"
+    env_file:
+      - .env.test
     ports:
       - 8080:8080
     volumes:
@@ -28,7 +22,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: banterbus
       MONGO_INITDB_ROOT_PASSWORD: banterbus
-      MONGO_INITDB_DATABASE: banterbus
+      MONGO_INITDB_DATABASE: test
     volumes:
       - /data/db
     ports:

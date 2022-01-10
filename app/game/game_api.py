@@ -32,7 +32,12 @@ async def add_game(
         log = log.bind(game_name=game.name)
         log.debug("trying to add new game")
         new_game = await game_service.add(
-            game_name=game.name, rules_url=game.rules_url, description=game.description, display_name=game.display_name
+            game_name=game.name,
+            rules_url=game.rules_url,
+            description=game.description,
+            display_name=game.display_name,
+            minimum_players=game.minimum_players,
+            maximum_players=game.maximum_players,
         )
         return new_game
     except GameExistsException:

@@ -34,12 +34,25 @@ async def test_add_game():
     rules_url = "http://example.com/rules"
     description = "A really fun game"
     display_name = "Quibly"
+    minimum_players = 4
+    maximum_players = 16
 
     game = await game_service.add(
-        game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
+        game_name=game_name,
+        rules_url=rules_url,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     expected_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     assert game == expected_game
 
@@ -50,16 +63,29 @@ async def test_add_game_that_exists():
     rules_url = "http://example.com/rules"
     description = "A really fun game"
     display_name = "Quibly"
+    minimum_players = 4
+    maximum_players = 16
 
     existing_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
 
     with pytest.raises(GameExistsException):
         await game_service.add(
-            game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
+            game_name=game_name,
+            rules_url=rules_url,
+            description=description,
+            display_name=display_name,
+            minimum_players=minimum_players,
+            maximum_players=maximum_players,
         )
 
 
@@ -69,9 +95,17 @@ async def test_add_game_game_name_is_unique():
     rules_url = "http://example.com/rules"
     description = "A really fun game"
     display_name = "Quibly"
+    minimum_players = 4
+    maximum_players = 16
 
     existing_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
@@ -82,10 +116,21 @@ async def test_add_game_game_name_is_unique():
     display_name = "Quibly"
 
     game = await game_service.add(
-        game_name=game_name, rules_url=rules_url, description=description, display_name=display_name
+        game_name=game_name,
+        rules_url=rules_url,
+        description=description,
+        display_name=display_name,
+        minimum_players=4,
+        maximum_players=16,
     )
     expected_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=4,
+        maximum_players=16,
     )
     assert game == expected_game
 
@@ -96,9 +141,17 @@ async def test_remove_game():
     rules_url = "http://example.com/rules"
     description = "A really fun game"
     display_name = "Quibly"
+    minimum_players = 4
+    maximum_players = 16
 
     existing_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
@@ -114,9 +167,17 @@ async def test_remove_game_does_not_exist():
     rules_url = "http://example.com/rules"
     description = "A really fun game"
     display_name = "Quibly"
+    minimum_players = 4
+    maximum_players = 16
 
     existing_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)
@@ -142,9 +203,17 @@ async def test_get_game():
     rules_url = "http://example.com/rules"
     description = "A really fun game"
     display_name = "Quibly"
+    minimum_players = 4
+    maximum_players = 16
 
     existing_game = Game(
-        name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+        name=game_name,
+        rules_url=rules_url,
+        enabled=True,
+        description=description,
+        display_name=display_name,
+        minimum_players=minimum_players,
+        maximum_players=maximum_players,
     )
     game_repository = FakeGameRepository(games=[existing_game])
     game_service = GameService(game_repository=game_repository)

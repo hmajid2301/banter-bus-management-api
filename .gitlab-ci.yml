@@ -5,13 +5,6 @@ variables:
   PIP_DOWNLOAD_DIR: ".pip"
   DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://docker:2375
-  BANTER_BUS_MANAGEMENT_API_DB_USERNAME: banterbus
-  BANTER_BUS_MANAGEMENT_API_DB_PASSWORD: banterbus
-  BANTER_BUS_MANAGEMENT_API_DB_HOST: banter-bus-database
-  BANTER_BUS_MANAGEMENT_API_DB_PORT: 27017
-  BANTER_BUS_MANAGEMENT_API_DB_NAME: test
-  BANTER_BUS_MANAGEMENT_API_CLIENT_ID: client_id
-  BANTER_BUS_MANAGEMENT_API_USE_AUTH: "False"
 
 cache:
   key: "${CI_COMMIT_SHA}"
@@ -45,6 +38,7 @@ stages:
   - publish
 
 before_script:
+  - export $(grep -v '^#' .env.test | xargs)
   - pip download --dest=${PIP_DOWNLOAD_DIR} poetry
   - pip install --find-links=${PIP_DOWNLOAD_DIR} poetry
   - poetry config virtualenvs.in-project true
@@ -131,7 +125,8 @@ verify:test-contract:
   variables:
     BANTER_BUS_MANAGEMENT_API_URL: http://banter-bus-management-api
     BANTER_BUS_MANAGEMENT_API_PORT: 8080
-  before_script: []
+  before_script:
+    - export $(grep -v '^#' .env.test | xargs)
   script:
     - |
       pact verify --pact-broker-base-url 'https://banterbus.pactflow.io' --provider management_api \

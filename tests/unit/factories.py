@@ -15,3 +15,5 @@ class GameFactory(factory.Factory):
     enabled = factory.Faker("pybool")
     description = factory.Faker("sentence", nb_words=4)
     display_name = factory.LazyAttribute(lambda factory_item: game_names[factory_item.name])
+    minimum_players = factory.Faker("pyint", min_value=1, max_value=4)
+    maximum_players = factory.Faker("pyint", min_value=4, max_value=16)

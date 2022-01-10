@@ -9,9 +9,23 @@ class GameService:
     def __init__(self, game_repository: AbstractGameRepository):
         self.game_repository = game_repository
 
-    async def add(self, game_name: str, rules_url: str, description: str, display_name: str) -> Game:
+    async def add(
+        self,
+        game_name: str,
+        rules_url: str,
+        description: str,
+        display_name: str,
+        minimum_players: int,
+        maximum_players: int,
+    ) -> Game:
         new_game = Game(
-            name=game_name, rules_url=rules_url, enabled=True, description=description, display_name=display_name
+            name=game_name,
+            rules_url=rules_url,
+            enabled=True,
+            description=description,
+            display_name=display_name,
+            minimum_players=minimum_players,
+            maximum_players=maximum_players,
         )
         await self.game_repository.add(new_game)
         return new_game

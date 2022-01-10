@@ -5,7 +5,9 @@
     "rules_url": "https://gitlab.com/banter-bus/banter-bus-server/-/wikis/docs/rules/fibbing_it",
     "enabled": true,
     "description": "Lie your way through the game, hide the fact you are a spy. Whilst everyone else tried to work it out.",
-    "display_name": "Fibbing IT!"
+    "display_name": "Fibbing IT!",
+    "minimum_players": 4,
+    "maximum_players": 10
   },
   {
     "_id": { "$oid": "61162ad137f6d318f0979856" },
@@ -13,7 +15,9 @@
     "rules_url": "https://gitlab.com/banter-bus/banter-bus-server/-/wikis/docs/rules/quibly",
     "enabled": false,
     "description": "A game about being the funniest player in the game. Two players go head to head to decide who has the best quibs.",
-    "display_name": "Quibly"
+    "display_name": "Quibly",
+    "minimum_players": 4,
+    "maximum_players": 16
   },
   {
     "_id": { "$oid": "61162ad137f6d318f0979857" },
@@ -21,6 +25,8 @@
     "rules_url": "https://google.com/drawlosseum",
     "enabled": false,
     "description": "Draw against other players. Another play gets to decide what you draw.",
-    "display_name": "Drawlosseum"
+    "display_name": "Drawlosseum",
+    "minimum_players": 4,
+    "maximum_players": 16
   }
 ]

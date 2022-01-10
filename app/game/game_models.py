@@ -7,6 +7,8 @@ class Game(Document):
     enabled: bool
     description: str
     display_name: str
+    minimum_players: int
+    maximum_players: int
 
     class Collection:
         name = "game"
