@@ -41,7 +41,7 @@ COPY ./app /app/app
 
 WORKDIR /app
 EXPOSE 8080
-CMD uvicorn app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT} --app-dir /app
+CMD uvicorn app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT}
 
 
 FROM builder as development
@@ -53,4 +53,4 @@ COPY ./ /app
 
 WORKDIR /app
 EXPOSE 8080
-CMD uvicorn --reload app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT} --app-dir /app
+CMD uvicorn --reload app:app --host ${BANTER_BUS_MANAGEMENT_API_WEB_HOST} --port ${BANTER_BUS_MANAGEMENT_API_WEB_PORT}
