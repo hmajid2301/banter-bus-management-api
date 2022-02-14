@@ -545,7 +545,7 @@ python-versions = "*"
 
 [[package]]
 name = "omnibus"
-version = "0.2.4"
+version = "0.2.5"
 description = "A library containing core code between FastAPI webservices for the Banter Bus application."
 category = "main"
 optional = false
@@ -568,8 +568,8 @@ uvicorn = {version = "^0.17.4", extras = ["standard"]}
 [package.source]
 type = "git"
 url = "https://gitlab.com/banter-bus/omnibus.git"
-reference = "0.2.4"
-resolved_reference = "20a1db43c86c5c6467faf71a02e271fd5fe01b52"
+reference = "0.2.5"
+resolved_reference = "f2f0f51288af51c609c8a1a5924511e71dd12e46"
 
 [[package]]
 name = "packaging"
@@ -1105,7 +1105,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<4.0"
-content-hash = "652acd124414c61d5438817a2469403730d712525fccb82fcdd6c1deecad053a"
+content-hash = "316a93da07d5ec481ecd3516b159b97e8819d226ecd2a91b589e07bff7208f66"
 
 [metadata.files]
 anyio = [
