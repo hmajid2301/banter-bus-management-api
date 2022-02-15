@@ -9,11 +9,11 @@ def get_auth():
     if config.USE_AUTH:
         jwt = JWTBearer(config.CLIENT_ID)
         return jwt
-    else:
-        logger = get_logger()
-        logger.warning("JWT auth has been turned off, this should only be used in DEVELOPMENT and not in PRODUCTION")
 
-        def test():
-            return True
+    logger = get_logger()
+    logger.warning("JWT auth has been turned off, this should only be used in DEVELOPMENT and not in PRODUCTION")
 
-        return test
+    def test():
+        return True
+
+    return test

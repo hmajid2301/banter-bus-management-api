@@ -76,7 +76,7 @@ async def test_get_game(client: AsyncClient, game_name: str, expected_status_cod
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "filter, expected_status_code, expected_result",
+    "enabled_filter, expected_status_code, expected_result",
     get_game_names,
     ids=[
         "get all game names",
@@ -86,8 +86,10 @@ async def test_get_game(client: AsyncClient, game_name: str, expected_status_cod
         "get game names invalid filter",
     ],
 )
-async def test_get_game_names(client: AsyncClient, filter: str, expected_status_code: int, expected_result: List[str]):
-    url = f"/game?status={filter}"
+async def test_get_game_names(
+    client: AsyncClient, enabled_filter: str, expected_status_code: int, expected_result: List[str]
+):
+    url = f"/game?status={enabled_filter}"
     response = await client.get(url)
     assert response.status_code == expected_status_code
 

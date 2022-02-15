@@ -27,10 +27,10 @@ class InvalidLanguageCode(IncorrectFormatException):
 
 
 class InvalidLimit(IncorrectFormatException):
-    def __init__(self, limit: int, min: int, max: Optional[int] = None) -> None:
+    def __init__(self, limit: int, minimum: int, maximum: Optional[int] = None) -> None:
         self.limit = limit
-        self.min = min
-        self.max = max
+        self.minimum = minimum
+        self.maximum = maximum
 
 
 def add_question_exceptions(app: FastAPI):
@@ -60,11 +60,11 @@ def add_question_exceptions(app: FastAPI):
     @app.exception_handler(InvalidLimit)
     async def question_invalid_limit_exception_handler(request: Request, exc: InvalidLimit):
         log = get_logger()
-        log.warning("invalid limit", limit=exc.limit, min=exc.min, max=exc.max)
+        log.warning("invalid limit", limit=exc.limit, min=exc.minimum, max=exc.maximum)
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content={
-                "error_message": f"invalid {exc.limit=} expected to be greater than {exc.min=}",
+                "error_message": f"invalid {exc.limit=} expected to be greater than {exc.minimum=}",
                 "error_code": "query_format_error",
             },
         )

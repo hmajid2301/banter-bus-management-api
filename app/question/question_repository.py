@@ -46,13 +46,15 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
 
 
 class QuestionRepository(AbstractQuestionRepository):
-    async def add(self, question: Question):
+    @staticmethod
+    async def add(question: Question):
         try:
             await Question.insert(question)
         except DuplicateKeyError:
             raise QuestionExistsException(f"question {question.question_id=} already exists")
 
-    async def get(self, question_id: str) -> Question:
+    @staticmethod
+    async def get(question_id: str) -> Question:
         question = await Question.find_one(Question.question_id == question_id)
         if not question:
             raise QuestionNotFound(question_id=question_id)
@@ -78,8 +80,7 @@ class QuestionRepository(AbstractQuestionRepository):
             except KeyError:
                 continue
 
-        else:
-            return False
+        return False
 
     async def update_enable_status(self, question_id: str, enabled: bool) -> Question:
         question = await self.get(question_id=question_id)
@@ -112,7 +113,8 @@ class QuestionRepository(AbstractQuestionRepository):
         question_ids = [question.question_id for question in questions]
         return question_ids
 
-    async def get_random(self, game_name: str, round_: str, language_code: str, limit: int) -> List[Question]:
+    @staticmethod
+    async def get_random(game_name: str, round_: str, language_code: str, limit: int) -> List[Question]:
         questions = (
             await Question.find(
                 Question.game_name == game_name,
@@ -132,8 +134,9 @@ class QuestionRepository(AbstractQuestionRepository):
 
         return questions
 
+    @staticmethod
     async def get_questions_in_group(
-        self, game_name: str, round_: str, language_code: str, group_name: str
+        game_name: str, round_: str, language_code: str, group_name: str
     ) -> List[Question]:
         questions = await Question.find(
             Question.game_name == game_name,

@@ -13,8 +13,8 @@ class FakeStoryRepository(AbstractStoryRepository):
         for story in self.stories:
             if story.story_id == new_story.story_id:
                 raise StoryExistsException("story already exists")
-        else:
-            self.stories.append(new_story)
+
+        self.stories.append(new_story)
 
     async def get(self, story_id: str) -> Story:
         for story in self.stories:

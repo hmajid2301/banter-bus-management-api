@@ -91,7 +91,7 @@ class QuestionService:
     async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> QuestionIDsPagination:
         get_game(game_name=game_name)
         if limit < 1:
-            raise InvalidLimit(limit=limit, min=0)
+            raise InvalidLimit(limit=limit, minimum=0)
 
         question_ids = await self.question_repository.get_ids(game_name=game_name, limit=limit, cursor=cursor)
         new_cursor = None
@@ -106,7 +106,7 @@ class QuestionService:
     ) -> List[QuestionSimple]:
         game = get_game(game_name=game_name)
         if limit < 1:
-            raise InvalidLimit(limit=limit, min=0)
+            raise InvalidLimit(limit=limit, minimum=0)
 
         if group_name:
             questions = await self.question_repository.get_questions_in_group(
@@ -132,7 +132,7 @@ class QuestionService:
         game_round_has_groups = game.has_groups(round_=round_)
 
         if limit < 0:
-            raise InvalidLimit(limit=limit, min=0)
+            raise InvalidLimit(limit=limit, minimum=0)
 
         random_groups: List[str] = []
         if game_round_has_groups:

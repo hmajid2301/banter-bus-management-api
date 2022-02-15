@@ -70,19 +70,19 @@ async def remove_game(
     response_model=List[str],
 )
 async def get_all_game_names(
-    filter: Optional[str] = Query("all", alias="status"),
+    enabled_filter: Optional[str] = Query("all", alias="status"),
     game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
 ) -> List[str]:
     try:
         log.debug("trying to get all game names")
-        if not filter:
-            filter = "all"
+        if not enabled_filter:
+            enabled_filter = "all"
 
-        game_names = await game_service.get_game_names(filter=filter)
+        game_names = await game_service.get_game_names(enabled_filter=enabled_filter)
         return game_names
     except InvalidGameFilter as e:
-        log.warning("invalid game", filter=filter)
+        log.warning("invalid game", filter=enabled_filter)
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"error_message": str(e), "error_code": "invalid_status"},

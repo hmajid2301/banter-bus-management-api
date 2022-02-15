@@ -19,13 +19,15 @@ class AbstractGameRepository(AbstractRepository[Game]):
 
 
 class GameRepository(AbstractGameRepository):
-    async def add(self, game: Game):
+    @staticmethod
+    async def add(game: Game):
         try:
             await Game.insert(game)
         except DuplicateKeyError:
             raise GameExistsException(f"game {game.name=} already exists")
 
-    async def get(self, game_name: str) -> Game:
+    @staticmethod
+    async def get(game_name: str) -> Game:
         game = await Game.find_one(Game.name == game_name)
         if not game:
             raise GameNotFound(game_name=game_name)
@@ -43,7 +45,8 @@ class GameRepository(AbstractGameRepository):
         return self._get_game_names(games)
 
     # TODO: use projection https://roman-right.github.io/beanie/tutorial/finding-documents/
-    def _get_game_names(self, games: List[Game]):
+    @staticmethod
+    def _get_game_names(games: List[Game]):
         game_names: List[str] = [game.name for game in games]
         return game_names
 

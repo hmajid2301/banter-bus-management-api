@@ -37,7 +37,7 @@ class GameService:
         game = await self.game_repository.get(game_name)
         return game
 
-    async def get_game_names(self, filter: str) -> List[str]:
+    async def get_game_names(self, enabled_filter: str) -> List[str]:
         filter_map: Dict[str, Union[bool, None]] = {
             "all": None,
             "enabled": True,
@@ -45,11 +45,11 @@ class GameService:
         }
 
         try:
-            filter_bool = filter_map[filter]
+            filter_bool = filter_map[enabled_filter]
             game_names = await self.game_repository.get_all_game_names(enabled=filter_bool)
             return game_names
         except KeyError:
-            raise InvalidGameFilter(f"invalid {filter=} must be one of {', '.join(filter_map.keys())}")
+            raise InvalidGameFilter(f"invalid {enabled_filter=} must be one of {', '.join(filter_map.keys())}")
 
     async def update_enabled_status(self, game_name: str, enabled: bool) -> Game:
         game = await self.game_repository.update_enable_status(game_name=game_name, enabled=enabled)

@@ -10,13 +10,15 @@ class AbstractStoryRepository(AbstractRepository[Story]):
 
 
 class StoryRepository(AbstractStoryRepository):
-    async def add(self, story: Story):
+    @staticmethod
+    async def add(story: Story):
         try:
             await Story.insert(story)
         except DuplicateKeyError:
             raise StoryExistsException(f"story {story.story_id=} already exists")
 
-    async def get(self, story_id: str) -> Story:
+    @staticmethod
+    async def get(story_id: str) -> Story:
         story = await Story.find_one(Story.story_id == story_id)
         if not story:
             raise StoryNotFound(f"unable to find {story_id=}")

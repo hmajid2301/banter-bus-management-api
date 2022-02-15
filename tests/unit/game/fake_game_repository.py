@@ -13,8 +13,8 @@ class FakeGameRepository(AbstractGameRepository):
         for game in self.games:
             if game.name == new_game.name:
                 raise GameExistsException("game already exists")
-        else:
-            self.games.append(new_game)
+
+        self.games.append(new_game)
 
     async def get(self, game_name: str) -> Game:
         for game in self.games:
@@ -34,8 +34,8 @@ class FakeGameRepository(AbstractGameRepository):
             if game.name == game_name:
                 game.enabled = enabled
                 return game
-        else:
-            raise GameNotFound("game not found")
+
+        raise GameNotFound("game not found")
 
     async def get_all_game_names(self, enabled: bool = None) -> List[str]:
         names: List[str] = []

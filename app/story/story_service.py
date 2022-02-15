@@ -17,7 +17,8 @@ class StoryService:
         await self.story_repository.add(new_story)
         return new_story
 
-    def _validate_story(self, story: Story):
+    @staticmethod
+    def _validate_story(story: Story):
         game_name = story.game_name
         game = get_game(game_name=game_name)
         game.validate_story(nickname=story.nickname or "", round_=story.round_ or "", answers=story.answers)

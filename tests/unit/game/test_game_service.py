@@ -233,7 +233,7 @@ async def test_get_game_does_not_exist():
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "factory_boy_args, filter, expected_result",
+    "factory_boy_args, enabled_filter, expected_result",
     get_game_name_data,
     ids=[
         "get all games",
@@ -245,12 +245,12 @@ async def test_get_game_does_not_exist():
         "get all enabled games (single)",
     ],
 )
-async def test_get_game_names(factory_boy_args: dict, filter: str, expected_result: List[str]):
+async def test_get_game_names(factory_boy_args: dict, enabled_filter: str, expected_result: List[str]):
     existing_games = GameFactory.build_batch(**factory_boy_args)
     game_repository = FakeGameRepository(games=existing_games)
     game_service = GameService(game_repository=game_repository)
 
-    games = await game_service.get_game_names(filter=filter)
+    games = await game_service.get_game_names(enabled_filter=enabled_filter)
     assert games == expected_result
 
 
@@ -261,7 +261,7 @@ async def test_get_game_names_invalid_filer():
     game_service = GameService(game_repository=game_repository)
 
     with pytest.raises(InvalidGameFilter):
-        await game_service.get_game_names(filter="invalid")
+        await game_service.get_game_names(enabled_filter="invalid")
 
 
 @pytest.mark.asyncio
