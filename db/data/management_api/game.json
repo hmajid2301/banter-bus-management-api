@@ -6,7 +6,7 @@
     "enabled": true,
     "description": "Lie your way through the game, hide the fact you are a spy. Whilst everyone else tried to work it out.",
     "display_name": "Fibbing IT!",
-    "minimum_players": 4,
+    "minimum_players": 1,
     "maximum_players": 10
   },
   {
