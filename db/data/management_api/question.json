@@ -32,12 +32,71 @@
     "content": { "en": "to eat ice-cream from the tub" }
   },
   {
+    "_id": { "$oid": "61162ad137f6d318f0979822" },
+    "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42ff",
+    "game_name": "fibbing_it",
+    "round": "free_form",
+    "enabled": true,
+    "content": {
+      "en": "What do you think about programmers?"
+    },
+    "group": { "name": "programming_group", "type": "" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979811" },
+    "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42aa",
+    "game_name": "fibbing_it",
+    "round": "free_form",
+    "enabled": false,
+    "content": {
+      "en": "what don't you think about programmers?"
+    },
+    "group": { "name": "programming_group", "type": "" }
+  },
+  {
     "_id": { "$oid": "61162ad137f6d318f0979863" },
     "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42a5",
     "game_name": "fibbing_it",
     "round": "free_form",
+    "enabled": true,
+    "content": {
+      "en": "what do you think about cats",
+      "it": "Perché sono superiori i gatti di Liam?"
+    },
+    "group": { "name": "cat_group", "type": "" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979833" },
+    "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42dda",
+    "game_name": "fibbing_it",
+    "round": "free_form",
+    "enabled": true,
+    "content": {
+      "en": "what don't you like about cats?"
+    },
+    "group": { "name": "cat_group", "type": "" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979899" },
+    "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42cc",
+    "game_name": "fibbing_it",
+    "round": "free_form",
     "enabled": false,
-    "content": { "it": "Perché sono superiori i gatti di Liam?" },
+    "content": {
+      "en": "what don't you like about cats?"
+    },
+    "group": { "name": "cat_group", "type": "" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979863" },
+    "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42a5",
+    "game_name": "fibbing_it",
+    "round": "free_form",
+    "enabled": true,
+    "content": {
+      "en": "what do you think about cats",
+      "it": "Perché sono superiori i gatti di Liam?"
+    },
     "group": { "name": "cat_group", "type": "" }
   },
   {
@@ -45,7 +104,7 @@
     "question_id": "aa9fe2b5-79b5-458d-814b-45ff95a617fc",
     "game_name": "fibbing_it",
     "round": "free_form",
-    "enabled": false,
+    "enabled": true,
     "content": { "en": "A funny question?" },
     "group": { "name": "bike_group", "type": "" }
   },

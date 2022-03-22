@@ -119,6 +119,7 @@ class QuestionRepository(AbstractQuestionRepository):
             await Question.find(
                 Question.game_name == game_name,
                 Question.round_ == round_,
+                Question.enabled is True,
                 Exists(Question.content[language_code], True),
             )
             .aggregate(
@@ -142,6 +143,7 @@ class QuestionRepository(AbstractQuestionRepository):
             Question.game_name == game_name,
             Question.round_ == round_,
             Question.group.name == group_name,  # type: ignore
+            Question.enabled is True,
             Exists(Question.content[language_code], True),
         ).to_list()
         return questions
