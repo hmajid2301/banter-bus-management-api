@@ -32,6 +32,14 @@
     "content": { "en": "to eat ice-cream from the tub" }
   },
   {
+    "_id": { "$oid": "61162ad137f6d318f0979887" },
+    "question_id": "d6318b0d-29e1-4f10-b6a7-37a648364c77",
+    "game_name": "fibbing_it",
+    "round": "likely",
+    "enabled": true,
+    "content": { "en": "to fight a horse" }
+  },
+  {
     "_id": { "$oid": "61162ad137f6d318f0979822" },
     "question_id": "d80f2d90-0fb0-462a-8fbd-1aa00b4e42ff",
     "game_name": "fibbing_it",
