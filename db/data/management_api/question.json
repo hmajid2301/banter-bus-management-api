@@ -102,5 +102,95 @@
     "enabled": true,
     "content": { "en": "What do you think about horses?" },
     "group": { "name": "horse_group", "type": "question" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979862" },
+    "question_id": "138bc208-2849-41f3-bbd8-3226a96c5371",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "purple" },
+    "group": { "name": "colour_group", "type": "answer" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f097985d" },
+    "question_id": "d5aa9153-f48c-45cc-b411-fb9b2d38e78d",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "blue" },
+    "group": { "name": "colour_group", "type": "answer" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f09798ff" },
+    "question_id": "03a462ba-f483-4726-aeaf-b8b6b03ce3ff",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "red" },
+    "group": { "name": "colour_group", "type": "answer" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979844" },
+    "question_id": "7799e38a-758d-4a1b-a191-99c59440afdd",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "What is your favourite colour?" },
+    "group": { "name": "colour_group", "type": "question" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979833" },
+    "question_id": "3e2889f6-56aa-4422-a7c5-033eafa9fd22",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "What is your least favourite colour?" },
+    "group": { "name": "colour_group", "type": "question" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979855" },
+    "question_id": "138bc208-2849-41f3-bbd8-3226a96c5311",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "Strongly Agree" },
+    "group": { "name": "animal_group", "type": "answer" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f09798ee" },
+    "question_id": "d5aa9153-f48c-45cc-b411-fb9b2d38e7ee",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "Agree" },
+    "group": { "name": "animal_group", "type": "answer" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979833" },
+    "question_id": "03a462ba-f483-4726-aeaf-b8b6b03ce3aa",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "Disagree" },
+    "group": { "name": "animal_group", "type": "answer" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979833" },
+    "question_id": "7799e38a-758d-4a1b-a191-99c59440afee",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "Are cats cute?" },
+    "group": { "name": "animal_group", "type": "question" }
+  },
+  {
+    "_id": { "$oid": "61162ad137f6d318f0979866" },
+    "question_id": "3e2889f6-56aa-4422-a7c5-033eafa9fd99",
+    "game_name": "fibbing_it",
+    "round": "opinion",
+    "enabled": true,
+    "content": { "en": "Dogs are cuter than cats?" },
+    "group": { "name": "animal_group", "type": "question" }
   }
 ]
