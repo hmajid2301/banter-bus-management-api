@@ -6,7 +6,7 @@ from omnibus.database.repository import AbstractRepository
 from pymongo.errors import DuplicateKeyError
 
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
-from app.question.question_models import NewQuestion, Question, QuestionGroups
+from app.question.question_models import NewQuestion, Question
 
 
 class AbstractQuestionRepository(AbstractRepository[Question]):
@@ -41,7 +41,7 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_groups(self, game_name: str, round_: str) -> List[str]:
+    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> List[str]:
         raise NotImplementedError
 
 
@@ -119,7 +119,7 @@ class QuestionRepository(AbstractQuestionRepository):
             await Question.find(
                 Question.game_name == game_name,
                 Question.round_ == round_,
-                Question.enabled is True,
+                Question.enabled == True,  # noqa
                 Exists(Question.content[language_code], True),
             )
             .aggregate(
@@ -143,28 +143,31 @@ class QuestionRepository(AbstractQuestionRepository):
             Question.game_name == game_name,
             Question.round_ == round_,
             Question.group.name == group_name,  # type: ignore
-            Question.enabled is True,
+            Question.enabled == True,  # noqa
             Exists(Question.content[language_code], True),
         ).to_list()
         return questions
 
-    async def get_groups(self, game_name: str, round_: str) -> List[str]:
+    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> List[str]:
         # TODO: move to when fixed https://github.com/roman-right/beanie/issues/133
-        question_groups_list: List[QuestionGroups] = (
+        question_groups = (
             await Question.find(Question.game_name == game_name, Question.round_ == round_)
             .aggregate(
                 [
                     {
                         "$group": {
-                            "_id": 1,
-                            "groups": {"$addToSet": "$group.name"},
+                            "_id": "$group.name",
+                            "count": {"$sum": 1},
                         },
                     },
+                    {"$match": {"count": {"$gte": minimum_questions}}},
                 ],
-                projection_model=QuestionGroups,
             )
             .to_list()
         )
+        groups: List[str] = []
+        for group in question_groups:
+            if group["_id"] is not None:
+                groups.append(group["_id"])
 
-        question_groups = question_groups_list[0]
-        return question_groups.groups
+        return groups

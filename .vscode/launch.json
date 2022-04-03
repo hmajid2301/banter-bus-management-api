@@ -20,6 +20,7 @@
     {
       "name": "Tests: Integration",
       "type": "python",
+      "envFile": "${workspaceFolder}/.env",
       "request": "launch",
       "module": "pytest",
       "args": ["-rf", "tests/integration"],

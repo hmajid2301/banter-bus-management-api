@@ -112,12 +112,15 @@ async def get_random_groups(
     game_name: str,
     round_: str = Query(None, alias="round"),
     limit: int = Query(5, ge=1, le=100),
+    minimum_questions: int = Query(2, ge=1, le=100),
     question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
 ):
     try:
         log.debug("trying to get question groups")
-        question_groups = await question_service.get_random_groups(game_name=game_name, round_=round_, limit=limit)
+        question_groups = await question_service.get_random_groups(
+            game_name=game_name, round_=round_, limit=limit, minimum_questions=minimum_questions
+        )
         return QuestionGroups(groups=question_groups)
     except ValueError as e:
         log.warning("invalid format", error=e)

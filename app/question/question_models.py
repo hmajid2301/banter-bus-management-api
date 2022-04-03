@@ -62,12 +62,8 @@ class QuestionType(str, Enum):
 class QuestionSimple(BaseModel):
     question_id: str
     content: str
-    type_: QuestionType
+    type_: str
 
     class Config:
         allow_population_by_field_name = True
         fields = {"type_": "type"}
-
-
-class QuestionGroups(BaseModel):
-    groups: List[str]

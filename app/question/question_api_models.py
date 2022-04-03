@@ -42,7 +42,7 @@ class QuestionGroups(BaseModel):
 class QuestionSimpleOut(BaseModel):
     question_id: str
     content: str
-    type_: QuestionType
+    type_: Optional[QuestionType]
 
     class Config:
         allow_population_by_field_name = True

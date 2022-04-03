@@ -90,11 +90,12 @@ async def test_get_random_questions(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "game_name, round_, limit, expected_status_code, expected_result_number",
+    "game_name, round_, limit, minimum_questions, expected_status_code, expected_result_number",
     get_question_groups_data,
     ids=[
         "get quibly, pair round groups",
         "get fibbing_it, opinion round groups",
+        "get fibbing_it, opinion round groups, minimum questions 2",
         "get fibbing_it, free_form round groups",
         "get fibbing_it, likely round groups",
         "get drawlosseum, drawing round groups",
@@ -102,13 +103,20 @@ async def test_get_random_questions(
         "get groups (round not found)",
         "get quibly groups (invalid round < 0)",
         "get quibly groups (invalid round > 100)",
+        "get quibly groups (invalid minimum questions 0)",
     ],
 )
 async def test_get_random_question_groups(
-    client: AsyncClient, game_name: str, round_: str, limit: int, expected_status_code: int, expected_result_number: int
+    client: AsyncClient,
+    game_name: str,
+    round_: str,
+    limit: int,
+    minimum_questions: int,
+    expected_status_code: int,
+    expected_result_number: int,
 ):
     url = f"/game/{game_name}/question/group:random"
-    response = await client.get(url, params={"limit": limit, "round": round_})
+    response = await client.get(url, params={"limit": limit, "round": round_, "minimum_questions": minimum_questions})
     assert response.status_code == expected_status_code
 
     if response.status_code == status.HTTP_200_OK:
@@ -117,7 +125,9 @@ async def test_get_random_question_groups(
         assert len(groups) == expected_result_number
 
         question_repository = QuestionRepository()
-        groups_in_db = await question_repository.get_groups(game_name=game_name, round_=round_)
+        groups_in_db = await question_repository.get_groups(
+            game_name=game_name, round_=round_, minimum_questions=minimum_questions
+        )
         for group in groups:
             assert group in groups_in_db
 

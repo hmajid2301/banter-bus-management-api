@@ -342,11 +342,12 @@ get_random_questions_data_fail = [
 ]
 
 get_groups_data = [
-    ("quibly", "pair", 1),
-    ("fibbing_it", "opinion", 1),
-    ("fibbing_it", "free_form", 1),
-    ("fibbing_it", "likely", 1),
-    ("drawlosseum", "drawing", 1),
+    ("quibly", "pair", 1, 1),
+    ("fibbing_it", "opinion", 1, 1),
+    ("fibbing_it", "free_form", 1, 1),
+    ("fibbing_it", "likely", 1, 1),
+    ("drawlosseum", "drawing", 1, 1),
+    ("quibly", "pair", 1, 2),
 ]
 
 get_groups_data_fail = [

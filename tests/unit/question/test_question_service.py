@@ -166,7 +166,7 @@ async def test_get_random_questions_fail(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "game_name, round_, limit",
+    "game_name, round_, limit, minimim_questions",
     get_groups_data,
     ids=[
         "get quibly groups",
@@ -174,14 +174,19 @@ async def test_get_random_questions_fail(
         "get fibbing_it round free_form groups",
         "get fibbing_it round likely groups",
         "get drawlossuem groups",
+        "get quibly groups minimum questions 2",
     ],
 )
-async def test_get_groups(game_name: str, round_: str, limit: int, questions: List[Question]):
+async def test_get_groups(game_name: str, round_: str, limit: int, minimim_questions: int, questions: List[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
-    expected_groups = await question_repository.get_groups(game_name=game_name, round_=round_)
+    expected_groups = await question_repository.get_groups(
+        game_name=game_name, round_=round_, minimum_questions=minimim_questions
+    )
 
-    random_groups = await question_service.get_random_groups(game_name=game_name, round_=round_, limit=limit)
+    random_groups = await question_service.get_random_groups(
+        game_name=game_name, round_=round_, limit=limit, minimum_questions=minimim_questions
+    )
 
     if expected_groups:
         assert len(random_groups) == limit

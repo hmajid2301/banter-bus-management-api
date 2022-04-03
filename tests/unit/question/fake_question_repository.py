@@ -1,5 +1,5 @@
 import random
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
 from app.question.question_models import NewQuestion, Question
@@ -115,9 +115,23 @@ class FakeQuestionRepository(AbstractQuestionRepository):
                 questions.append(question)
         return questions
 
-    async def get_groups(self, game_name: str, round_: str) -> List[str]:
+    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> List[str]:
         groups: Set[str] = set()
+        group_question_count_map: Dict[str, int] = {}
+
         for question in self.questions:
+            if question.group is not None:
+                if question.group.name not in group_question_count_map:
+                    group_question_count_map[question.group.name] = 0
+
+                group_question_count_map[question.group.name] += 1
+
             if question.game_name == game_name and question.round_ == round_ and question.group:
                 groups.add(question.group.name)
-        return list(groups)
+
+        group_names: List[str] = []
+        for group in groups:
+            if group_question_count_map[group] >= minimum_questions:
+                group_names.append(group)
+
+        return group_names

@@ -127,7 +127,9 @@ class QuestionService:
 
         return questions_simple
 
-    async def get_random_groups(self, game_name: str, round_: str, limit: int = 1) -> List[str]:
+    async def get_random_groups(
+        self, game_name: str, round_: str, limit: int = 1, minimum_questions: int = 2
+    ) -> List[str]:
         game = get_game(game_name=game_name)
         game_round_has_groups = game.has_groups(round_=round_)
 
@@ -136,7 +138,9 @@ class QuestionService:
 
         random_groups: List[str] = []
         if game_round_has_groups:
-            groups = await self.question_repository.get_groups(game_name=game_name, round_=round_)
+            groups = await self.question_repository.get_groups(
+                game_name=game_name, round_=round_, minimum_questions=minimum_questions
+            )
 
             num_of_items = min(len(groups), limit)
             random_groups = random.sample(groups, k=num_of_items)
