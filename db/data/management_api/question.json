@@ -51,6 +51,17 @@
     "group": { "name": "programming_group" }
   },
   {
+    "_id": { "$oid": "71162ad137f6d318f0979822" },
+    "question_id": "ee0f2d90-0fb0-462a-8fbd-1aa00b4e42ff",
+    "game_name": "fibbing_it",
+    "round": "free_form",
+    "enabled": true,
+    "content": {
+      "en": "What don't you like about programmers?"
+    },
+    "group": { "name": "programming_group" }
+  },
+  {
     "_id": { "$oid": "61162ad137f6d318f0979811" },
     "question_id": "ee0f2d90-0fb0-462a-8fbd-1aa00b4e42aa",
     "game_name": "fibbing_it",
