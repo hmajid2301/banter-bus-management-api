@@ -55,7 +55,7 @@
     "question_id": "ee0f2d90-0fb0-462a-8fbd-1aa00b4e42aa",
     "game_name": "fibbing_it",
     "round": "free_form",
-    "enabled": false,
+    "enabled": true,
     "content": {
       "en": "what don't you think about programmers?"
     },
