@@ -1,5 +1,4 @@
 import abc
-from typing import List, Optional
 
 from beanie.operators import GT, Exists
 from omnibus.database.repository import AbstractRepository
@@ -27,21 +26,21 @@ class AbstractQuestionRepository(AbstractRepository[Question]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> List[str]:
+    async def get_ids(self, game_name: str, limit: int, cursor: str | None = None) -> list[str]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_random(self, game_name: str, round_: str, language_code: str, limit: int) -> List[Question]:
+    async def get_random(self, game_name: str, round_: str, language_code: str, limit: int) -> list[Question]:
         raise NotImplementedError
 
     @abc.abstractmethod
     async def get_questions_in_group(
         self, game_name: str, round_: str, language_code: str, group_name: str
-    ) -> List[Question]:
+    ) -> list[Question]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> List[str]:
+    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> list[str]:
         raise NotImplementedError
 
 
@@ -66,7 +65,7 @@ class QuestionRepository(AbstractQuestionRepository):
         await Question.find_one(Question.question_id == question_id).delete()
 
     async def does_question_exist(self, new_question: NewQuestion) -> bool:
-        questions: List[Question] = await Question.find(
+        questions: list[Question] = await Question.find(
             Question.round_ == new_question.round_,
             Question.game_name == new_question.game_name,
             Question.group == new_question.group,
@@ -104,7 +103,7 @@ class QuestionRepository(AbstractQuestionRepository):
             raise QuestionNotFound(question_id=question_id, language_code=language_code)
         await question.save()
 
-    async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> List[str]:
+    async def get_ids(self, game_name: str, limit: int, cursor: str | None = None) -> list[str]:
         questions = (
             await Question.find(Question.game_name == game_name, GT(Question.question_id, cursor))
             .limit(limit)
@@ -114,7 +113,7 @@ class QuestionRepository(AbstractQuestionRepository):
         return question_ids
 
     @staticmethod
-    async def get_random(game_name: str, round_: str, language_code: str, limit: int) -> List[Question]:
+    async def get_random(game_name: str, round_: str, language_code: str, limit: int) -> list[Question]:
         questions = (
             await Question.find(
                 Question.game_name == game_name,
@@ -138,7 +137,7 @@ class QuestionRepository(AbstractQuestionRepository):
     @staticmethod
     async def get_questions_in_group(
         game_name: str, round_: str, language_code: str, group_name: str
-    ) -> List[Question]:
+    ) -> list[Question]:
         questions = await Question.find(
             Question.game_name == game_name,
             Question.round_ == round_,
@@ -148,7 +147,7 @@ class QuestionRepository(AbstractQuestionRepository):
         ).to_list()
         return questions
 
-    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> List[str]:
+    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> list[str]:
         # TODO: move to when fixed https://github.com/roman-right/beanie/issues/133
         question_groups = (
             await Question.find(Question.game_name == game_name, Question.round_ == round_)
@@ -165,7 +164,7 @@ class QuestionRepository(AbstractQuestionRepository):
             )
             .to_list()
         )
-        groups: List[str] = []
+        groups: list[str] = []
         for group in question_groups:
             if group["_id"] is not None:
                 groups.append(group["_id"])

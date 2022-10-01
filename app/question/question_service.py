@@ -1,6 +1,6 @@
 import random
 import uuid
-from typing import List, Optional
+from typing import Any
 
 import languagecodes
 
@@ -25,7 +25,7 @@ class QuestionService:
     def __init__(self, question_repository: AbstractQuestionRepository):
         self.question_repository = question_repository
 
-    async def add(self, question_dict: dict) -> Question:
+    async def add(self, question_dict: dict[Any, Any]) -> Question:
         id_ = str(uuid.uuid4())
         question = NewQuestion(**question_dict)
 
@@ -35,7 +35,7 @@ class QuestionService:
             raise QuestionExistsException(f"question {question_dict} already exists")
 
         new_question_dict = {**question_dict, "content": {question.language_code: question.content}}
-        new_question = Question(**new_question_dict, question_id=id_)
+        new_question = Question(**new_question_dict, question_id=id_)  # type: ignore
 
         await self.question_repository.add(new_question)
         return new_question
@@ -88,7 +88,7 @@ class QuestionService:
         self._validate_language_code(language_code=language_code)
         await self.question_repository.remove_translation(question_id=question_id, language_code=language_code)
 
-    async def get_ids(self, game_name: str, limit: int, cursor: Optional[str] = None) -> QuestionIDsPagination:
+    async def get_ids(self, game_name: str, limit: int, cursor: str | None = None) -> QuestionIDsPagination:
         get_game(game_name=game_name)
         if limit < 1:
             raise InvalidLimit(limit=limit, minimum=0)
@@ -102,8 +102,8 @@ class QuestionService:
         return question_pagination
 
     async def get_random(
-        self, game_name: str, round_: str, language_code: str, limit: int, group_name: Optional[str] = None
-    ) -> List[QuestionSimple]:
+        self, game_name: str, round_: str, language_code: str, limit: int, group_name: str | None = None
+    ) -> list[QuestionSimple]:
         game = get_game(game_name=game_name)
         if limit < 1:
             raise InvalidLimit(limit=limit, minimum=0)
@@ -116,7 +116,7 @@ class QuestionService:
             questions = await self.question_repository.get_random(
                 game_name=game_name, round_=round_, language_code=language_code, limit=limit
             )
-        questions_simple: List[QuestionSimple] = []
+        questions_simple: list[QuestionSimple] = []
         for question in questions:
             question_type = game.get_question_type(round_, group=question.group)
             questions_simple.append(
@@ -129,14 +129,14 @@ class QuestionService:
 
     async def get_random_groups(
         self, game_name: str, round_: str, limit: int = 1, minimum_questions: int = 2
-    ) -> List[str]:
+    ) -> list[str]:
         game = get_game(game_name=game_name)
         game_round_has_groups = game.has_groups(round_=round_)
 
         if limit < 0:
             raise InvalidLimit(limit=limit, minimum=0)
 
-        random_groups: List[str] = []
+        random_groups: list[str] = []
         if game_round_has_groups:
             groups = await self.question_repository.get_groups(
                 game_name=game_name, round_=round_, minimum_questions=minimum_questions

@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Dict, List, Optional
 
 from beanie import Document, Indexed
 from pydantic import BaseModel
@@ -8,17 +7,17 @@ from app.core.models import QuestionGroup
 
 
 class QuestionIDsPagination(BaseModel):
-    question_ids: List[str]
-    cursor: Optional[str] = None
+    question_ids: list[str]
+    cursor: str | None = None
 
 
 class Question(Document):
     question_id: Indexed(str, unique=True)  # type: ignore
     game_name: str
-    round_: Optional[str]
+    round_: str | None
     enabled: bool = True
-    content: Dict[str, str]
-    group: Optional[QuestionGroup] = None
+    content: dict[str, str]
+    group: QuestionGroup | None = None
 
     class Config:
         allow_population_by_field_name = True
@@ -31,11 +30,11 @@ class Question(Document):
 class QuestionTranslation(BaseModel):
     question_id: str
     game_name: str
-    round_: Optional[str]
+    round_: str | None
     language_code: str
     enabled: bool = True
     content: str
-    group: Optional[QuestionGroup] = None
+    group: QuestionGroup | None = None
 
     class Config:
         allow_population_by_field_name = True
@@ -44,10 +43,10 @@ class QuestionTranslation(BaseModel):
 
 class NewQuestion(BaseModel):
     game_name: str
-    round_: Optional[str]
+    round_: str | None
     content: str
     language_code: str = "en"
-    group: Optional[QuestionGroup] = None
+    group: QuestionGroup | None = None
 
     class Config:
         allow_population_by_field_name = True

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any
 
 from app.game.game_exceptions import GameNotFound
 
@@ -300,7 +300,7 @@ add_story_fail_data = [
     ),
 ]
 
-all_games_enabled: List[dict] = [
+all_games_enabled: list[dict[Any, Any]] = [
     {
         "name": "quibly",
         "rules_url": "https://gitlab.com/banter-bus/banter-bus-server/-/wikis/docs/rules/quibly",

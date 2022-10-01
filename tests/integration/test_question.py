@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from fastapi import status
 from httpx import AsyncClient
@@ -38,7 +40,11 @@ from tests.integration.data.question_test_data import (
     ],
 )
 async def test_add_question(
-    client: AsyncClient, game_name: str, request_data: dict, expected_status_code: int, expected_result: dict
+    client: AsyncClient,
+    game_name: str,
+    request_data: dict[Any, Any],
+    expected_status_code: int,
+    expected_result: dict[Any, Any],
 ):
     url = f"/game/{game_name}/question"
     response = await client.post(url, json=request_data)
@@ -151,7 +157,7 @@ async def test_get_question_ids(
     cursor: str,
     limit: int,
     expected_status_code: int,
-    expected_result: dict,
+    expected_result: dict[Any, Any],
 ):
     url = f"/game/{game_name}/question/id"
     response = await client.get(url, params={"cursor": cursor, "limit": limit})
@@ -174,7 +180,11 @@ async def test_get_question_ids(
     ],
 )
 async def test_get_question(
-    client: AsyncClient, game_name: str, question_id: dict, expected_status_code: int, expected_result: dict
+    client: AsyncClient,
+    game_name: str,
+    question_id: dict[Any, Any],
+    expected_status_code: int,
+    expected_result: dict[Any, Any],
 ):
     url = f"/game/{game_name}/question/{question_id}"
     response = await client.get(url)
@@ -196,7 +206,9 @@ async def test_get_question(
         "remove a question where game does not exist",
     ],
 )
-async def test_remove_question(client: AsyncClient, game_name: str, question_id: dict, expected_status_code: int):
+async def test_remove_question(
+    client: AsyncClient, game_name: str, question_id: dict[Any, Any], expected_status_code: int
+):
     url = f"/game/{game_name}/question/{question_id}"
     response = await client.delete(url)
     assert response.status_code == expected_status_code
@@ -218,7 +230,7 @@ async def test_remove_question(client: AsyncClient, game_name: str, question_id:
     ],
 )
 async def test_enable_game(
-    client: AsyncClient, game_name: str, question_id: str, expected_status_code: int, expected_result: dict
+    client: AsyncClient, game_name: str, question_id: str, expected_status_code: int, expected_result: dict[Any, Any]
 ):
     url = f"/game/{game_name}/question/{question_id}:enable"
     response = await client.put(url)
@@ -240,7 +252,7 @@ async def test_enable_game(
     ],
 )
 async def test_disable_game(
-    client: AsyncClient, game_name: str, question_id: str, expected_status_code: int, expected_result: dict
+    client: AsyncClient, game_name: str, question_id: str, expected_status_code: int, expected_result: dict[Any, Any]
 ):
     url = f"/game/{game_name}/question/{question_id}:disable"
     response = await client.put(url)
@@ -271,7 +283,7 @@ async def test_add_question_translation(
     language_code: str,
     request_data: str,
     expected_status_code: int,
-    expected_result: dict,
+    expected_result: dict[Any, Any],
 ):
     url = f"/game/{game_name}/question/{question_id}/{language_code}"
     response = await client.post(url, json=request_data)
@@ -300,7 +312,7 @@ async def test_get_question_translation(
     question_id: str,
     language_code: str,
     expected_status_code: int,
-    expected_result: dict,
+    expected_result: dict[Any, Any],
 ):
     url = f"/game/{game_name}/question/{question_id}/{language_code}"
     response = await client.get(url)
@@ -329,7 +341,7 @@ async def test_remove_question_translation(
     question_id: str,
     language_code: str,
     expected_status_code: int,
-    expected_result: dict,
+    expected_result: dict[Any, Any],
 ):
     url = f"/game/{game_name}/question/{question_id}/{language_code}"
     response = await client.delete(url)
@@ -343,6 +355,6 @@ async def test_remove_question_translation(
         assert question_dict == expected_result
 
 
-def _clean_response(response: dict):
+def _clean_response(response: dict[Any, Any]):
     del response["question_id"]
     return response

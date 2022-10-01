@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from app.game.games.game import get_game
 from app.story.story_models import Story
@@ -9,7 +10,7 @@ class StoryService:
     def __init__(self, story_repository: AbstractStoryRepository):
         self.story_repository = story_repository
 
-    async def add(self, story: dict) -> Story:
+    async def add(self, story: dict[Any, Any]) -> Story:
         id_ = str(uuid.uuid4())
         new_story = Story(**story, story_id=id_)
         self._validate_story(story=new_story)

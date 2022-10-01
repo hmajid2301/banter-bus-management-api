@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
@@ -16,7 +14,7 @@ class CaertsianCoordinateColor(BaseModel):
 
 class QuestionGroup(BaseModel):
     name: str
-    type_: Optional[str] = None
+    type_: str | None = None
 
     class Config:
         allow_population_by_field_name = True

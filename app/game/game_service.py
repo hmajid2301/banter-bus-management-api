@@ -1,5 +1,3 @@
-from typing import Dict, List, Union
-
 from app.game.game_exceptions import InvalidGameFilter
 from app.game.game_models import Game
 from app.game.game_repository import AbstractGameRepository
@@ -37,8 +35,8 @@ class GameService:
         game = await self.game_repository.get(game_name)
         return game
 
-    async def get_game_names(self, enabled_filter: str) -> List[str]:
-        filter_map: Dict[str, Union[bool, None]] = {
+    async def get_game_names(self, enabled_filter: str) -> list[str]:
+        filter_map: dict[str, bool | None] = {
             "all": None,
             "enabled": True,
             "disabled": False,

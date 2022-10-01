@@ -1,5 +1,4 @@
 import abc
-from typing import List
 
 from omnibus.database.repository import AbstractRepository
 from pymongo.errors import DuplicateKeyError
@@ -14,7 +13,7 @@ class AbstractGameRepository(AbstractRepository[Game]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_all_game_names(self, enabled: bool = None) -> List[str]:
+    async def get_all_game_names(self, enabled: bool = None) -> list[str]:
         raise NotImplementedError
 
 
@@ -37,7 +36,7 @@ class GameRepository(AbstractGameRepository):
         game = await self.get(game_name=game_name)
         await game.delete()
 
-    async def get_all_game_names(self, enabled: bool = None) -> List[str]:
+    async def get_all_game_names(self, enabled: bool = None) -> list[str]:
         if enabled is not None:
             games = await Game.find(Game.enabled == enabled).to_list()
         else:
@@ -46,8 +45,8 @@ class GameRepository(AbstractGameRepository):
 
     # TODO: use projection https://roman-right.github.io/beanie/tutorial/finding-documents/
     @staticmethod
-    def _get_game_names(games: List[Game]):
-        game_names: List[str] = [game.name for game in games]
+    def _get_game_names(games: list[Game]):
+        game_names: list[str] = [game.name for game in games]
         return game_names
 
     async def update_enable_status(self, game_name: str, enabled: bool) -> Game:

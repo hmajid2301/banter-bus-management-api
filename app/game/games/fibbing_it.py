@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any
 
 from app.core.models import QuestionGroup
 from app.game.games.abstract_game import AbstractGame
@@ -8,7 +8,7 @@ from app.story.story_models import FibbingItAnswer
 class FibbingItGame(AbstractGame):
     valid_rounds = {"opinion", "likely", "free_form"}
 
-    def validate_question(self, round_: str, group: Optional[QuestionGroup] = None):
+    def validate_question(self, round_: str, group: QuestionGroup | None = None):
         allowed_types = {"answer", "question"}
         rounds_with_groups = {"free_form", "opinion"}
         rounds_with_group_types = {"opinion"}
@@ -37,14 +37,14 @@ class FibbingItGame(AbstractGame):
 
         return has_groups
 
-    def get_question_type(self, round_: str, group: Optional[QuestionGroup] = None) -> str:
+    def get_question_type(self, round_: str, group: QuestionGroup | None = None) -> str:
         type_ = "question"
         if group and group.type_:
             type_ = group.type_
 
         return type_
 
-    def validate_story(self, nickname: str, round_: str, answers: List[Any]):
+    def validate_story(self, nickname: str, round_: str, answers: list[Any]):
         if nickname:
             raise ValueError("unexpected field `nickname` for fibbing_it")
 

@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from fastapi import status
 from httpx import AsyncClient
@@ -31,7 +33,9 @@ from tests.integration.data.story_test_data import (
         "try to add a fibbing_it story (unexpected nickname)",
     ],
 )
-async def test_add_story(client: AsyncClient, request_data: dict, expected_status_code: int, expected_result: dict):
+async def test_add_story(
+    client: AsyncClient, request_data: dict[Any, Any], expected_status_code: int, expected_result: dict[Any, Any]
+):
     response = await client.post("/story", json=request_data)
     assert response.status_code == expected_status_code
 
@@ -40,7 +44,7 @@ async def test_add_story(client: AsyncClient, request_data: dict, expected_statu
         assert clean_response == expected_result
 
 
-def _clean_response(response: dict):
+def _clean_response(response: dict[Any, Any]):
     del response["story_id"]
     return response
 
@@ -55,7 +59,9 @@ def _clean_response(response: dict):
         "try to get a story that does not exist",
     ],
 )
-async def test_get_story(client: AsyncClient, story_id: str, expected_status_code: int, expected_result: dict):
+async def test_get_story(
+    client: AsyncClient, story_id: str, expected_status_code: int, expected_result: dict[Any, Any]
+):
     url = f"/story/{story_id}"
     response = await client.get(url)
     assert response.status_code == expected_status_code

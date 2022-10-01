@@ -14,20 +14,20 @@ from app.question.question_models import Question
 from app.story import story_api
 from app.story.story_models import Story
 
-app = FastAPI(title="banter-bus-management-api")
+application = FastAPI(title="banter-bus-management-api")
 
 
-@app.on_event("startup")
+@application.on_event("startup")
 async def startup():
     await setup_app(
-        app=app, get_settings=get_settings, document_models=[Game, Story, Question], healthcheck=db_healthcheck
+        app=application, get_settings=get_settings, document_models=[Game, Story, Question], healthcheck=db_healthcheck
     )
-    app.middleware("http")(catch_exceptions_http)
+    application.middleware("http")(catch_exceptions_http)
 
-    app.include_router(game_api.router)
-    app.include_router(story_api.router)
-    app.include_router(question_api.router)
-    use_route_names_as_operation_ids(app)
+    application.include_router(game_api.router)
+    application.include_router(story_api.router)
+    application.include_router(question_api.router)
+    use_route_names_as_operation_ids(application)
 
-    add_game_exceptions(app)
-    add_question_exceptions(app)
+    add_game_exceptions(application)
+    add_question_exceptions(application)

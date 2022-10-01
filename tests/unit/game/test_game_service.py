@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any
 
 import pytest
 from pytest_mock import MockFixture
@@ -245,7 +245,7 @@ async def test_get_game_does_not_exist():
         "get all enabled games (single)",
     ],
 )
-async def test_get_game_names(factory_boy_args: dict, enabled_filter: str, expected_result: List[str]):
+async def test_get_game_names(factory_boy_args: dict[Any, Any], enabled_filter: str, expected_result: list[str]):
     existing_games = GameFactory.build_batch(**factory_boy_args)
     game_repository = FakeGameRepository(games=existing_games)
     game_service = GameService(game_repository=game_repository)
@@ -275,7 +275,7 @@ async def test_get_game_names_invalid_filer():
         "enable enabled game",
     ],
 )
-async def test_enable_game(factory_boy_args: dict, game_name: str):
+async def test_enable_game(factory_boy_args: dict[Any, Any], game_name: str):
     existing_games = GameFactory.build_batch(**factory_boy_args)
     game_repository = FakeGameRepository(games=existing_games)
     game_service = GameService(game_repository=game_repository)
@@ -295,7 +295,7 @@ async def test_enable_game(factory_boy_args: dict, game_name: str):
         "disable disabled game",
     ],
 )
-async def test_disable_game(factory_boy_args: dict, game_name: str):
+async def test_disable_game(factory_boy_args: dict[Any, Any], game_name: str):
     existing_games = GameFactory.build_batch(**factory_boy_args)
     game_repository = FakeGameRepository(games=existing_games)
     game_service = GameService(game_repository=game_repository)

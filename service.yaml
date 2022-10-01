@@ -4,15 +4,14 @@ metadata:
   name: banter-bus-management-api
   namespace: "78358389381"
   selfLink: /apis/serving.knative.dev/v1/namespaces/78358389381/services/banter-bus-management-api
-  creationTimestamp: "2021-12-19T22:54:27.607029Z"
+  creationTimestamp: 
   labels:
     cloud.googleapis.com/location: europe-west1
   annotations:
-    run.googleapis.com/client-name: gcloud
+    run.googleapis.com/client-name: cloud-console
     serving.knative.dev/creator: hmajid2301@gmail.com
-    serving.knative.dev/lastModifier: cloud-build-gitlab-ci@banter-bus.iam.gserviceaccount.com
+    serving.knative.dev/lastModifier: hmajid2301@gmail.com
     client.knative.dev/user-image: eu.gcr.io/banter-bus/banter-bus-management-api
-    run.googleapis.com/client-version: 367.0.0
     run.googleapis.com/launch-stage: BETA
     run.googleapis.com/ingress: all
     run.googleapis.com/ingress-status: all
@@ -21,9 +20,8 @@ spec:
     metadata:
       name: banter-bus-management-api
       annotations:
-        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-name: cloud-console
         client.knative.dev/user-image: eu.gcr.io/banter-bus/banter-bus-management-api
-        run.googleapis.com/client-version: 367.0.0
         run.googleapis.com/execution-environment: gen2
         autoscaling.knative.dev/maxScale: "3"
     spec:
@@ -42,12 +40,16 @@ spec:
               value: banter-bus-database.ffljl.mongodb.net
             - name: BANTER_BUS_MANAGEMENT_API_DB_NAME
               value: management_api
-            - name: BANTER_BUS_MANAGEMENT_API_DB_SCHEMA
+            - name: BANTER_BUS_MANAGEMENT_API_URL
+              value: https://management.api.banterbus.games
+            - name: BANTER_BUS_MANAGEMENT_API_SCHEMA
               value: mongodb+srv
             - name: BANTER_BUS_MANAGEMENT_API_ENVIRONMENT
               value: production
             - name: BANTER_BUS_MANAGEMENT_API_CORS
-              value: '["https://banterbus.games","https://core.api.banterbus.games"]'
+              value: '["*"]'
+            - name: BANTER_BUS_MANAGEMENT_API_REGEX_CORS
+              value: '[""]'
             - name: BANTER_BUS_MANAGEMENT_API_CLIENT_ID
               value: 78358389381-o5nq31qc9ntq5evfg03n4565cjbf8qpo.apps.googleusercontent.com
             - name: BANTER_BUS_MANAGEMENT_API_USE_AUTH
@@ -72,9 +74,6 @@ status:
       status: "True"
     - type: RoutesReady
       status: "True"
-  traffic:
-    percent: 100
-    latestRevision: true
   url: https://banter-bus-management-api-x6ccwlffzq-ew.a.run.app
   address:
     url: https://banter-bus-management-api-x6ccwlffzq-ew.a.run.app

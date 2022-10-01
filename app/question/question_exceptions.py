@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from omnibus.log.logger import get_logger
@@ -12,7 +10,7 @@ from app.core.exceptions import (
 
 
 class QuestionNotFound(NotFoundException):
-    def __init__(self, question_id: str, language_code: Optional[str] = None) -> None:
+    def __init__(self, question_id: str, language_code: str | None = None) -> None:
         self.question_id = question_id
         self.language_code = language_code
 
@@ -27,7 +25,7 @@ class InvalidLanguageCode(IncorrectFormatException):
 
 
 class InvalidLimit(IncorrectFormatException):
-    def __init__(self, limit: int, minimum: int, maximum: Optional[int] = None) -> None:
+    def __init__(self, limit: int, minimum: int, maximum: int | None = None) -> None:
         self.limit = limit
         self.minimum = minimum
         self.maximum = maximum

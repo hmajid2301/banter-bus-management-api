@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 import pytest
 from pytest_mock import MockFixture
@@ -25,7 +26,7 @@ def mock_beanie_document(mocker: MockFixture):
         "try to add a fibbing_it story",
     ],
 )
-async def test_add_story(story_dict: dict, mocker: MockFixture):
+async def test_add_story(story_dict: dict[Any, Any], mocker: MockFixture):
     story_repository = FakeStoryRepository(stories=[])
     story_service = StoryService(story_repository=story_repository)
 
@@ -57,7 +58,7 @@ async def test_add_story(story_dict: dict, mocker: MockFixture):
         "try to add a drawlosseum story (missing nickname)",
     ],
 )
-async def test_add_story_bad_story(story_dict: dict, expected_exception):
+async def test_add_story_bad_story(story_dict: dict[Any, Any], expected_exception):
     story_repository = FakeStoryRepository(stories=[])
     story_service = StoryService(story_repository=story_repository)
 
@@ -68,7 +69,7 @@ async def test_add_story_bad_story(story_dict: dict, expected_exception):
 @pytest.mark.asyncio
 async def test_remove_story():
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
-    existing_story = {
+    existing_story_dict = {
         "story_id": story_id,
         "game_name": "quibly",
         "question": "how many fish are there?",
@@ -87,7 +88,7 @@ async def test_remove_story():
         ],
     }
 
-    existing_story = Story(**existing_story)
+    existing_story = Story(**existing_story_dict)  # type: ignore
     story_repository = FakeStoryRepository(stories=[existing_story])
     story_service = StoryService(story_repository=story_repository)
 
@@ -99,7 +100,7 @@ async def test_remove_story():
 @pytest.mark.asyncio
 async def test_remove_story_story_does_not_exist():
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
-    existing_story = {
+    existing_story_dict = {
         "story_id": story_id,
         "game_name": "quibly",
         "question": "how many fish are there?",
@@ -118,7 +119,7 @@ async def test_remove_story_story_does_not_exist():
         ],
     }
 
-    existing_story = Story(**existing_story)
+    existing_story = Story(**existing_story_dict)  # type: ignore
     story_repository = FakeStoryRepository(stories=[existing_story])
     story_service = StoryService(story_repository=story_repository)
 
@@ -138,7 +139,7 @@ async def test_remove_story_story_no_stories_exist():
 @pytest.mark.asyncio
 async def test_get_story():
     story_id = "5ecd5827-b6ef-4067-b5ac-3ceac07dde9f"
-    existing_story = {
+    existing_story_dict = {
         "story_id": story_id,
         "game_name": "quibly",
         "question": "how many fish are there?",
@@ -157,7 +158,7 @@ async def test_get_story():
         ],
     }
 
-    existing_story = Story(**existing_story)
+    existing_story = Story(**existing_story_dict)  # type: ignore
     story_repository = FakeStoryRepository(stories=[existing_story])
     story_service = StoryService(story_repository=story_repository)
 

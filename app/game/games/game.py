@@ -1,5 +1,3 @@
-from typing import Dict
-
 from app.game.game_exceptions import GameNotFound
 from app.game.games.abstract_game import AbstractGame
 from app.game.games.drawlosseum import DrawlosseumGame
@@ -8,7 +6,7 @@ from app.game.games.quibly import QuiblyGame
 
 
 def get_game(game_name: str) -> AbstractGame:
-    valid_games: Dict[str, AbstractGame] = {
+    valid_games: dict[str, AbstractGame] = {
         "quibly": QuiblyGame(),
         "fibbing_it": FibbingItGame(),
         "drawlosseum": DrawlosseumGame(),

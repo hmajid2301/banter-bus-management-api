@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 from app.core.models import QuestionGroup
@@ -13,10 +11,10 @@ class QuestionTranslationOut(BaseModel):
     question_id: str
     game_name: str
     language_code: str
-    round_: Optional[str]
+    round_: str | None
     enabled: bool = True
     content: str
-    group: Optional[QuestionGroup] = None
+    group: QuestionGroup | None = None
 
     class Config:
         allow_population_by_field_name = True

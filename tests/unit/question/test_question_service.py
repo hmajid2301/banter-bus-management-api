@@ -1,6 +1,6 @@
 import copy
 import uuid
-from typing import List
+from typing import Any
 
 import pytest
 from pytest_mock import MockFixture
@@ -30,10 +30,10 @@ def mock_beanie_document(mocker: MockFixture):
 
 
 @pytest.fixture()
-def questions() -> List[Question]:
-    from tests.data.question_collection import questions
+def questions() -> list[Question]:
+    from tests.data.question_collection import questions  # type: ignore
 
-    return copy.deepcopy(questions)
+    return copy.deepcopy(questions)  # type: ignore
 
 
 @pytest.mark.asyncio
@@ -51,7 +51,7 @@ def questions() -> List[Question]:
         "add a fibbing_it question, round likely",
     ],
 )
-async def test_add_question(question_dict: dict, expected_result: dict, mocker: MockFixture):
+async def test_add_question(question_dict: dict[Any, Any], expected_result: dict[Any, Any], mocker: MockFixture):
     question_repository = FakeQuestionRepository(questions=[])
     question_service = QuestionService(question_repository=question_repository)
 
@@ -84,7 +84,7 @@ async def test_add_question(question_dict: dict, expected_result: dict, mocker: 
         "try to add a drawlosseum question already exists",
     ],
 )
-async def test_add_question_fail(question_dict: dict, expected_exception, questions: List[Question]):
+async def test_add_question_fail(question_dict: dict[Any, Any], expected_exception, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -115,7 +115,7 @@ async def test_get_random_questions(
     limit: int,
     group_name: str,
     expected_result_num: int,
-    questions: List[Question],
+    questions: list[Question],
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -149,7 +149,7 @@ async def test_get_random_questions_fail(
     limit: int,
     group_name: str,
     expected_exception,
-    questions: List[Question],
+    questions: list[Question],
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -177,7 +177,7 @@ async def test_get_random_questions_fail(
         "get quibly groups minimum questions 2",
     ],
 )
-async def test_get_groups(game_name: str, round_: str, limit: int, minimim_questions: int, questions: List[Question]):
+async def test_get_groups(game_name: str, round_: str, limit: int, minimim_questions: int, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
     expected_groups = await question_repository.get_groups(
@@ -207,7 +207,7 @@ async def test_get_groups(game_name: str, round_: str, limit: int, minimim_quest
         "get groups, invalid limit",
     ],
 )
-async def test_get_groups_fail(game_name: str, round_: str, limit: int, expected_exception, questions: List[Question]):
+async def test_get_groups_fail(game_name: str, round_: str, limit: int, expected_exception, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -228,7 +228,7 @@ async def test_get_groups_fail(game_name: str, round_: str, limit: int, expected
     ],
 )
 async def test_get_question_ids(
-    game_name: str, cursor: str, limit: int, expected_result: dict, questions: List[Question]
+    game_name: str, cursor: str, limit: int, expected_result: dict[Any, Any], questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -247,7 +247,7 @@ async def test_get_question_ids(
     ],
 )
 async def test_get_question_ids_fail(
-    game_name: str, cursor: str, limit: int, expected_exception, questions: List[Question]
+    game_name: str, cursor: str, limit: int, expected_exception, questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -269,8 +269,8 @@ async def test_get_question_ids_fail(
 async def test_get_question(
     question_id: str,
     game_name: str,
-    expected_question: dict,
-    questions: List[Question],
+    expected_question: dict[Any, Any],
+    questions: list[Question],
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -289,7 +289,7 @@ async def test_get_question_does_not_exist():
 
 
 @pytest.mark.asyncio
-async def test_get_question_game_does_not_exist(questions: List[Question]):
+async def test_get_question_game_does_not_exist(questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -298,7 +298,7 @@ async def test_get_question_game_does_not_exist(questions: List[Question]):
 
 
 @pytest.mark.asyncio
-async def test_remove_question(questions: List[Question]):
+async def test_remove_question(questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -309,7 +309,7 @@ async def test_remove_question(questions: List[Question]):
 
 
 @pytest.mark.asyncio
-async def test_remove_question_does_not_exist(questions: List[Question]):
+async def test_remove_question_does_not_exist(questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -319,7 +319,7 @@ async def test_remove_question_does_not_exist(questions: List[Question]):
 
 
 @pytest.mark.asyncio
-async def test_remove_question_game_does_not_exist(questions: List[Question]):
+async def test_remove_question_game_does_not_exist(questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -337,7 +337,7 @@ async def test_remove_question_game_does_not_exist(questions: List[Question]):
         "enable enabled game",
     ],
 )
-async def test_enable_question(game_name: str, question_id: str, questions: List[Question]):
+async def test_enable_question(game_name: str, question_id: str, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -354,7 +354,7 @@ async def test_enable_question(game_name: str, question_id: str, questions: List
         "disable enabled game",
     ],
 )
-async def test_disable_question(game_name: str, question_id: str, questions: List[Question]):
+async def test_disable_question(game_name: str, question_id: str, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -371,7 +371,7 @@ async def test_disable_question(game_name: str, question_id: str, questions: Lis
         "try to disable game (game not found)",
     ],
 )
-async def test_update_enable_status_question_does_not_exist(enabled_status: bool, questions: List[Question]):
+async def test_update_enable_status_question_does_not_exist(enabled_status: bool, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 
@@ -391,7 +391,7 @@ async def test_update_enable_status_question_does_not_exist(enabled_status: bool
         "try to disable game (game not found)",
     ],
 )
-async def test_update_enable_state_question_game_does_not_exist(enabled_status: bool, questions: List[Question]):
+async def test_update_enable_state_question_game_does_not_exist(enabled_status: bool, questions: list[Question]):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
 

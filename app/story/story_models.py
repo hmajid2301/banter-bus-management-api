@@ -1,5 +1,3 @@
-from typing import List, Optional, Union
-
 from beanie import Document, Indexed
 from pydantic import BaseModel
 
@@ -21,9 +19,9 @@ class Story(Document):
     story_id: Indexed(str, unique=True)  # type: ignore
     game_name: str
     question: str
-    round_: Optional[str]
-    nickname: Optional[str]
-    answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
+    round_: str | None
+    nickname: str | None
+    answers: list[QuiblyAnswer] | list[FibbingItAnswer] | list[CaertsianCoordinateColor]
 
     class Config:
         allow_population_by_field_name = True

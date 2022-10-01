@@ -1,12 +1,10 @@
-from typing import List
-
 from app.story.story_exceptions import StoryExistsException, StoryNotFound
 from app.story.story_models import Story
 from app.story.story_repository import AbstractStoryRepository
 
 
 class FakeStoryRepository(AbstractStoryRepository):
-    def __init__(self, stories: List[Story]):
+    def __init__(self, stories: list[Story]):
         self.stories = stories
 
     async def add(self, new_story: Story):

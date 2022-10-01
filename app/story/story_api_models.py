@@ -1,5 +1,3 @@
-from typing import List, Optional, Union
-
 from pydantic import BaseModel
 
 from app.core.models import CaertsianCoordinateColor
@@ -19,9 +17,9 @@ class QuiblyAnswer(BaseModel):
 class StoryIn(BaseModel):
     game_name: str
     question: str
-    round_: Optional[str]
-    nickname: Optional[str]
-    answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
+    round_: str | None
+    nickname: str | None
+    answers: list[QuiblyAnswer] | list[FibbingItAnswer] | list[CaertsianCoordinateColor]
 
     class Config:
         allow_population_by_field_name = True
@@ -32,9 +30,9 @@ class StoryOut(BaseModel):
     story_id: str
     game_name: str
     question: str
-    round_: Optional[str] = None
-    nickname: Optional[str] = None
-    answers: Union[List[QuiblyAnswer], List[FibbingItAnswer], List[CaertsianCoordinateColor]]
+    round_: str | None = None
+    nickname: str | None = None
+    answers: list[QuiblyAnswer] | list[FibbingItAnswer] | list[CaertsianCoordinateColor]
 
     class Config:
         allow_population_by_field_name = True

@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.param_functions import Query
 from omnibus.log.logger import get_logger
@@ -62,13 +60,13 @@ async def add_question(
 @router.get(
     ":random",
     status_code=status.HTTP_200_OK,
-    response_model=List[QuestionSimpleOut],
+    response_model=list[QuestionSimpleOut],
 )
 async def get_random_questions(
     game_name: str,
     round_: str = Query(None, alias="round"),
     language_code: str = "en",
-    group_name: Optional[str] = None,
+    group_name: str | None = None,
     limit: int = Query(5, ge=1, le=100),
     question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),
@@ -89,7 +87,7 @@ async def get_random_questions(
 )
 async def get_question_ids(
     game_name: str,
-    cursor: Optional[str],
+    cursor: str | None,
     limit: int = Query(5, ge=1, le=100),
     question_service: QuestionService = Depends(get_question_service),
     log: BoundLogger = Depends(get_logger),

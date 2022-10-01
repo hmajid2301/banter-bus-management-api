@@ -1,5 +1,4 @@
 import random
-from typing import Dict, List, Optional, Set
 
 from app.question.question_exceptions import QuestionExistsException, QuestionNotFound
 from app.question.question_models import NewQuestion, Question
@@ -7,7 +6,7 @@ from app.question.question_repository import AbstractQuestionRepository
 
 
 class FakeQuestionRepository(AbstractQuestionRepository):
-    def __init__(self, questions: List[Question]):
+    def __init__(self, questions: list[Question]):
         self.questions = questions
 
     async def add(self, new_question: Question):
@@ -67,9 +66,9 @@ class FakeQuestionRepository(AbstractQuestionRepository):
         self,
         game_name: str,
         limit: int,
-        cursor: Optional[str] = None,
-    ) -> List[str]:
-        question_ids: List[str] = []
+        cursor: str | None = None,
+    ) -> list[str]:
+        question_ids: list[str] = []
         at_cursor = False if cursor else True
         q = [question for question in self.questions if question.game_name == game_name]
         for question in q:
@@ -90,8 +89,8 @@ class FakeQuestionRepository(AbstractQuestionRepository):
         round_: str,
         language_code: str,
         limit: int = 5,
-    ) -> List[Question]:
-        questions: List[Question] = []
+    ) -> list[Question]:
+        questions: list[Question] = []
         for question in self.questions:
             if question.game_name == game_name and question.round_ == round_ and language_code in question.content:
                 questions.append(question)
@@ -102,8 +101,8 @@ class FakeQuestionRepository(AbstractQuestionRepository):
 
     async def get_questions_in_group(
         self, game_name: str, round_: str, language_code: str, group_name: str
-    ) -> List[Question]:
-        questions: List[Question] = []
+    ) -> list[Question]:
+        questions: list[Question] = []
         for question in self.questions:
             if (
                 question.group
@@ -115,9 +114,9 @@ class FakeQuestionRepository(AbstractQuestionRepository):
                 questions.append(question)
         return questions
 
-    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> List[str]:
-        groups: Set[str] = set()
-        group_question_count_map: Dict[str, int] = {}
+    async def get_groups(self, game_name: str, round_: str, minimum_questions: int) -> list[str]:
+        groups: set[str] = set()
+        group_question_count_map: dict[str, int] = {}
 
         for question in self.questions:
             if question.group is not None:
@@ -129,7 +128,7 @@ class FakeQuestionRepository(AbstractQuestionRepository):
             if question.game_name == game_name and question.round_ == round_ and question.group:
                 groups.add(question.group.name)
 
-        group_names: List[str] = []
+        group_names: list[str] = []
         for group in groups:
             if group_question_count_map[group] >= minimum_questions:
                 group_names.append(group)

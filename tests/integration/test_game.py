@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any
 
 import pytest
 from fastapi import status
@@ -28,7 +28,9 @@ from tests.integration.data.game_test_data import (
         "Try to add a game that already exists",
     ],
 )
-async def test_add_game(client: AsyncClient, request_data: dict, expected_status_code: int, expected_result: dict):
+async def test_add_game(
+    client: AsyncClient, request_data: dict[Any, Any], expected_status_code: int, expected_result: dict[Any, Any]
+):
     response = await client.post("/game", json=request_data)
     assert response.status_code == expected_status_code
 
@@ -65,7 +67,9 @@ async def test_remove_game(client: AsyncClient, game_name: str, expected_status_
         "try to get a game that does not exist",
     ],
 )
-async def test_get_game(client: AsyncClient, game_name: str, expected_status_code: int, expected_result: dict):
+async def test_get_game(
+    client: AsyncClient, game_name: str, expected_status_code: int, expected_result: dict[Any, Any]
+):
     url = f"/game/{game_name}"
     response = await client.get(url)
     assert response.status_code == expected_status_code
@@ -87,7 +91,7 @@ async def test_get_game(client: AsyncClient, game_name: str, expected_status_cod
     ],
 )
 async def test_get_game_names(
-    client: AsyncClient, enabled_filter: str, expected_status_code: int, expected_result: List[str]
+    client: AsyncClient, enabled_filter: str, expected_status_code: int, expected_result: list[str]
 ):
     url = f"/game?status={enabled_filter}"
     response = await client.get(url)
@@ -107,7 +111,9 @@ async def test_get_game_names(
         "try to enable game that does not exist",
     ],
 )
-async def test_enable_game(client: AsyncClient, game_name: str, expected_status_code: int, expected_result: dict):
+async def test_enable_game(
+    client: AsyncClient, game_name: str, expected_status_code: int, expected_result: dict[Any, Any]
+):
     url = f"/game/{game_name}:enable"
     response = await client.put(url)
     assert response.status_code == expected_status_code
@@ -126,7 +132,9 @@ async def test_enable_game(client: AsyncClient, game_name: str, expected_status_
         "try to disable game that does not exist",
     ],
 )
-async def test_disable_game(client: AsyncClient, game_name: str, expected_status_code: int, expected_result: dict):
+async def test_disable_game(
+    client: AsyncClient, game_name: str, expected_status_code: int, expected_result: dict[Any, Any]
+):
     url = f"/game/{game_name}:disable"
     response = await client.put(url)
     assert response.status_code == expected_status_code

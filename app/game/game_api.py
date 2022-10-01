@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.param_functions import Query
 from omnibus.log.logger import get_logger
@@ -67,13 +65,13 @@ async def remove_game(
 @router.get(
     "",
     status_code=status.HTTP_200_OK,
-    response_model=List[str],
+    response_model=list[str],
 )
 async def get_all_game_names(
-    enabled_filter: Optional[str] = Query("all", alias="status"),
+    enabled_filter: str | None = Query("all", alias="status"),
     game_service: GameService = Depends(get_game_service),
     log: BoundLogger = Depends(get_logger),
-) -> List[str]:
+) -> list[str]:
     try:
         log.debug("trying to get all game names")
         if not enabled_filter:

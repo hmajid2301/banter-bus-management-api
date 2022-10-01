@@ -1,12 +1,10 @@
-from typing import List
-
 from app.game.game_exceptions import GameExistsException, GameNotFound
 from app.game.game_models import Game
 from app.game.game_repository import AbstractGameRepository
 
 
 class FakeGameRepository(AbstractGameRepository):
-    def __init__(self, games: List[Game]):
+    def __init__(self, games: list[Game]):
         self.games = games
 
     async def add(self, new_game: Game):
@@ -37,8 +35,8 @@ class FakeGameRepository(AbstractGameRepository):
 
         raise GameNotFound("game not found")
 
-    async def get_all_game_names(self, enabled: bool = None) -> List[str]:
-        names: List[str] = []
+    async def get_all_game_names(self, enabled: bool = None) -> list[str]:
+        names: list[str] = []
         for game in self.games:
             if enabled is not None and game.enabled == enabled:
                 names.append(game.name)

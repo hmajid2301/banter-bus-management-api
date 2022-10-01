@@ -4,13 +4,13 @@ import pytest
 from asgi_lifespan import LifespanManager
 from httpx import AsyncClient
 
-from app.main import app
+from app.main import application
 
 
 @pytest.fixture()
 async def client() -> AsyncIterator[AsyncClient]:
-    async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url="http://localhost") as client:
+    async with LifespanManager(application):
+        async with AsyncClient(app=application, base_url="http://localhost") as client:
             yield client
 
 

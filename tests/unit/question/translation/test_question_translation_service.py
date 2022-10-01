@@ -1,5 +1,5 @@
 import copy
-from typing import List
+from typing import Any
 
 import pytest
 from pytest_mock import MockFixture
@@ -23,10 +23,10 @@ def mock_beanie_document(mocker: MockFixture):
 
 
 @pytest.fixture()
-def questions() -> List[Question]:
-    from tests.data.question_collection import questions
+def questions() -> list[Question]:
+    from tests.data.question_collection import questions  # type: ignore
 
-    return copy.deepcopy(questions)
+    return copy.deepcopy(questions)  # type: ignore
 
 
 @pytest.mark.asyncio
@@ -40,7 +40,12 @@ def questions() -> List[Question]:
     ],
 )
 async def test_add_question_translation(
-    game_name: str, question_id: str, language_code: str, content: str, expected_result: dict, questions: List[Question]
+    game_name: str,
+    question_id: str,
+    language_code: str,
+    content: str,
+    expected_result: dict[Any, Any],
+    questions: list[Question],
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -62,7 +67,7 @@ async def test_add_question_translation(
     ],
 )
 async def test_add_question_translation_fail(
-    game_name: str, question_id: str, language_code: str, content: str, expected_exception, questions: List[Question]
+    game_name: str, question_id: str, language_code: str, content: str, expected_exception, questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -87,7 +92,7 @@ async def test_add_question_translation_fail(
     ],
 )
 async def test_get_question_translation(
-    game_name: str, question_id: str, language_code: str, expected_result: dict, questions: List[Question]
+    game_name: str, question_id: str, language_code: str, expected_result: dict[Any, Any], questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -108,7 +113,7 @@ async def test_get_question_translation(
     ],
 )
 async def test_get_question_translation_fail(
-    game_name: str, question_id: str, language_code: str, expected_exception, questions: List[Question]
+    game_name: str, question_id: str, language_code: str, expected_exception, questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -133,7 +138,7 @@ async def test_get_question_translation_fail(
     ],
 )
 async def test_remove_question_translation(
-    game_name: str, question_id: str, language_code: str, expected_result: dict, questions: List[Question]
+    game_name: str, question_id: str, language_code: str, expected_result: dict[Any, Any], questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
@@ -154,7 +159,7 @@ async def test_remove_question_translation(
     ],
 )
 async def test_remove_question_translation_fail(
-    game_name: str, question_id: str, language_code: str, expected_exception, questions: List[Question]
+    game_name: str, question_id: str, language_code: str, expected_exception, questions: list[Question]
 ):
     question_repository = FakeQuestionRepository(questions=questions)
     question_service = QuestionService(question_repository=question_repository)
